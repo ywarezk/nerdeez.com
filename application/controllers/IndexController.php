@@ -59,6 +59,11 @@ class IndexController extends Zend_Controller_Action
         echo $dojoData->toJson();
         return;
     }
+    
+    /**
+     * contains the terms of service disclaimer 
+     */
+    public function termsAction(){}
 
 }
 
