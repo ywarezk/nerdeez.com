@@ -64,6 +64,11 @@ class IndexController extends Zend_Controller_Action
      * contains the terms of service disclaimer 
      */
     public function termsAction(){}
+    
+    /**
+     * contains the privacy statment
+     */
+    public function privacyAction(){}
 
 }
 
