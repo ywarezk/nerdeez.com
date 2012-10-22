@@ -1,0 +1,96 @@
+<?php
+/**
+ * the base layout - general html elements that are identical in all pages
+ */
+?> 
+
+<!DOCTYPE html>
+<html lang="en">  
+    <head> 
+        <?php  
+            $this->headTitle()->prepend('Nerdeez');
+            echo $this->headTitle(); 
+        ?> 
+        <?php 
+            echo $this->headMeta(); 
+        ?> 
+        <?php 
+            $this->headLink()->prependStylesheet('/styles/styles.css');
+            $this->headLink(array('rel' => 'SHORTCUT ICON',
+                                  'href' => '/img/favicon.ico'),
+                                  'PREPEND');
+            echo $this->headLink(); 
+        ?> 
+        <?php        
+            echo $this->headStyle(); 
+        ?> 
+        <?php 
+            //attach common javascriopt files
+            //$this->headScript()->prependFile('/js/tooltip.js');
+            $this->headScript()->prependFile('/js/jquery.ksfunctions.js');
+            //$this->headScript()->prependFile('/js/jquery.validate.min.js');
+            $this->headScript()->prependFile('/js/jquery-1.7.1.min.js');
+            echo $this->headScript(); 
+        ?> 
+      
+        
+        <script type="text/javascript">
+          /*var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-30424827-1']);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();*/
+
+        </script>
+    </head> 
+    <body>
+        <!-- <img src="/img/newlogoblack.png" style="display: none;" /> -->
+        <div class="content">
+        
+        <div class="bgblack" style="height: 80px; position: absolute;width: 100%;"></div>
+        
+         
+        <div id="overlay"></div>
+        
+        <!--
+        main content 
+        -->
+        
+        <?php /* NESTED LAYOUT SUPPORT */ ?> 
+        <?php 
+            if($this->layout()->nestedLayout){
+                $this->layout()->setLayout($this->layout()->nestedLayout);
+            } 
+            else{
+                $this->layout()->setLayout('default');
+            }
+            echo $this->layout()->render();
+
+        ?> 
+        
+        </div>
+        
+        <div class="bgblack" style="height: 50px; margin-top: -50px;">
+            <div style="color: white; text-align: center;top:5px;position:relative;">
+                <div style="">
+                    © 2012 Knowledge-Share<br/>
+                    <a href="/index/terms" class="footer_anchor">
+                        Terms
+                    </a>
+                    |
+                    <a href="/index/privacy" class="footer_anchor">
+                        Privacy
+                    </a>
+                    |
+                    <a href="http://ykapps.com" class="footer_anchor">
+                        Created by YKApps
+                    </a>
+                </div>
+            </div> 
+        </div>
+    </body> 
+</html>
