@@ -676,6 +676,9 @@ function ksCourseOver(iCourseNum){
  * user posts his opinion
  */
 function sendFeedback(){
+    //check if the form is valid
+    if(!$('.sendfeedback_form').valid()) return;
+    
     //put the loading screen on
     loadingScreen();
     
@@ -1957,4 +1960,61 @@ function ksForgotPassword(){
                 $('.registerdialog * .message').text('Error! Connection failure. Try again');
             }
     });
+}
+
+/**
+ * loads the about page
+ */
+function loadAbout(){
+    //toggle the about button to look clicked
+    $('#about').toggleClass("active");
+    
+    //bind the js events 
+    $('.sendfeedback_form button').on('click' , function(){
+        sendFeedback();
+    });
+    $('.sendfeedback_form textarea').on('keyup' , function(){
+        ksSetTextHelper($('.sendfeedback_form textarea'));
+    });
+    $('.sendfeedback_form input').on('keyup' , function(){
+        ksSetTextHelper($('.sendfeedback_form input'));
+    });
+    
+    //create the js validation
+    $('.sendfeedback_form').validate({
+        rules: {
+            mail: {
+                required: true,
+                email: true
+            },
+            message:{
+                required: true,
+                maxlength: 300
+            }
+        },
+        messages: {
+            mail: {
+                required: 'Email is required',
+                email: 'Invalid email'
+            },
+            message: {
+                required: 'Message is required',
+                maxlength: 'Your message must be up to 300 letters'
+            }
+        },
+        errorPlacement: function(error, element) {
+             if (element.attr("name") == "mail"){
+                 $('.register-error-placeholder.mail').html('');
+                 $('.register-error-placeholder.mail').append(error);
+                 //error.insertAfter("#lastname");
+             } 
+             if (element.attr("name") == "message"){
+                 //error.insertAfter("#lastname");
+                 $('.register-error-placeholder.message').html('');
+                 $('.register-error-placeholder.message').append(error);
+             } 
+       }
+    });
+    
+    
 }

@@ -28,7 +28,7 @@
             //attach common javascriopt files
             //$this->headScript()->prependFile('/js/tooltip.js');
             $this->headScript()->prependFile('/js/jquery.ksfunctions.js');
-            //$this->headScript()->prependFile('/js/jquery.validate.min.js');
+            $this->headScript()->prependFile('/js/jquery.validate.min.js');
             $this->headScript()->prependFile('/js/jquery-1.7.1.min.js');
             echo $this->headScript(); 
         ?> 
@@ -72,6 +72,20 @@
 
         ?> 
         
+        </div>
+        
+        <div id="glassloading" class="glass">
+            
+        </div>
+        <div class="glass_loaddialog border-radius border-style">
+            <h2>Loading ...</h2>
+            <div align="center">
+                <img src="/img/loading_1.gif" width="100" height="100"/>
+            </div>
+        </div>
+        <div id="success">
+            <img src="/img/success.png" />
+            <span style="font-size: 100px; position: relative; top: -100px; left: 20px; color: green;">Success</span>
         </div>
         
         <div class="bgblack" style="height: 50px; margin-top: -50px;">

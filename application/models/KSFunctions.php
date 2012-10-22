@@ -99,6 +99,103 @@ class Application_Model_KSFunctions {
     
     //private members
     
+    /**
+     *Strips and trims the tag and makes sure the length is no longer than langth chars
+     * 
+     * @param String $title 
+     * @param int $length check the string is no longer than this length
+     * @return String null if title is invalid or sanitized title if valid
+     */
+    public function sanitize_Title($title , $length){
+        if($title == null) return null;
+        $title = str_replace('\\', '', $title);
+        $link = $this->getMysqlConnection();
+        $data = array('title' => mysql_real_escape_string($title , $link));
+        $filters=array('title' => array('StringTrim' , 'StripTags'));
+        $validators=array('title' => array(array('StringLength', array(0, $length))));
+        $input = new Zend_Filter_Input($filters, $validators, $data);
+        if(!$input->isValid()){         
+            return null;
+        }
+        $data = $input->getEscaped();
+        return $data['title'];       
+    }
+    
+    /**
+     * gets the mysql connection data from the config and returns the mysql link resource
+     * @return ResourceBundle MySQL link identifier on success or FALSE on failure. 
+     */
+    public function getMysqlConnection(){
+        //connect to config file 
+        $config = new Zend_Config_Ini('../application/configs/application.ini','production');
+        
+        //get host user password 
+        $host = $config->resources->db->params->host;
+        $user = $config->resources->db->params->username;
+        $pass = $config->resources->db->params->password;
+        
+        $link = mysql_connect('localhost', $user, $pass)
+        OR die(mysql_error());
+        
+        return $link;
+    }
+    
+    /**
+     * 
+     * Self detection of bugs mechanizem i will report myself to the event and hopefully will catch it
+     * @param String $message i will try to put here all the data
+     */
+    public function bugReport($message , $mail = NULL){
+        //grab the email from config
+        $email = $this->grabFromConfigFile('BugReportMail');        
+        
+        //create the mail body
+        $body = "<HTML><BODY><CENTER>
+        <h1>What'p bitch - There was a Bug Report</h1>
+        <p>
+        " . $message ."
+        </p>
+        <p>
+            mail: " . $mail . "
+        </p>
+        <p>
+        Regards, Knowledge-Share.com Team
+        </p>
+        </CENTER></BODY>
+        </HTML>";		
+        
+        //mail title
+        $title = "Knowledge-Share Bug Report";
+        
+        //send the mail 
+        $this->reportByMail($email, $body, $title);
+    }
+    
+    /**
+     *send mail to {$mail} with  content {$body}
+     * 
+     * @param String $mail - the mail address
+     * @param String $body  - the text content of the mail 
+     */
+    public function reportByMail($email , $body , $title){
+        //TODO
+        $headers = 'MIME-Version: 1.0' . "\r\n";
+        $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+        $headers .= 'From: admin@knowledge-share.com' . "\r\n";
+        @mail($email,$title,$body,$headers);
+    }
+    
+    /**
+     *grabs data from the config file
+     * 
+     * @param String $key - the key from config file to grab 
+     * @return String the value taken from config
+     */
+    public function grabFromConfigFile($key){
+        $config = new Zend_Config_Ini('../application/configs/application.ini','production');
+        return $config->{$key};
+    }
+    
 }
 
 ?>
