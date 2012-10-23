@@ -347,6 +347,18 @@ class Application_Model_KSFunctions {
         }
         return $dynamicSalt;
     }
+    
+    /**
+     * determine if the user is registered
+     * @return Boolean true if registered
+     */
+    public function isRegistered(){
+        $isIdentity = FALSE;
+        $auth = Zend_Auth::getInstance();
+        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
+        $isIdentity = $auth->hasIdentity();
+        return $isIdentity;
+    }
 }
 
 ?>
