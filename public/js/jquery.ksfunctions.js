@@ -2035,3 +2035,74 @@ function loadSearchCourse(){
         $('#courselist').fadeToggle('normal');
     });
 }
+
+/**
+ * init js in registration form
+ * @param String sId the id of the form
+ */
+function loadRegistration(sId){
+    //atach events to all the text inputs
+    $('#' + sId + ' * .registerform * input[name="email"]').on('keyup' , function(){
+       ksSetTextHelper($('#' + sId + ' * .registerform * input[name="email"]')); 
+    });
+    $('#' + sId + ' * .registerform * input[name="password"]').on('keyup' , function(){
+       ksSetTextHelper($('#' + sId + ' * .registerform * input[name="password"]')); 
+    });
+    $('#' + sId + ' * .registerform * input[name="repassword"]').on('keyup' , function(){
+       ksSetTextHelper($('#' + sId + ' * .registerform * input[name="repassword"]')); 
+    });
+    
+    //init the js validation
+    $('#' + sId +' * .registerform').validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            password:{
+                required: true,
+                minlength: 5
+            },
+            repassword:{
+                required: true,
+                minlength: 5,
+                equalTo: '#' + sId + ' * .pass'
+            }
+        },
+        messages: {
+            email: {
+                required: 'Email is required',
+                email: 'Invalid email'
+            },
+            password: {
+                required: 'Password is required',
+                minlength: 'Must be more than 5 chars'
+            },
+            repassword: {
+                required: 'Retype password is required',
+                minlength: 'Must be more than 5 chars',
+                equalTo: 'must match the password field'
+            }
+        },
+        errorPlacement: function(error, element) {
+             if (element.attr("name") == "email"){
+                 $('.register-error-placeholder.email').html('');
+                 $('.register-error-placeholder.email').append(error);
+                 //error.insertAfter("#lastname");
+             } 
+             if (element.attr("name") == "password"){
+                 //error.insertAfter("#lastname");
+                 $('.register-error-placeholder.password').html('');
+                 $('.register-error-placeholder.password').append(error);
+             } 
+             if (element.attr("name") == "repassword"){
+                 //error.insertAfter("#lastname");
+                 $('.register-error-placeholder.repassword').html('');
+                 $('.register-error-placeholder.repassword').append(error);
+             } 
+             
+       }
+    });
+    
+    
+}

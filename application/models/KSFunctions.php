@@ -196,6 +196,125 @@ class Application_Model_KSFunctions {
         return $config->{$key};
     }
     
+    /**
+     * returns the url of the site
+     * @return String the url of the site without http://www. 
+     */
+    public function sGetUrl(){
+        //$https = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+      	return
+    		/*($https ? 'https://' : 'http://').*/
+    		(!empty($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'].'@' : '').
+    		(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ($_SERVER['SERVER_NAME'].
+    		($https && $_SERVER['SERVER_PORT'] === 443 ||
+    		$_SERVER['SERVER_PORT'] === 80 ? '' : ':'.$_SERVER['SERVER_PORT']))).
+    		substr($_SERVER['SCRIPT_NAME'],0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
+    }
+    
+    /**
+     * create a unique serial number for registration
+     * @return String a random serial
+     */
+    public function createSerial(){
+        $pool = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $countPool = strlen($pool) ;
+        $totalChars = 12 ;
+
+        $serial = '' ;
+        for ($i = 0 ; $i < $totalChars ; $i++) {
+            $currIndex = mt_rand(0, $countPool) ;
+            $currChar = $pool[$currIndex] ;
+            $serial .= $currChar ;
+        }
+        return $serial;
+    }
+    
+    /**
+     * get the auth user id
+     * @return int user id
+     */
+    public function getUserId(){
+        $auth = Zend_Auth::getInstance();
+        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
+        try{
+            return $auth -> getIdentity() -> id;
+        }
+        catch(Exception $e){
+            return 0;
+        }
+    }
+    
+    /**
+     * creates a random salt string
+     * @return String
+     */
+    public function createSaltString(){
+        $dynamicSalt = '';
+        for ($i = 0; $i < 50; $i++) {
+            $dynamicSalt .= chr(rand(33, 126));
+        }
+        return $dynamicSalt;
+    }
+    
+    /**
+     * sends registration activation mail
+     * @param String $serial the serial number for the activation 
+     * @param int the row of the user
+     * @param String $email the email address to send to
+     */
+    public function sendActivationMail($serial , $users_id , $email){
+        //create the mail body
+        $body = '<HTML><BODY><CENTER>
+        <h1>Knowledge-Share Account activation</h1>
+        <p>
+        Please confirm your Knowledge-Share account by clicking this link:
+        </p>
+        <p>
+            <a href="http://'. $this ->sGetUrl() .'/register/activateaccount/id/'. $users_id . '/serial/'. $serial .'">
+                activate account
+            </a>
+        </p>
+        <p>
+        Regards, Knowledge-Share Team
+        </p>
+        </CENTER></BODY>
+        </HTML>';		
+        
+        //mail title
+        $title = "Knowledge-Share account activation";
+        
+        //send the mail 
+        $this->reportByMail($email, $body, $title);
+    }
+    
+    /**
+     * creates a user name to be set in the users table 
+     * @return String the user name
+     */
+    public function createUserName(){
+        return 'Student_' . rand(0, 99999);
+    }
+    
+    /**
+     * :)
+     * check if id is a valid number up to 10 digits
+     * 
+     * @param int $id - the id to check 
+     * @param Bool true if valid false otherwise
+     */
+    public function is_IdValid($id){
+        if(!isset ($id) || $id == NULL) return false;
+        $data = array('id' => $id);
+        $filters=null;
+        $validators=array();
+        $validators['id']=array(array('StringLength', array(0, 10)),'Digits');
+        //check data is sanitized
+        $input = new Zend_Filter_Input($filters, $validators, $data);
+        if(!$input->isValid()){
+            return FALSE;
+        }
+        return TRUE;
+    }
 }
 
 ?>
