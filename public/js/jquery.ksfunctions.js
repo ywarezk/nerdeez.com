@@ -2103,6 +2103,55 @@ function loadRegistration(sId){
              
        }
     });
+}
+
+/**
+ * loads the js for the login form
+ * @params String sId the id of the form
+ */
+function loadLogin(sId){
+    //init js events
+    $('#' + sId + ' * input[name="email"]').on('keyup' , function(){
+        ksSetTextHelper($('#' + sId + ' * input[name="email"]'));
+    });
+    $('#' + sId + ' * input[name="password"]').on('keyup' , function(){
+        ksSetTextHelper($('#' + sId + ' * input[name="password"]'));
+    });
     
+    //init the js validation
+    $('#' + sId).validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            password:{
+                required: true,
+                minlength: 5
+            }
+        },
+        messages: {
+            email: {
+                required: 'Email is required',
+                email: 'Invalid email'
+            },
+            password: {
+                required: 'Password is required',
+                minlength: 'Must be more than 5 chars'
+            }
+        },
+        errorPlacement: function(error, element) {
+             if (element.attr("name") == "email"){
+                 $('#' + sId + ' * .register-error-placeholder.email').html('');
+                 $('#' + sId + ' * .register-error-placeholder.email').append(error);
+                 //error.insertAfter("#lastname");
+             } 
+             if (element.attr("name") == "password"){
+                 //error.insertAfter("#lastname");
+                 $('#' + sId + ' * .register-error-placeholder.password').html('');
+                 $('#' + sId + ' * .register-error-placeholder.password').append(error);
+             } 
+       }
+    });
     
 }

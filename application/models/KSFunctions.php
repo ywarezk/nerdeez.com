@@ -315,6 +315,38 @@ class Application_Model_KSFunctions {
         }
         return TRUE;
     }
+    
+    /**
+     * when i need to get the users ip address
+     * @return String the user ip address 
+     */
+    public function getRealIpAddr(){ 
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) //check ip from share internet 
+        { 
+            $ip=$_SERVER['HTTP_CLIENT_IP']; 
+        } 
+        elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) //to check ip is pass from proxy 
+        { 
+            $ip=$_SERVER['HTTP_X_FORWARDED_FOR']; 
+        } 
+        else 
+        { 
+            $ip=$_SERVER['REMOTE_ADDR']; 
+        } 
+        return $ip; 
+    }
+    
+    /**
+     * creates a random salt string
+     * @return String
+     */
+    public function createSaltString2($length){
+        $dynamicSalt = '';
+        for ($i = 0; $i < $length; $i++) {
+            $dynamicSalt .= chr(rand(33, 126));
+        }
+        return $dynamicSalt;
+    }
 }
 
 ?>
