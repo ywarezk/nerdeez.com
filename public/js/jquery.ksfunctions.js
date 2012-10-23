@@ -2018,3 +2018,20 @@ function loadAbout(){
     
     
 }
+
+/**
+ * init the search course item
+ */
+function loadSearchCourse(){
+    $('#searchcourseform * input[type="text"]').on('keyup' , function(ev){
+        ksSetTextHelper($('#searchcourseform * input[type="text"]'));
+        searchCourse(ev);
+    });
+    $('#searchcourseform * input[type="text"]').on('keydown' , function(ev){
+        ksSearchCourseKeyController(ev);
+    });
+    $('#expendcourselist').on('click' , function(){
+        $('#expendcourselist').toggleClass('active');
+        $('#courselist').fadeToggle('normal');
+    });
+}

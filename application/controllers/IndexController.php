@@ -21,7 +21,22 @@ class IndexController extends Zend_Controller_Action
      */
     public function indexAction()
     {
-        // action body
+        //pass error & message to view
+        $data=$this->getRequest()->getParams();
+        $this -> view -> sError = $data['error'];
+        $this -> view -> sStatus = $data['message'];
+        
+        //get all the courses and pass them to the view
+        $this -> view -> rsCourses = NULL;
+        $mCourses = new Application_Model_DbTable_Courses();
+        $this -> view -> rsCourses = $mCourses -> fetchAll ($mCourses -> select() -> order('title ASC'));
+        
+        //get all the universities
+        $rsUniversities = NULL;
+        $mUniversities = new Application_Model_DbTable_Universities();
+        $rsUniversities = $mUniversities -> fetchAll($mUniversities -> select() 
+                -> order('title ASC'));
+        $this -> view -> rsUniversities = $rsUniversities;
     }
     
     /**
