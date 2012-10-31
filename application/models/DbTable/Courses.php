@@ -1,23 +1,23 @@
 <?php
 
 /**
+ * required in all my models
+ */
+require_once APPLICATION_PATH . '/models/DbTable/Nerdeez_Db_Table.php';
+
+/**
  * model for courses table
  * @author Yariv Katz
  * @copyright Nerdeez.com
  * @version 1.0
  */
-class Application_Model_DbTable_Courses extends Zend_Db_Table_Abstract{
+class Application_Model_DbTable_Courses extends Nerdeez_Db_Table{
     
     /**
-     * constructor , will create the table if doesnt exist
+     * all the models will put their table create if not exist table in here
+     * @var String 
      */
-    function __construct() {
-       //call the parent constructor
-       parent::__construct();
-       
-       //buld the table if it doesnt exist
-       $db = $this -> getAdapter();
-       $sCoursesSql = 'CREATE TABLE IF NOT EXISTS `courses` (
+    protected $_sqlCreateTable = 'CREATE TABLE IF NOT EXISTS `courses` (
           `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
           `title` varchar(100) NOT NULL,
           `description` varchar(1000) DEFAULT NULL,
@@ -26,8 +26,6 @@ class Application_Model_DbTable_Courses extends Zend_Db_Table_Abstract{
           `connections` varchar(1000) DEFAULT NULL,
           PRIMARY KEY (`id`)
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;';
-        $db->query($sCoursesSql);
-    }
     
     /**
      * 
@@ -35,13 +33,6 @@ class Application_Model_DbTable_Courses extends Zend_Db_Table_Abstract{
      * @var String
      */
     protected $_name = 'courses';
-    
-    /**
-     * 
-     * Tables primary key
-     * @var String
-     */
-    protected $_primary = 'id';
     
     /**
      * the dependant tables
@@ -67,6 +58,25 @@ class Application_Model_DbTable_Courses extends Zend_Db_Table_Abstract{
             'refColumns'        => array('id')
         ),
     );
+    
+    /**
+     * @see Application_Model_DbTable_Model::insert
+     * @param String $sTitle course title
+     * @param int $iUniversities_id many to one connection pk
+     * @param String $sDescription description of the course
+     * @param String $sWebsite the course web site
+     * @param String $sConnections JSON string representing a
+     */
+    public function insert($sTitle , $iUniversities_id , $sDescription = NULL , $sWebsite = NULL , $sConnections = NULL){
+        $aNewRow = array(
+            'title'                 => $sTitle , 
+            'universities_id'       => $iUniversities_id , 
+            'description'           => $sDescription ,
+            'website'               => $sWebsite , 
+            'connections'           => $sConnections ,
+        );
+        return parent::insert($aNewRow);
+    }
 }
 
 ?>

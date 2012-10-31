@@ -4,6 +4,7 @@
  */
 require_once 'Plugins/AccessCheck.php';
 
+
 /**
  * put site initialization here
  * @author Yariv Katz
@@ -12,6 +13,17 @@ require_once 'Plugins/AccessCheck.php';
  */
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
+    
+    /**
+     * control managment system
+     */
+    protected function _initCMS(){
+        $acl=new Application_Model_Acl();
+        $auth = Zend_Auth::getInstance();
+        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
+        $fc=Zend_Controller_Front::getInstance();
+        $fc->registerPlugin(new Application_Plugin_AccessCheck($acl,$auth));
+    }
     
     /**
      * init the meta information of the web site
@@ -27,17 +39,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //setting the headmeta
         $view->headMeta()->appendHttpEquiv('Content-type' , 'text/html; charset=UTF-8')
                          ->appendName('description' , constant('Application_Model_KSFunctions::cMETADESCRIPTIONMAIN'));
-    }
-    
-    /**
-     * control managment system
-     */
-    protected function _initCMS(){
-        $acl=new Application_Model_Acl();
-        $auth = Zend_Auth::getInstance();
-        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
-        $fc=Zend_Controller_Front::getInstance();
-        $fc->registerPlugin(new Application_Plugin_AccessCheck($acl,$auth));
     }
     
     /**
@@ -71,15 +72,19 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         //check that the row matches the logincoockies row
         $bIsRowExist = FALSE;
         $mLogincookies = new Application_Model_DbTable_Logincookies();
-        $rsLogincookies = $mLogincookies -> fetchAll($mLogincookies -> select()
+        try{
+            $rsLogincookies = $mLogincookies -> fetchAll($mLogincookies -> select()
                 -> where ('email = ?' , $sEmail)
                 -> where ('identifier = ?' , $sIdentifier)
                 -> where ('token = ?' , $sToken));
+        }
+        catch(Exception $e){
+            return;
+        }
         $bIsRowExist = $rsLogincookies -> count() > 0;
-        $rLogin = $rsLogincookies -> getRow(0);
         
         //if the row doesnt exist check if the email and identifier exists if so security breach
-        if (!$bIsCookies){
+        if (!$bIsRowExist){
              $rsLogincookies = $mLogincookies -> fetchAll($mLogincookies -> select()
                 -> where ('email = ?' , $sEmail)
                 -> where ('identifier = ?' , $sIdentifier));
@@ -95,7 +100,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 $redirector->gotoUrl('/error/' . urlencode('suspected cookie theft please change your password!'));
                 return;
             }
+            return;
         }
+        
+        //found triplet grab the row
+        $rLogin = $rsLogincookies -> getRow(0);
         
         //got a triplet match then need to change token and update db
         $sNewtoken = $ksfunctions -> createSaltString2(200);
@@ -137,6 +146,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         //the end
     }
+    
+    
     
     
 

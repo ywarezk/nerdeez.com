@@ -117,15 +117,12 @@ class RegisterController extends Zend_Controller_Action{
         
         //create the row to pass to database
         $salt = $ksfunctions -> createSaltString();
-        $usersrow = array(
-            'title' => $title ,
-            'pass' => sha1(constant("Application_Model_KSFunctions::cSTATICSALT") . $password . $salt),
-            'role' => 1,
-            'serial' => $serial,
-            'email' => $mail,
-            'salt' => $salt,
-        );
-        $users_id = $mUsers -> insert ($usersrow);
+        $mUsers ->insert(
+                $title , 
+                sha1(constant("Application_Model_KSFunctions::cSTATICSALT") . $password . $salt) , 
+                $serial , 
+                $mail , 
+                $salt);
         
         //send activation mail
         $ksfunctions -> sendActivationMail ($serial , $users_id , $mail);

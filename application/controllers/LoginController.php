@@ -133,12 +133,7 @@ class LoginController extends Zend_Controller_Action{
                 $sToken = $ksfunctions -> createSaltString2(200);
                 
                 //insert the new values to the database
-                $aNewLoginRow = array(
-                    'email'         => $sEmail ,
-                    'identifier'    => $sIdentifier , 
-                    'token'         => $sToken
-                );
-                $logincookies -> insert ($aNewLoginRow);
+                $logincookies ->insert($sEmail, $sIdentifier, $sToken);
                 
                 //set the cookies
                 $sUrl = $ksfunctions -> sGetUrl();
@@ -155,12 +150,7 @@ class LoginController extends Zend_Controller_Action{
         }
         else{
             //login failed add row in the ips table
-            $aNewIpRow = array(
-                'starttime'         => time() ,
-                'ip'                => $sIP , 
-                'email'             => $email
-            );
-            $mIps -> insert($aNewIpRow);
+            $mIps ->insert(time(), $sIp, $email);
         }
         $this->_redirector->gotoUrl('/index/index/error/' . urlencode('Invalid email or password'));
         return;
@@ -170,11 +160,12 @@ class LoginController extends Zend_Controller_Action{
         $auth = Zend_Auth::getInstance();
         $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
         if ($auth->hasIdentity()) {
-            $userid = $auth->getIdentity()->id;
+            $sEmail = $auth->getIdentity()-> email;
 
             ## Delete Cookie Code
             $logincookies = new Application_Model_DbTable_Logincookies();
-            $logincookies->deleteDBCookie($userid);
+            //$logincookies->deleteDBCookie($userid);
+            $logincookies ->deleteRowWithId($sEmail);
 
         }
         $auth->clearIdentity();

@@ -1,4 +1,8 @@
 <?php
+/**
+ * required in all my models
+ */
+require_once APPLICATION_PATH . '/models/DbTable/Nerdeez_Db_Table.php';
 
 /**
  * model for login cookies table
@@ -6,53 +10,54 @@
  * @author Yariv Katz
  * @copyright Knowledge-Share.com Ltd.
  */
-class Application_Model_DbTable_Logincookies extends Zend_Db_Table_Abstract{
+class Application_Model_DbTable_Logincookies extends Nerdeez_Db_Table{
+    
+    
     
     /**
-     * constructor , will create the table if doesnt exist
+     * contain the sql string to create the table
+     * @var String
      */
-    function __construct() {
-       //call the parent constructor
-       parent::__construct();
-       
-       //buld the table if it doesnt exist
-       $db = $this -> getAdapter();
-       $sLogincookiesSql = "CREATE TABLE IF NOT EXISTS `logincookies` (
+    protected $_sqlCreateTable = "CREATE TABLE IF NOT EXISTS `logincookies` (
           `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
           `email` varchar(100) CHARACTER SET utf8 NOT NULL,
           `identifier` varchar(200) CHARACTER SET utf8 NOT NULL,
           `token` varchar(200) CHARACTER SET utf8 NOT NULL,
           PRIMARY KEY (`id`)
         ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
-        $db->query($sLogincookiesSql);
-    }
+    
     
     /**
      * 
      * name of  table
      * @var String
      */
-    protected $_name = 'logincookies';
+    protected $_name = 'logincookies'; 
+    
     
     /**
-     * 
-     * Tables primary key
-     * @var String
+     * delte login cookies with email 
+     * @param String $sEmail 
      */
-    protected $_primary = 'id';
-    
-    public function deleteDBCookie($id) {
-        $this->delete('id =' . (int) $id);
+    public function deleteRowWithEmail($sEmail) {
+        $this->delete("email ='" . $sEmail . "'");
     }
     
-    public function addDBCookie($id, $ucode) {
-        $data = array(
-            'id' => $id,
-            'ucode' => $ucode,
-            'date' => new Zend_Db_Expr('NOW()'),
+    /**
+     * @see Application_Model_DbTable_Model::insert
+     * @param String $sEmail the email of the user
+     * @param String $sIdentifier the identifier string
+     * @param String $sToken the token string
+     */
+    public function insert($sEmail , $sIdentifier , $sToken){
+        $aNewRow = array(
+            'email'         => $sEmail , 
+            'identifier'    => $sIdentifier , 
+            'token'         => $sToken ,
         );
-        $this->insert($data);
+        return parent::insert($aNewRow);
     }
+    
 }
 
 ?>
