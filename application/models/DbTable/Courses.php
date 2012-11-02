@@ -60,14 +60,14 @@ class Application_Model_DbTable_Courses extends Nerdeez_Db_Table{
     );
     
     /**
-     * @see Application_Model_DbTable_Model::insert
+     * @see Nerdeez_Db_Table::insertWithoutArray
      * @param String $sTitle course title
      * @param int $iUniversities_id many to one connection pk
      * @param String $sDescription description of the course
      * @param String $sWebsite the course web site
      * @param String $sConnections JSON string representing a
      */
-    public function insert($sTitle , $iUniversities_id , $sDescription = NULL , $sWebsite = NULL , $sConnections = NULL){
+    public function insertWithoutArray($sTitle , $iUniversities_id , $sDescription = NULL , $sWebsite = NULL , $sConnections = NULL){
         $aNewRow = array(
             'title'                 => $sTitle , 
             'universities_id'       => $iUniversities_id , 

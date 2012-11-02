@@ -44,12 +44,12 @@ class Application_Model_DbTable_Logincookies extends Nerdeez_Db_Table{
     }
     
     /**
-     * @see Application_Model_DbTable_Model::insert
+     * @see Nerdeez_Db_Table::insertWithoutArray
      * @param String $sEmail the email of the user
      * @param String $sIdentifier the identifier string
      * @param String $sToken the token string
      */
-    public function insert($sEmail , $sIdentifier , $sToken){
+    public function insertWithoutArray($sEmail , $sIdentifier , $sToken){
         $aNewRow = array(
             'email'         => $sEmail , 
             'identifier'    => $sIdentifier , 

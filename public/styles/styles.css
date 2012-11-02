@@ -1779,3 +1779,37 @@ border: 1px solid #CCCCCC;
   margin: 0;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
+
+.admin_table_header{
+    background-color: #EEEEEE;
+    border: 1px solid #CCCCCC;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 5px;
+    text-decoration: underline;
+    text-align: center;
+}
+
+.admin_container{
+    border: 1px solid #CCCCCC;
+    border-radius: 10px 10px 10px 10px;
+    margin: 50px auto 0;
+    padding: 20px;
+    position: relative;
+}
+
+.admin_container h2{
+    text-align: center;
+    text-decoration: underline;
+    color: #E20045;
+}
+
+.admin_table_cell{
+    border: 1px solid #CCCCCC;
+    text-align: center;
+    padding: 5px;
+}
+
+.admin_parentcombo{
+    width: 100%;
+}

@@ -2,160 +2,55 @@
     Document   : admin
     Created on : 12:37:24 PM
     Author     : Yariv Katz
-    Copyright  : Knowledge-Share.com Ltd.
+    Copyright  : Nerdeez.com Ltd.
     Description:
         admin controller page
 */
 
 /**
- * delete country from the database
- * @param int iCountryId the country to delete from database
+ * delete a row from the selected database
+ * @param int iId the row id to delete
+ * @param String sModel the model from which we are deleting
+ * 
  */
-function ksDeleteCountry(iCountryId){
+function ksDeleteRow(iId , sModel){
     //create the array of files to download
     var aIds = new Array();
-    aIds[0] = iCountryId;
+    aIds[0] = iId;
     
     //put the loading screen on
     loadingScreen();
     
     //download the files
-    ksDeleteCountries(aIds);
+    ksDeleteRows(aIds , sModel);
     
     removeLoadingScreen();
 }
 
 /**
- * delete university from the database
- * @param int iUniversityId the university to delete from database
+ * delete multiple rows from the database
+ * @param array aIds the list of ids to delete
+ * @param String sModel the model to delete from
  */
-function ksDeleteUniversity(iUniversityId){
-    //create the array of files to download
-    var aIds = new Array();
-    aIds[0] = iUniversityId;
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteUniversities(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * delete semester from the database
- * @param int iSemesterId the semester to delete from database
- */
-function ksDeleteSemester(iSemesterId){
-    //create the array of files to download
-    var aIds = new Array();
-    aIds[0] = iSemesterId;
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteSemesters(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * delete university from the database
- * @param int iUniversityId the university to delete from database
- */
-function ksDeleteCourse(iCourseId){
-    //create the array of files to download
-    var aIds = new Array();
-    aIds[0] = iCourseId;
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteCourses(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * delete rule from the database
- * @param int iRuleId the rule to delete from database
- */
-function ksDeleteRule(iRuleId){
-    //create the array of files to download
-    var aIds = new Array();
-    aIds[0] = iRuleId;
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteRules(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * delete file from the database and disk
- * @param int iUniversityId the university to delete from database
- */
-function ksDeleteFile(iFileId){
-    //create the array of files to download
-    var aIds = new Array();
-    aIds[0] = iFileId;
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteFiles(aIds);
-    
-    removeLoadingScreen();
-}
-
-
-/**
- * delete row from the pnggs table
- * @param int iPngId the row to delete
- */
-function ksDeletePng(iPngId){
-    //create the array of files to download
-    var aIds = new Array();
-    aIds[0] = iPngId;
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeletePngs(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * download the list of files
- * @param array aIds the list of ids to download
- */
-function ksDeleteCountries(aIds){
+function ksDeleteRows(aIds , sModel){
     //convert the array to json string
     var sIds = JSON.stringify(aIds);
     
-    //create an object to send to varify auth
+    //create an object with the params
     var obj=new Object();
     obj.ids = sIds;
+    obj.model = sModel;
 
     //check via ajax if user is authorized 
     $.ajax({ 
             type: "POST",
-            url: "/admin/deletecountries/",
+            url: "/admin/deleterows/",
             dataType: "json",
             data: obj ,
             async: false,
             success: function(res) {
                 if (res.items[0].status ==='success'){
-                    window.location = "/admin/countries/status/success";
+                    location.reload();
                 }
                 else{
                     setSuccessToFailed();
@@ -182,294 +77,11 @@ function ksDeleteCountries(aIds){
 }
 
 /**
- * delete allt his rows from the pngs table
- * @param array aIds the list of ids to download
+ * delete all the checked rows
+ * @param String sModel the model to delete from
+ * 
  */
-function ksDeletePngs(aIds){
-    //convert the array to json string
-    var sIds = JSON.stringify(aIds);
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.ids = sIds;
-
-    //check via ajax if user is authorized 
-    $.ajax({ 
-            type: "POST",
-            url: "/login/resetpassword",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){
-                    window.location = "/admin/pngs/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * download the list of files
- * @param array aIds the list of ids to download
- */
-function ksDeleteUniversities(aIds){
-    //convert the array to json string
-    var sIds = JSON.stringify(aIds);
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.ids = sIds;
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/deleteuniversities/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){
-                    window.location = "/admin/universities/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * delete the list of semesters
- * @param array aIds the list of ids to delete
- */
-function ksDeleteSemesters(aIds){
-    //convert the array to json string
-    var sIds = JSON.stringify(aIds);
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.ids = sIds;
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/deletesemesters/", 
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){
-                    window.location = "/admin/semesters/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * delete the list of courses
- * @param array aIds the list of ids to delete
- */
-function ksDeleteCourses(aIds){
-    //convert the array to json string
-    var sIds = JSON.stringify(aIds);
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.ids = sIds;
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/deletecourses/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){
-                    window.location = "/admin/courses/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * delete the list of rules
- * @param array aIds the list of ids to delete
- */
-function ksDeleteRules(aIds){
-    //convert the array to json string
-    var sIds = JSON.stringify(aIds);
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.ids = sIds;
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/deleterules/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){
-                    window.location = "/admin/rules/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * delete the list of courses
- * @param array aIds the list of ids to delete
- */
-function ksDeleteFiles(aIds){
-    //convert the array to json string
-    var sIds = JSON.stringify(aIds);
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.ids = sIds;
-
-    //grab the course id
-    var iCourseId = jQuery.trim($('#courseid').text());
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/deletefiles/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){
-                    window.location = "/admin/file/id/" + iCourseId + "/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * delete all the checked countries
- */
-function ksDeleteSelectedCountries(){
+function ksDeleteSelectedRows(sModel){
     //create the array of ids to download
     var aIds=new Array();
     var counter=0;
@@ -484,150 +96,49 @@ function ksDeleteSelectedCountries(){
     loadingScreen();
     
     //download the files
-    ksDeleteCountries(aIds);
+    ksDeleteRows(aIds , sModel);
     
     removeLoadingScreen();
 }
 
 /**
- * delete all the checked countries
+ * updates a row in the database
+ * @param int iId the id of the row to update
+ * @param String sModel the identifier of the model class 
  */
-function ksDeleteSelectedUniversities(){
-    //create the array of ids to download
-    var aIds=new Array();
-    var counter=0;
-    $('.ksFileBrowserCheckbox').each(function(){
-        if ($(this).attr("checked") === "checked"){
-            aIds[counter] = $(this).attr('val');
-            counter++;
+function ksUpdateRow(iId , sModel){
+    //put the loading screen on
+    loadingScreen();
+    
+    //put the columns in array
+    var aCols = new Array();
+    $('.admin_table_header_cols').each(function(i, val){
+        aCols[i] = $.trim($(this).text());
+    });
+    
+    //create an object to send
+    var obj=new Object();
+    for (var i = 0; i < aCols.length; i++){
+        if ($('#row_' + iId + ' .' + aCols[i]).is("select")){
+            obj[aCols[i]] = jQuery.trim($('#row_' + iId + ' .' + aCols[i]).val());
         }
-    });
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteUniversities(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * delete all the checked semesters
- */
-function ksDeleteSelectedSemesters(){
-    //create the array of ids to download
-    var aIds=new Array();
-    var counter=0;
-    $('.ksFileBrowserCheckbox').each(function(){
-        if ($(this).attr("checked") === "checked"){
-            aIds[counter] = $(this).attr('val');
-            counter++;
+        else{
+            obj[aCols[i]] = jQuery.trim($('#row_' + iId + ' .' + aCols[i]).text());
         }
-    });
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteSemesters(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * delete all the checked courses
- */
-function ksDeleteSelectedCourses(){ 
-    //create the array of ids to download
-    var aIds=new Array();
-    var counter=0;
-    $('.ksFileBrowserCheckbox').each(function(){
-        if ($(this).attr("checked") === "checked"){
-            aIds[counter] = $(this).attr('val');
-            counter++;
-        }
-    });
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteCourses(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * delete all the checked courses
- */
-function ksDeleteSelectedRules(){ 
-    //create the array of ids to download
-    var aIds=new Array();
-    var counter=0;
-    $('.ksFileBrowserCheckbox').each(function(){
-        if ($(this).attr("checked") === "checked"){
-            aIds[counter] = $(this).attr('val');
-            counter++;
-        }
-    });
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteRules(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * delete all the checked courses
- */
-function ksDeleteSelectedFiles(){  
-    //create the array of ids to download
-    var aIds=new Array();
-    var counter=0;
-    $('.ksFileBrowserCheckbox').each(function(){
-        if ($(this).attr("checked") === "checked"){
-            aIds[counter] = $(this).attr('val');
-            counter++;
-        }
-    });
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDeleteFiles(aIds);
-    
-    removeLoadingScreen();
-}
-
-/**
- * the user wants to update the country details
- */
-function ksUpdateCountry(iCountryId){
-    //put the loading screen on
-    loadingScreen();
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.title = jQuery.trim($('#country_' + iCountryId + ' .title').text());
-    obj.image = jQuery.trim($('#country_' + iCountryId + ' .image').text());
-    obj.shorttitle = jQuery.trim($('#country_' + iCountryId + ' .shorttitle').text());
-    obj.id = iCountryId;
+    }
+    obj.id = iId;
+    obj.model = sModel;
 
     //check via ajax if user is authorized 
     $.ajax({
             type: "POST",
-            url: "/admin/updatecountry/",
+            url: "/admin/updaterow/",
             dataType: "json",
             data: obj ,
             async: false,
             success: function(res) {
-                if (res.items[0].status ==='success'){
-                    window.location = "/admin/countries/status/success";
+                if (res.items[0].status ==='success'){ 
+                    location.reload();
                 }
                 else{
                     setSuccessToFailed();
@@ -653,304 +164,3 @@ function ksUpdateCountry(iCountryId){
     });
 }
 
-/**
- * the user wants to update the country details
- */
-function ksUpdateUniversity(iUniversityId){
-    //put the loading screen on
-    loadingScreen();
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.title = jQuery.trim($('#university_' + iUniversityId + ' .title').text());
-    obj.description = jQuery.trim($('#university_' + iUniversityId + ' .description').text());
-    obj.image = jQuery.trim($('#university_' + iUniversityId + ' .image').text());
-    obj.website = jQuery.trim($('#university_' + iUniversityId + ' .website').text());
-    obj.country = jQuery.trim($('#university_' + iUniversityId + ' select').val());
-    obj.id = iUniversityId;
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/updateuniversity/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){ 
-                    window.location = "/admin/universities/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * the user wants to update the semester details
- */
-function ksUpdateSemester(iSemesterId){
-    //put the loading screen on
-    loadingScreen();
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.title = jQuery.trim($('#semester_' + iSemesterId + ' .title').text());
-    obj.from = jQuery.trim($('#semester_' + iSemesterId + ' .from').text());
-    obj.to = jQuery.trim($('#semester_' + iSemesterId + ' .to').text());
-    obj.university = jQuery.trim($('#semester_' + iSemesterId + ' select').val());
-    obj.id = iSemesterId;
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/updatesemester/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){ 
-                    window.location = "/admin/semesters/status/success";
-                }
-                else{
-                    setSuccessToFailed(); 
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * the user wants to update the course details
- */
-function ksUpdateCourse(iCourseId){
-    //put the loading screen on
-    loadingScreen();
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.title = jQuery.trim($('#course_' + iCourseId + ' .title').text());
-    obj.description = jQuery.trim($('#course_' + iCourseId + ' .description').text());
-    obj.connections = jQuery.trim($('#course_' + iCourseId + ' .connections').text());
-    obj.website = jQuery.trim($('#course_' + iCourseId + ' .website').text());
-    obj.university = jQuery.trim($('#course_' + iCourseId + ' select').val());
-    obj.id = iCourseId;
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/updatecourse/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){ 
-                    window.location = "/admin/courses/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * the user wants to update a rule
- */
-function ksUpdateRule(iRuleId){
-    //put the loading screen on
-    loadingScreen();
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.rule = jQuery.trim($('#rule_' + iRuleId + ' .rule').text());
-    obj.priority = jQuery.trim($('#rule_' + iRuleId + ' .priority').text());
-    obj.comment = jQuery.trim($('#rule_' + iRuleId + ' .comment').text());
-    obj.id = iRuleId;
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/updaterule/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){ 
-                    window.location = "/admin/rules/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * the user wants to update the file details
- */
-function ksUpdateFile(iFileId){
-    //put the loading screen on
-    loadingScreen();
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.title = jQuery.trim($('#file_' + iFileId + ' .title').text());
-    obj.path = jQuery.trim($('#file_' + iFileId + ' .path').text());
-    obj.papa = jQuery.trim($('#file_' + iFileId + ' .papa').text());
-    obj.date = jQuery.trim($('#file_' + iFileId + ' .date').text());
-    obj.semesters = jQuery.trim($('#file_' + iFileId + ' .semesters').text());
-    obj.id = iFileId;
-    
-    //grab the course id
-    var iCourseId = jQuery.trim($('#courseid').text());
-
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/updatefile/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){ 
-                    window.location = "/admin/file/id/" + iCourseId + "/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}
-
-/**
- * the user wants to update the file details
- */
-function ksUpdatePng(iPngId){
-    //put the loading screen on
-    loadingScreen();
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.latex = jQuery.trim($('#png_' + iPngId + ' .latex').text());
-    obj.id = iPngId;
-    
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/admin/updatepng/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){ 
-                    window.location = "/admin/pngs/status/success";
-                }
-                else{
-                    setSuccessToFailed();
-                    //loading screen
-                    removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
-                    
-                    $('#error').text(res.items[0].msg);
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-}

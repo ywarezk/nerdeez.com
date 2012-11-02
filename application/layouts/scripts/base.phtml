@@ -1,6 +1,7 @@
 <?php
 /**
  * the base layout - general html elements that are identical in all pages
+ * all the pages layout will extend this
  */
 ?> 
 
@@ -66,7 +67,7 @@
                 $this->layout()->setLayout($this->layout()->nestedLayout);
             } 
             else{
-                $this->layout()->setLayout('default');
+                $this->layout()->setLayout('guest');
             }
             echo $this->layout()->render();
 

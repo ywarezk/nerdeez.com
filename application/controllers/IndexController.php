@@ -9,14 +9,6 @@ class IndexController extends Zend_Controller_Action
 {
 
     /**
-     * init stuff here
-     */
-    public function init()
-    {
-        /* Initialize action controller here */
-    }
-
-    /**
      * main index page
      */
     public function indexAction()

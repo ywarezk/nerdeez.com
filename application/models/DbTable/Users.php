@@ -38,7 +38,7 @@ class Application_Model_DbTable_Users extends Nerdeez_Db_Table{
     protected $_name = 'users';
     
     /**
-     * @see Application_Model_DbTable_Model::insert
+     * @see Nerdeez_Db_Table::insertWithoutArray
      * @param String $sTitle the title of the user default is usually random student number
      * @param String $sPass the password of the user
      * @param String $sSerial serial number for the activation
@@ -47,7 +47,7 @@ class Application_Model_DbTable_Users extends Nerdeez_Db_Table{
      * @param int $iRole the role of the user 0 - guest , 1 - user , 2- admin
      * @param int $iIsActive did the user activate his account?
      */
-    public function insert($sTitle , $sPass , $sSerial , $sEmail , $sSalt , $iRole = 0 , $iIsActive = 0){
+    public function insertWithoutArray($sTitle , $sPass , $sSerial , $sEmail , $sSalt , $iRole = 0 , $iIsActive = 0){
         $aNewRow = array(
             'title'         => $sTitle , 
             'pass'          => $sPass , 

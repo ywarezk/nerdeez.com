@@ -34,12 +34,12 @@ class Application_Model_DbTable_Banips extends Nerdeez_Db_Table{
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
     
     /**
-     * @see Application_Model_DbTable_Model::insert
+     * @see Nerdeez_Db_Table::insertWithoutArray
      * @param int $iStarttime the timestamp of the start of the hacking
      * @param String $sIp the ip address of the hacker
      * @param String $sEmail the email of the user
      */
-    public function insert($iStarttime , $sIp , $sEmail){
+    public function insertWithoutArray($iStarttime , $sIp , $sEmail){
         $aNewRow = array(
             'starttime'         => $iStarttime , 
             'ip'                => $sIp ,

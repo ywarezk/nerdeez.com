@@ -8,17 +8,6 @@
  */
 class RegisterController extends Zend_Controller_Action{
     
-    //redirector
-    protected $_redirector = null;
-    
-    /**
-     * set layout and variables
-     */
-    public function init()  
-    { 
-        //set the redirector
-        $this->_redirector = $this->_helper->getHelper('Redirector');
-    }
     
     /**
      * show registration page

@@ -41,13 +41,13 @@ class Application_Model_DbTable_Universities extends Nerdeez_Db_Table{
     
 
     /**
-     * @see Application_Model_DbTable_Model::insert
+     * @see Nerdeez_Db_Table::insertWithoutArray
      * @param String $sTitle the title of the university
      * @param String $sDescription a sentence describing the university
      * @param String $sImage the image logi of the university
      * @param String $sWebsite the university web page
      */
-    public function insert($sTitle , $sDescription = NULL , $sImage = NULL , $sWebsite = NULL){
+    public function insertWithoutArray($sTitle , $sDescription = NULL , $sImage = NULL , $sWebsite = NULL){
         $aNewRow = array(
             'title'         => $sTitle , 
             'description'   => $sDescription , 
