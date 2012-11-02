@@ -28,6 +28,15 @@ class Application_Model_DbTable_Courses extends Nerdeez_Db_Table{
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;';
     
     /**
+     * a list of sql statments to try and execute 
+     * will work only for the first time
+     * @var Array 
+     */
+    protected $_aAlterStatments = array(
+        'ALTER TABLE courses ADD FULLTEXT(title, description);' ,
+    );
+    
+    /**
      * 
      * name of courses table
      * @var String
@@ -76,6 +85,37 @@ class Application_Model_DbTable_Courses extends Nerdeez_Db_Table{
             'connections'           => $sConnections ,
         );
         return parent::insert($aNewRow);
+    }
+    
+    /**
+     * when the user searches for courses
+     * @param String $sSearch unsanitized search string
+     * @return Zend_Db_Table_Rowset the set we found 
+     */
+    public function search($sSearch){ 
+        //sanitize the param
+        $sSanSearch = NULL;
+        $ksfunctions = new Application_Model_KSFunctions();
+        $bIsValid = TRUE;
+        $sSanSearch = $ksfunctions -> sanitize_Title($sSearch , 100);
+        if($sSanSearch == null ){
+            $bIsValid = FALSE;
+        }
+        
+        //grab the course rows that match the search description
+        $rsCourses = NULL;
+        if ($bIsValid){
+            $selCourseSelect = $this -> select()
+                        -> where('MATCH (title , description) AGAINST (?)' , $sSanSearch)
+                        -> orwhere("title LIKE '%" . $sSanSearch . "%'")
+                        -> orwhere("description LIKE '%" . $sSanSearch . "%'")
+                        -> order ('title ASC');
+        }
+        else{
+            $selCourseSelect = $this -> select() -> order('title ASC');
+        }
+        $rsCourses = $this -> fetchAll($selCourseSelect);
+        return $rsCourses;
     }
 }
 

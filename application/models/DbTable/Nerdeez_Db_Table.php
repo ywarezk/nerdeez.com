@@ -31,6 +31,13 @@ abstract class Nerdeez_Db_Table extends Zend_Db_Table_Abstract{
      * @var String
      */
     protected $_name = NULL;
+    
+    /**
+     * a list of sql statments to try and execute 
+     * will work only for the first time
+     * @var Array 
+     */
+    protected $_aAlterStatments = NULL;
 
     /**
      * all the models will create their table in this function
@@ -48,13 +55,24 @@ abstract class Nerdeez_Db_Table extends Zend_Db_Table_Abstract{
         $stmt = new Zend_Db_Statement_Pdo($db,
                                           "SET NAMES 'utf8'");
         $stmt->execute();
-
+        
         //call the parent constructor
         parent::__construct((array('name'=> $this ->_name)));
         
         //if the _sqlCreateTable is not null than create table
         if ($this -> _sqlCreateTable !== NULL){
             $db->query($this -> _sqlCreateTable);
+        }
+        
+        //try and execute the list of alter sql statments
+        if ($this->_aAlterStatments == NULL) return;
+        foreach ($this->_aAlterStatments as $sSqlStmt) {
+            try{
+                $db -> query($sSqlStmt);
+            }
+            catch(Exception $e){
+                continue;
+            }
         }
     }
     

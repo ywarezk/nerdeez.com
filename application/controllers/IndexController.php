@@ -76,6 +76,39 @@ class IndexController extends Zend_Controller_Action
      * contains the privacy statment
      */
     public function privacyAction(){}
+    
+    /**
+     * when the user input text in the search course text box
+     *  
+     */
+    public function searchcourseAction(){ 
+        //disable view and layout
+        $this->_helper->layout()->disableLayout();
+        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        
+        //get the course rows that match the search
+        $data=$this->getRequest()->getParams();
+        $mCourses = new Application_Model_DbTable_Courses();
+        $rsCourses = $mCourses -> search($data['search']);
+        
+        //get all the universities
+        $rsUniversities = NULL;
+        $mUniversities = new Application_Model_DbTable_Universities();
+        $rsUniversities = $mUniversities -> fetchAll($mUniversities -> select());
+        
+        //get the html that i need to pass
+        $html = NULL;
+        ob_start();
+        echo $this->view->partial('partials/courselist.phtml', array('rsCourses'  =>  $rsCourses , 'rsUniversities' => $rsUniversities));
+        $html = ob_get_contents();
+        ob_end_clean();
+        
+        //pass everything back
+        $userData=array(array('status'=>'success' , 'data' => $html));
+        $dojoData= new Zend_Dojo_Data('status',$userData);
+        echo $dojoData->toJson();
+        return;
+    }
 
 }
 
