@@ -1,12 +1,17 @@
 <?php
 
 /**
+ * required in all my controllers
+ */
+require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action.php';
+
+/**
  * controller for the site login mechanizem
  * @author Yariv Katz
  * @copyright Nerdeez.com
  * @version 1.0
  */
-class LoginController extends Zend_Controller_Action{
+class LoginController extends Nerdeez_Controller_Action{
     
     /**
      * main login form

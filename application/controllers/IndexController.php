@@ -1,11 +1,17 @@
 <?php
+
+/**
+ * required in all my controllers
+ */
+require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action.php';
+
 /**
  * controller for the main screen
  * @author Yariv Katz
  * @copyright Nerdeez.com
  * @version 1.0
  */
-class IndexController extends Zend_Controller_Action
+class IndexController extends Nerdeez_Controller_Action
 {
 
     /**
