@@ -164,3 +164,12 @@ function ksUpdateRow(iId , sModel){
     });
 }
 
+/**
+ * download a row from the dattabase
+ * @param int iId the id of the row to download
+ * @param String sModel the model of the table
+ */
+function ksDownloadRow(iId , sModel){
+    alert('implement this function in admin.js - TODO!!!');
+}
+

@@ -1160,6 +1160,7 @@ function displayChangePictureDialog(){
 }
 
 /**
+ * @deprecated
  * initiate the upload 
  * @param String sId the id of the form
  * @param int iSerial the serial to pass
@@ -1168,7 +1169,7 @@ function displayChangePictureDialog(){
  * @param RegExp sAcceptFileTypes a regular expression representing the file types allowed
  * @param String sDropOverElement the id of the element below the drop target 
  */
-function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFileTypes){
+function ksInitUpload1(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFileTypes){
     if (iNumDownloads == 0)iNumDownloads = undefined;
     if (iMaxFileSize == 0)iMaxFileSize = undefined;
     
@@ -1178,6 +1179,73 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
     // Initialize the jQuery File Upload widget:
     $('#' + sId).fileupload({
         url: '/filemanager/upload/',
+        autoUpload: true,
+        maxNumberOfFiles: iNumDownloads,
+        maxFileSize: iMaxFileSize,
+        acceptFileTypes: sAcceptFileTypes, 
+        dropZone: $('#' + sId +' .dropzone'),
+        formData: [
+                    {
+                        name: 'serial',
+                        value: iSerial
+                    }
+        ]
+    });
+    
+    $('#' + sId)
+    .bind('fileuploadadd', function (e, data) 
+    {
+       //make the table header visible
+       $('#' + sId + ' .filesheader').fadeIn('slow');
+    })
+    .bind('fileuploadfail', function (e, data) 
+    {
+        //alert('5');
+        if ($(this).find('tr').length == 2){
+            $('#' + sId + ' .filesheader').fadeOut('slow');
+        }
+    })
+    .bind('fileuploaddestroy', function (e, data) {
+        if ($(this).find('tr').length == 2){
+            $('#' + sId + ' .filesheader').fadeOut('slow');
+        }
+    });
+
+    // Enable iframe cross-domain access via redirect option:
+    $('#' + sId).fileupload(
+        'option',
+        'redirect',
+        window.location.href.replace(
+            /\/[^\/]*$/,
+            '/user/result.html?%s'
+        )
+    );
+
+    
+    
+}
+
+
+/**
+ * initiate the upload 
+ * @param String sId the id of the form
+ * @param int iSerial the serial to pass
+ * @param int iNumDownloads the number of uploads allowed
+ * @param int iMaxFileSize the max file size allowed for upload
+ * @param RegExp sAcceptFileTypes a regular expression representing the file types allowed
+ * @param String sDropOverElement the id of the element below the drop target 
+ * @param String sUrl the url to upload the file to
+ */
+function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFileTypes , sUrl){
+    if (iNumDownloads == 0)iNumDownloads = undefined;
+    if (iMaxFileSize == 0)iMaxFileSize = undefined;
+    
+    
+    'use strict';
+
+    // Initialize the jQuery File Upload widget:
+    $('#' + sId).fileupload({
+        url: sUrl,
         autoUpload: true,
         maxNumberOfFiles: iNumDownloads,
         maxFileSize: iMaxFileSize,

@@ -3,7 +3,7 @@
 /**
  * required in all my controllers
  */
-require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action.php';
+require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action_FileHandler.php';
 
 /**
  * controller for the admin section
@@ -11,7 +11,7 @@ require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action.php';
  * @copyright Nerdeez.com
  * @version 1.0
  */
-class AdminController extends Nerdeez_Controller_Action{
+class AdminController extends Nerdeez_Controller_Action_FileHandler{
 
     /**
      * init function for this controller 
@@ -74,7 +74,9 @@ class AdminController extends Nerdeez_Controller_Action{
         $this -> view -> sModelName = 'Application_Model_DbTable_Courses';
         
         //set the column which is papa
-        $this -> view -> sPapaCol = 'universities_id';
+        $this -> view -> sPapaCol = array(
+            'universities_id'
+         );
         
         //get the columns of the table
         $aCols = NULL;
@@ -88,15 +90,81 @@ class AdminController extends Nerdeez_Controller_Action{
         $this -> view -> rsRows = $rsRows;
         
         //get the rowset of the papa
-        $rsPapas = NULL;
+        $rsPapas = array();
         $mUniversities = new Application_Model_DbTable_Universities();
-        $rsPapas = $mUniversities -> fetchAll($mUniversities 
+        $rsPapas['universities_id'] = $mUniversities -> fetchAll($mUniversities 
                 -> select() 
                 -> order('id ASC'));
         $this -> view -> rsPapas = $rsPapas;
         
     }
     
+    /**
+     * if you want to edit the folders table go here
+     */
+    public function foldersAction(){
+        //set the title of the page
+        $this -> view -> sTitle = 'Folders';
+        
+        //set the model name 
+        $this -> view -> sModelName = 'Application_Model_DbTable_Folders';
+        
+        //set the column which is papa
+        $this -> view -> sPapaCol = NULL;
+        
+        //get the columns of the table
+        $aCols = NULL;
+        $mFolders = new Application_Model_DbTable_Folders();
+        $aCols = $mFolders->info(Zend_Db_Table_Abstract::COLS);
+        $this -> view -> aCols = $aCols;
+        
+        //get all the rows from the database
+        $rsRows = NULL;
+        $rsRows = $mFolders -> fetchAll($mFolders -> select() -> order('title ASC'));
+        $this -> view -> rsRows = $rsRows;
+        
+        //get the rowset of the papa
+        $rsPapas = NULL;
+        $this -> view -> rsPapas = $rsPapas;
+    }
+    
+    /**
+     * manually edit the files table
+     */
+    public function filesAction(){
+        //set the title of the page
+        $this -> view -> sTitle = 'Files';
+        
+        //set the model name 
+        $this -> view -> sModelName = 'Application_Model_DbTable_Files';
+        
+        //set the column which is papa
+        $this -> view -> sPapaCol = array(
+            'courses_id' ,
+            'folders_id' ,
+        );
+        
+        //get the columns of the table
+        $aCols = NULL;
+        $mFiles = new Application_Model_DbTable_Files();
+        $aCols = $mFiles->info(Zend_Db_Table_Abstract::COLS);
+        $this -> view -> aCols = $aCols;
+        
+        //get all the rows from the database
+        $rsRows = NULL;
+        $rsRows = $mFiles -> fetchAll($mFiles -> select() -> order('id ASC'));
+        $this -> view -> rsRows = $rsRows;
+        
+        //get the rowset of the papa
+        $rsPapas = array();
+        $mCourses = new Application_Model_DbTable_Courses();
+        $mFolders = new Application_Model_DbTable_Folders();
+        $rsPapas['courses_id'] = $mCourses -> fetchAll($mCourses -> select() -> order('id ASC'));
+        $rsPapas['folders_id'] = $mFolders -> fetchAll($mFolders -> select() -> order('id ASC'));
+        $this -> view -> rsPapas = $rsPapas;
+    }
+
+
     /**
      * when we are using the insert table in our admin to insert a new row
      */
@@ -209,7 +277,7 @@ class AdminController extends Nerdeez_Controller_Action{
         return;
     }
 
-        /**
+     /**
      * initialize here common view variables and also attach the admin js file
      */
     public function preDispatch(){

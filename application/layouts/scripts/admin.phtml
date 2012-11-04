@@ -13,8 +13,8 @@
 ?>
 
 <?php
-//include the admin script
-//$this->headScript()->appendFile('/js/admin.js');
+//init global vars
+$bIsDownload = FALSE;
 ?>
 
 <div class="wrapper"> 
@@ -56,6 +56,9 @@
                     foreach ($this ->aCols as $sCol) {
                     ?>
                     <?php
+                    if ($sCol === 'path'){
+                        $bIsDownload = TRUE;
+                    }
                     if ($sCol === 'id'){
                     ?>
                     <td class="admin_table_header">
@@ -78,6 +81,15 @@
                     <td class="admin_table_header admin_table_header_control">
                         Delete
                     </td>
+                    <?php
+                    if ($bIsDownload){
+                    ?>
+                    <td class="admin_table_header admin_table_header_control">
+                        Download
+                    </td>    
+                    <?php
+                    }
+                    ?>
                 </tr>
 
                 <?php
@@ -98,11 +110,11 @@
                         if ($sCol === 'id'){
                             echo $rRow[$sCol];
                         }
-                        elseif ($sCol === $this -> sPapaCol) {
+                        elseif (in_array ($sCol, $this -> sPapaCol)) {
                         ?>
                         <select name="<?php echo $sCol; ?>" class="admin_parentcombo <?php echo $sCol; ?>">
                             <?php
-                                foreach ($this -> rsPapas as $rPapa) {
+                                foreach ($this -> rsPapas[$sCol] as $rPapa) {
                                     if ($rPapa['id'] == $rRow[$sCol]){
                             ?>
                                         <option value="<?php echo $rPapa['id']; ?>" selected="selected">
@@ -146,6 +158,17 @@
                             <img src="/img/deletebutton.png" />
                         </a>
                     </td>
+                    <?php
+                    if ($bIsDownload){
+                    ?>
+                    <td class="admin_table_header admin_table_header_control">
+                        <a href="javascript:void(0)" onclick="ksDownloadRow(<?php echo $rRow['id']; ?> , '<?php echo $this -> sModelName ?>')">
+                            <img src="/img/download32.png" />
+                        </a>
+                    </td>    
+                    <?php
+                    }
+                    ?>
                 </tr>
                 <?php
                 }
@@ -184,11 +207,11 @@
                             </td>
                             <td style="width: 100%; padding: 10px;">
                                 <?php
-                                if($sCol === $this -> sPapaCol){
+                                if(in_array($sCol, $this -> sPapaCol)){
                                 ?>
                                     <select name="<?php echo $sCol; ?>" class="admin_parentcombo">
                                 <?php
-                                    foreach ($this -> rsPapas as $rPapa) {
+                                    foreach ($this -> rsPapas[$sCol] as $rPapa) {
                                 ?>
                                         <option value="<?php echo $rPapa['id']; ?>">
                                             <?php echo $rPapa['title']; ?>
@@ -197,6 +220,14 @@
                                     }
                                 ?>
                                     </select>
+                                <?php
+                                }
+                                elseif ($sCol === 'path'){
+                                ?>
+                                    <?php 
+                                        $serial = rand(0, 99999);
+                                        echo $this -> partial('partials/uploadbutton.phtml' , array('iSerial' => $serial , 'sId' => 'uploadFileBrowser' , 'iNumUpload' => 1 , 'iMaxSize' => 209715200 , 'sAcceptFileTypes' => '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 'sUrl' => '/admin/upload')) ;
+                                    ?>
                                 <?php
                                 }
                                 else{
@@ -221,6 +252,7 @@
                         </tr>
                     </table>
                     <input type="hidden" name="model" value="<?php echo $this -> sModelName; ?>" />
+                    <input type="hidden" name="serial" value="<?php echo $serial; ?>" />
                 </form>
             </div>
         </div>

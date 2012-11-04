@@ -6,6 +6,11 @@
 require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action.php';
 
 /**
+ * the s3 zend wrapper
+ */
+require_once 'Zend/Service/Amazon/S3.php';
+
+/**
  * abstract class adds file managment to a controller
  *
  * @author Yariv Katz
@@ -13,6 +18,18 @@ require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action.php';
  * @version 1.0
  */
 abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_Action{
+    
+    /**
+     * amazon s3 key
+     * @var String 
+     */
+    private $_sAwsKey = 'AKIAIVIUYDC6HTRM5VHQ';
+    
+    /**
+     * amazon s3 secret key
+     * @var String 
+     */
+    private $_sAwsSecretKey = 'YIK/IsFkQ4EU/Yno/cRDcoKkBsRjBur2Hgl8P7kx';
     
     /**
      * each controller extending this class will have an upload action for file upload
@@ -55,6 +72,12 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
             default:
                 header('HTTP/1.1 405 Method Not Allowed');
         }
+        
+        
+        //$s3 = new Zend_Service_Amazon_S3($this -> _sAwsKey, $this -> _sAwsSecretKey);
+        //$s3->createBucket("Nerdeez");
+        //$s3->putObject("Nerdeez/myobject", "somedata");
+        
     }
     
     /**
@@ -175,6 +198,33 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
          }
 
         return;
+    }
+    
+    /**
+     * initialize here common view variables and also attach the admin js file
+     */
+    public function preDispatch(){
+        //call the parent predispatch
+        parent::preDispatch();
+        
+        //set to include the fielupload js files
+        $layout = new Zend_Layout();
+        $layout->getView()->headScript()->appendFile('/js/jquery-ui.min.js');
+        $layout->getView()->headScript()->appendFile('/js/jquery.ui.widget.js');
+        $layout->getView()->headScript()->appendFile('/js/tmpl.min.js');
+        $layout->getView()->headScript()->appendFile('/js/load-image.min.js');
+        $layout->getView()->headScript()->appendFile('/js/canvas-to-blob.min.js');
+        $layout->getView()->headScript()->appendFile('/js/bootstrap.min.js');
+        $layout->getView()->headScript()->appendFile('/js/bootstrap-image-gallery.min.js');
+        $layout->getView()->headScript()->appendFile('/js/jquery.iframe-transport.js');
+        $layout->getView()->headScript()->appendFile('/js/jquery.fileupload.js');
+        $layout->getView()->headScript()->appendFile('/js/jquery.fileupload-fp.js');
+        $layout->getView()->headScript()->appendFile('/js/jquery.fileupload-ui.js');
+        $layout->getView()->headScript()->appendFile('/js/locale.js');
+        
+        //set to include the file upload css files
+        $layout->getView()->headLink()->prependStylesheet('/styles/bootstrap.min.css');
+        
     }
     
 }

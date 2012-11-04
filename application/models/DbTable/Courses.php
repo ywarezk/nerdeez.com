@@ -69,7 +69,7 @@ class Application_Model_DbTable_Courses extends Nerdeez_Db_Table{
     );
     
     /**
-     * @see Nerdeez_Db_Table::insertWithoutArray
+     * just another insert method
      * @param String $sTitle course title
      * @param int $iUniversities_id many to one connection pk
      * @param String $sDescription description of the course
