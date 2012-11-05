@@ -1,0 +1,41 @@
+<?php
+/**
+ * registration form 
+ * @param String $this -> sId the id of the forum
+ */
+?>
+
+    <div class="front-card" id="<?php echo $this -> sId; ?>">
+        <div class="front-signin front-register js-front-signin">
+            <form action="https://<?php $ksfunctions = new Application_Model_KSFunctions(); echo $ksfunctions ->sGetUrl();  ?>/register/signup" class="signin registerform" method="post">
+                <div class="placeholding-input username" style="height: 46px; position: relative;">
+                    <input type="text" maxlength="100"  class="text-input email-input"  name="email" title="Email" autocomplete="on" />
+                    <span class="placeholder">Email</span>
+                    <div class="register-error-placeholder email"></div>
+                </div>          
+                <div class="placeholding-input username" style="height: 46px; position:relative;">
+                    <input type="password" maxlength="100" class="text-input email-input pass" name="password" title="Password" />
+                    <span class="placeholder">Password</span>
+                    <div class="register-error-placeholder password"></div>
+                </div> 
+                <div class="placeholding-input username" style="height: 47px; position: relative;">
+                    <input type="password" maxlength="100" class="text-input email-input" name="repassword" title="Password" />
+                    <span class="placeholder">Retype Password</span>
+                    <div class="register-error-placeholder repassword"></div>
+                </div>
+                <div style="text-align: center;margin-bottom:8px; margin-top: 10px;">
+                    By clicking Register, you agree to our <a href="/index/terms/" target="_blank">Terms</a>
+                </div>
+                <div style="margin-right: 12px">
+                    <button tabindex="0" type="submit" class="submit btn primary-btn flex-table-btn js-submit">Register
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    loadRegistration('<?php echo $this -> sId; ?>');
+</script>
+
+

@@ -1,0 +1,27 @@
+<?php
+/**
+ * creates the basic delete update table and below it an insert form
+ * @param Zend_Db_Table_Rowset $this - > rsRows the rows to show in the table
+ * @param Zend_Db_Table_Abstract $this -> mModel the model for the table
+ */
+?>
+
+<?php
+//get the columns of the table
+$aColumns = NULL;
+$metadata = $this -> mModel ->info();
+$aColumns = $metadata['cols']; 
+?>
+
+<table style="width: 100%;">
+    <tr>
+        
+        <?php
+        //print the table columns
+        ?>
+        <td></td>
+        
+        
+        
+    </tr>
+</table>

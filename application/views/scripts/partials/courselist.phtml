@@ -1,0 +1,84 @@
+<?php
+/**
+ * this will be a box of all the courses found in the database displayed under the course list
+ * @param ZEND_DBTABLE_ROWSET $this -> rsCourses  a list of all the courses
+ * @param ZEND_DBTABLE_ROWSET $this -> rsUniversities  a list of all the universities
+ */
+?>
+
+<div class="front-courselist js-front-signin">
+    <div align="center" style="font-weight: bold; margin-top:5px;margin-bottom:5px;font-size:14px">
+        <?php 
+            $iNumcourses = $this -> rsCourses -> count(); 
+            if ($iNumcourses > 1){
+                echo $iNumcourses . ' courses found'; 
+            }
+            elseif($iNumcourses == 1){
+                echo '1 course found';
+            }
+            else{
+                echo 'No Results';
+            }
+        ?>
+    </div>
+    <?php
+    $i = 0;
+    foreach ($this -> rsCourses as $rCourse){
+    ?>    
+        
+    <div class="courseitem" onclick="ksGotoCoursePage(<?php echo $rCourse['id']; ?>)" onmouseover="ksCourseOver(<?php echo $i; ?>);">
+        <table style="height: 64px;">
+            <tr>
+                <td style="vertical-align: top;">
+                    <?php
+                    //get the src for the image
+                    $sImgSrc = '/img/no_image.jpg';
+                    $rUniversity = NULL;
+                    foreach ($this -> rsUniversities as $rSingleUniversity){
+                        if ($rSingleUniversity['id'] == $rCourse['universities_id'])
+                            $rUniversity = $rSingleUniversity;
+                    }
+                    if ($rUniversity['image'] != NULL) $sImgSrc = $rUniversity['image'];
+                    ?>
+                    
+                    <img src="<?php echo $sImgSrc; ?>" height="64" width="64" />
+                </td>
+                <td style="vertical-align: middle">
+                    <h3>
+                        <?php
+                        //get the course title and print it
+                        $sTitle = 'No Title';
+                        $prefix = '<span style="color: #E20145">Title:</span> ';
+                        if ($rCourse['title'] != NULL) $sTitle = $rCourse['title'];
+                        echo $prefix . '<span class="titlecontent">' . $sTitle . '</span>';
+                        ?>
+                    </h3>
+                    <p style="">
+                        <?php
+                        // get the course description and print it 
+                        $sDescription = 'No Description';
+                        $prefix = '<span style="color: #E20145"><b>Description:</b></span> ';
+                        if ($rCourse['description'] != NULL) $sDescription = $rCourse['description'];
+                        echo $prefix . $sDescription;
+                        ?>
+                    </p>
+                    <p style="margin-top: -14px;">
+                        <?php
+                        // get the course university and print it
+                        $sUniversity = 'No University';
+                        $prefix = '<span style="color: #E20145"><b>University:</b></span> ';
+                        if ($rUniversity['title'] != NULL) $sUniversity = $rUniversity['title'];
+                        echo $prefix . $sUniversity;
+                        ?>
+                    </p>
+                </td>
+            </tr>
+        </table>
+        <div style="display: none;" class="id"><?php echo $rCourse['id']; ?></div>
+    </div>
+    
+    <?php  
+        $i++;
+    }
+    ?>
+</div>

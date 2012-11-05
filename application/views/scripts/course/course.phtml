@@ -1,0 +1,36 @@
+<?php
+/**
+ * display course page , files , wall etc
+ * @param ZEND_DBTABLE_ROW $this -> rCourse the course row 
+ * @param ZEND_DBTABLE_ROWSET $this -> rsFiles the files we found 
+ * @param String $this -> sError display the error message
+ * 
+ */
+?>
+
+
+<div class="inview-wrapper">
+    
+    <?php
+    //create the status divs
+    ?>
+    <div id="error" class="about_status"><?php echo $this -> sError; ?></div>
+    <div id="status" class="about_status"><?php echo $this -> sStatus; ?></div>
+    
+    <?php 
+        //create the title for this page
+    ?>
+    <h1>
+        <span class="pink_header span_header">
+            <a class="pink_header" href="/course/course/id/<?php echo $this -> rCourse['id']; ?>">
+                <?php echo $this -> rCourse['title']; ?>
+            </a>
+        </span>
+        <img src="/img/arrow.gif" />
+        <span class="black_header span_header">
+            <a class="black_header" href="/course/course/id/<?php echo $this -> rCourse['id']; ?>">
+            <?php echo $this -> rCourse['description']; ?>
+            </a>
+        </span>    
+    </h1>
+</div>
