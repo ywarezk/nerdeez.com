@@ -1,0 +1,91 @@
+<!--
+cause the about button to look active
+-->
+ 
+<div class="inview-wrapper" style="">
+    <div class="border-style border-radius" style="padding: 10px;"> 
+        <h1>
+            <span class="pink_header span_header">OUR</span><span class="black_header span_header">GOALS</span>
+        </h1>
+        <div>
+            <p>
+                <ul style="list-style: disc outside none; margin: 2em;">
+                    <li style="padding: 10px">
+                        <b>Become the world largest resource for knowledge files.</b> <br/>
+                        By removing students MB upload limit we aim to encourage unlimited amount of file upload thus creating the worlds largest center for: H.W , Lecture notes, Tutorial notes, Formula pages, Course summaries, Tests, and other knowledge files. 
+                    </li>
+                    <li style="padding: 10px">
+                        <b>
+                            Globalizing all the knowledge files <br/>
+                        </b>
+                        Usually university knowledge center is centered around the university students, Thus creating a close circle of knowledge. Have you ever wondered if your university knowledge center provides you with the best summeries or tests to study the course material? By automatically identifying the student needs we aim to make data from all over the world easily accessible to all students.
+                    </li>
+                    <li style="padding: 10px">
+                        <b>Helping you solve your H.W</b>
+                        Having a hard time solving one of your H.W questions? Usually H.W questions tend to be similar to questions from previous semesters. By automatically learning the files in our database, and using advanced search algorithms, We can point you to files that contain answers to your H.W questions. 
+                    </li>
+                    <li style="padding: 10px">
+                        <b>Creating users lecture center</b>
+                        Ever felt like sharing your knowledge? Maybe you have a H.W question that you know and want to share your solution? Now you can easily record and share your lecture with students all over the world.
+                    </li>
+                </ul>
+            </p>
+        </div>
+        <h1>
+            <span class="pink_header span_header">ABOUT</span><span class="black_header span_header">US</span>
+        </h1>
+        <div style="margin: 2em 2em 2em 3.4em;">
+            <p>
+                Nerdeez.com Ltd. was created by Yariv Katz.<br/>
+                I'm a Technion (Israel's Institute of technology) B.SC graduate with over 10 years of programming experience. <br/>
+                I opened up a software company called <a href="http://ykapps.com">YKapps</a> where people can hire my programming services to create wab applications, and smartphones applications.
+                I'm a great believer in agile programming and created nerdeez as a way to identify and solve the world knowledge problem in an agile way.
+            </p>
+        </div>
+    </div>
+    <div class="border-style border-radius" style="margin-bottom: 100px;margin-top: 10px;padding: 10px;">
+        <h1>
+              <span class="pink_header span_header">CONTACT</span><span class="black_header span_header">US</span>
+        </h1>
+        <div>
+            <p style="text-align: center;">
+                I would love to hear your opinion on the site, bugs , or general suggestions. 
+                Please fill the following form:
+            </p>
+        </div>   
+        <form method="post" action="/" class="sendfeedback_form">
+            <div class="front-card" style="margin: 0 auto; position: relative;width: 70%;">
+                <div class="placeholding-input username" style="clear: both; height: 40px;">
+                        <input type="text" maxlength="100"  class="text-input email-input" id="about_mail" name="mail" title="Email" autocomplete="on" style="width: 100%" tabindex="1">
+                        <span class="placeholder">Email</span>
+                        <div class="register-error-placeholder mail" style="top: 30px !important;"></div>
+                </div>
+                <div class="placeholding-input username" style="clear: both; height: 100px;margin-top: 10px;">
+                        <textarea class="text-input email-input" name="message" id="about_message"  title="Message" autocomplete="off" style="height: 100% !important; width: 100%; resize:none;" tabindex="2"></textarea>
+                        <span class="placeholder">Type your message here (Up to 300 letters)</span>
+                        <div class="register-error-placeholder message" style="top: 0 !important"></div>
+                </div> 
+                <div style="clear: both;text-align: center; margin-top: 35px;"> 
+                    <button class="submit btn primary-btn js-submit" type="button"  tabindex="3" style="min-width: 100px;">
+                        <span class="button-icon-wrapper">
+                            <img alt="" src="/img/stock_mail.png" class="button-icon-image" />
+                        </span>
+                        <span class="button-text">
+                        Submit
+                        </span>
+                    </button> 
+                </div> 
+                <div id="status"  class="about_status">
+
+                </div>
+                <div id="error" class="about_status">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    loadAbout();
+</script>
+

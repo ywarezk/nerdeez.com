@@ -1,0 +1,28 @@
+<?php
+/**
+ * The main index page that is shown whenever a user enters the site for the
+ * first time
+ * @param ZEND_DBTABLE_ROWSET $this -> rsCourses - a list of all the courses available
+ * @param ZEND_DBTABLE_ROWSET $this -> rsUniversities - a list of all the universities available
+ */
+?>
+
+<!--
+cause the home button to look active
+-->
+<script>
+    $('#home').toggleClass("active");
+</script>
+
+<div class="inview-wrapper" style="top: 0 !important;">  
+    <?php
+    //create the status divs
+    ?>
+    <div id="error" class="about_status"><?php echo $this -> sError; ?></div>
+    <div id="status" class="about_status"><?php echo $this -> sStatus; ?></div>
+    
+    <?php
+    //create the course picker dialog
+    echo $this -> partial('partials/searchcourse.phtml' , array('rsCourses' => $this -> rsCourses , 'rsUniversities' => $this -> rsUniversities));
+    ?>    
+</div>
