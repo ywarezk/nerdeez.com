@@ -6,9 +6,9 @@
 require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action.php';
 
 /**
- * the s3 zend wrapper
+ * nerdeez s3 wrapper
  */
-require_once 'Zend/Service/Amazon/S3.php';
+require_once APPLICATION_PATH . '/models/Nerdeez_Service_Amazon_S3.php';
 
 /**
  * abstract class adds file managment to a controller
@@ -19,17 +19,7 @@ require_once 'Zend/Service/Amazon/S3.php';
  */
 abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_Action{
     
-    /**
-     * amazon s3 key
-     * @var String 
-     */
-    private $_sAwsKey = 'AKIAIVIUYDC6HTRM5VHQ';
     
-    /**
-     * amazon s3 secret key
-     * @var String 
-     */
-    private $_sAwsSecretKey = 'YIK/IsFkQ4EU/Yno/cRDcoKkBsRjBur2Hgl8P7kx';
     
     /**
      * each controller extending this class will have an upload action for file upload
@@ -86,19 +76,30 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
      */
     protected function download($sPath , $sTitle = ''){
         //check file requested is readable
-        if(!is_readable($sPath)){
+        try{
+            $s3 = new Nerdeez_Service_Amazon_S3();
+            $data = $s3->getObject($sPath);
+        }
+        catch(Exception $e){
             echo 'Failed reading file';
             exit();
         }
+        
+        //get the mime type and the size
+        $mime_type = NULL;
+        $size = 0;
+        $aObjectInfo = $s3 -> getInfo($sPath);
+        $size = $aObjectInfo['size'];
+        $mime_type = $aObjectInfo['type'];
 
         //get file requested size
-        $size = filesize($sPath);
+        //$size = filesize($sPath);
 
         //get the file name 
         $name = rawurldecode($sTitle);
 
         //table of possible mime types
-        $known_mime_types=array(
+        /*$known_mime_types=array(
                 "pdf" => "application/pdf", 	
                 "zip" => "application/zip",
                 "doc" => "application/msword",
@@ -128,7 +129,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
          else{
             echo 'Bad mime type';
             exit();
-         }
+         }*/
 
         @ob_end_clean(); //turn off output buffering to decrease cpu usage
         // required for IE, otherwise Content-Disposition may be ignored
@@ -138,7 +139,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         //set headers for download
          header('Content-Type: ' . $mime_type);
          
-         header('Content-Disposition: attachment; filename="'.$sTitle.'"');
+         header('Content-Disposition: attachment; filename="'.$name.'"');
          
          header("Content-Transfer-Encoding: binary");
          header('Accept-Ranges: bytes');
@@ -171,12 +172,12 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
                 header("Content-Length: ".$size);
          }
 
-         $file=$sPath;
+         $file=$data;
 
          /* output the file itself */
          $chunksize = 1*(1024*1024); //you may want to change this
          $bytes_send = 0;
-         if ($file = fopen($file, 'r'))
+         if ($file)
          {
             if(isset($_SERVER['HTTP_RANGE']))
             fseek($file, $range);
@@ -196,7 +197,6 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
          else {
             return;
          }
-
         return;
     }
     
