@@ -169,6 +169,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      * when we are using the insert table in our admin to insert a new row
      */
     public function insertrowAction(){
+        //start the session
+        Zend_Session::start();
+        
         //grab the params
         $aData = NULL;
         $aData=$this->getRequest()->getParams();
@@ -187,6 +190,18 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $aParams = array();
         foreach ($aCols as $sCol) {
             if ($sCol === 'id')continue;
+            if ($sCol === 'size')continue;
+            if ($sCol === 'path'){ // there is a file uploaded grab the path
+                $serial = $aData['serial'];
+                $counter = 0;
+                foreach ($_SESSION['kstempfiles'][$serial] as $oSingleFile){
+                    $aParams[$sCol] = $oSingleFile -> name;
+                    $aParams['size'] = $oSingleFile -> size;
+                    $_SESSION['kstempfiles'][$counter] = NULL;
+                    $counter ++;
+                }
+                continue;
+            }
             if ($aData[$sCol] === ''){
                 $aParams[$sCol] = NULL;
                 continue;
@@ -247,8 +262,6 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $sModel = $aData['model'];
         $iId = $aData['id'];
         
-        
-        
         //create the actual model
         $mModel = new $sModel();
         
@@ -275,6 +288,29 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $dojoData= new Zend_Dojo_Data('status',$userData);
         echo $dojoData->toJson();
         return;
+    }
+    
+    /**
+     * generic download function for all the db files 
+     */
+    public function downloadAction(){
+        //disable view rendering
+        $this->_helper->layout()->disableLayout(); 
+        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        
+        //grab the params
+        $sModel = $iId = NULL;
+        $aData=$this->getRequest()->getParams();
+        $sModel = $aData['model'];
+        $iId = $aData['id'];
+        
+        //grab the row
+        $rRow = NULL;
+        $mModel = new $sModel();
+        $rRow = $mModel -> fetchRow($mModel -> select() -> where('id = ?' , $iId));
+        
+        //download the file
+        parent::download($rRow['path'], $rRow['title']);
     }
 
      /**

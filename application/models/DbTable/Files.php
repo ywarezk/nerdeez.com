@@ -28,11 +28,13 @@ class Application_Model_DbTable_Files extends Nerdeez_Db_Table{
     ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
     
     /**
-     * a list of sql alter statments to try and execute 
+     * a list of sql statments to try and execute 
      * will work only for the first time
      * @var Array 
      */
-    protected $_aAlterStatments = NULL;
+    protected $_aAlterStatments = array(
+        "ALTER TABLE `files` ADD `size` INT UNSIGNED NOT NULL DEFAULT '0'" ,
+    );
     
     /**
      * 

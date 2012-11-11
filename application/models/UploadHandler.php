@@ -10,10 +10,15 @@
  * http://www.opensource.org/licenses/MIT
  */
 
+/**
+ * nerdeez s3 wrapper
+ */
+require_once APPLICATION_PATH . '/models/Nerdeez_Service_Amazon_S3.php';
+
 class Application_Model_UploadHandler
 {
     protected $options;
-
+    
     function __construct($options=null) {
         $this->options = array(
             'script_url' => $this->getFullUrl().'/',
@@ -305,7 +310,7 @@ class Application_Model_UploadHandler
             $iRandPrefix = rand( 0 , 99999);
             
             //yariv
-            $file_path = $this->options['upload_dir'] . $iRandPrefix . '_' . $file->name;
+            $file_path = /*$this->options['upload_dir'] . */"nerdeez/" . $iRandPrefix . '_' . $file->name;
             $append_file = !$this->options['discard_aborted_uploads'] &&
                 is_file($file_path) && $file->size > filesize($file_path);
             clearstatcache();
@@ -318,7 +323,13 @@ class Application_Model_UploadHandler
                         FILE_APPEND
                     );
                 } else {
-                    move_uploaded_file($uploaded_file, $file_path);
+                    //move_uploaded_file($uploaded_file, $file_path);
+                    $s3 = new Nerdeez_Service_Amazon_S3();
+                    $s3->createBucket("nerdeez");
+                    $s3->putObject( $file_path, 
+                            file_get_contents($uploaded_file),
+                            array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
+                            Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));
                 }
             } else {
                 // Non-multipart uploads (PUT method support)
@@ -328,7 +339,7 @@ class Application_Model_UploadHandler
                     $append_file ? FILE_APPEND : 0
                 );
             }
-            $file_size = filesize($file_path);
+            $file_size = filesize($uploaded_file);
             if ($file_size === $file->size) {
             	if ($this->options['orient_image']) {
             		$this->orient_image($file_path);
@@ -347,7 +358,8 @@ class Application_Model_UploadHandler
                     }
                 }
             } else if ($this->options['discard_aborted_uploads']) {
-                unlink($file_path);
+                //unlink($file_path);
+                $s3 -> removeObject($file_path);
                 $file->error = 'abort';
             }
             $file->size = $file_size;
@@ -360,7 +372,8 @@ class Application_Model_UploadHandler
             $serial = $_POST['serial'];
             $ksfunctions = new Application_Model_KSFunctions();
             if (!$ksfunctions -> is_IdValid($serial)){
-                unlink($file_path);
+                //unlink($file_path);
+                $s3 -> removeObject($file_path);
                 $file->error = 'abort';
                 return $file;
             }

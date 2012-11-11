@@ -170,6 +170,14 @@ function ksUpdateRow(iId , sModel){
  * @param String sModel the model of the table
  */
 function ksDownloadRow(iId , sModel){
-    alert('implement this function in admin.js - TODO!!!');
+    //user is authorized to download the files continue with download
+    var iframe = document.createElement("iframe");
+    iframe.src = "/admin/download/id/" + iId + "/model/" + sModel;
+    iframe.onload = function() {
+        // iframe has finished loading, download has started
+    }
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+    
 }
 
