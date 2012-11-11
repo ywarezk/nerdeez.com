@@ -41,7 +41,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> sTitle = 'Universities';
         
         //set the column which is papa
-        $this -> view -> sPapaCol = NULL;
+        $this -> view -> sPapaCol = array();
         
         //get the columns of the table
         $aCols = NULL;
@@ -110,7 +110,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> sModelName = 'Application_Model_DbTable_Folders';
         
         //set the column which is papa
-        $this -> view -> sPapaCol = NULL;
+        $this -> view -> sPapaCol = array();
         
         //get the columns of the table
         $aCols = NULL;

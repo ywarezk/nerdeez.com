@@ -4,6 +4,8 @@
  * @param ZEND_DBTABLE_ROW $this -> rCourse the course row 
  * @param ZEND_DBTABLE_ROWSET $this -> rsFiles the files we found 
  * @param String $this -> sError display the error message
+ * @param Zend_Db_Table_Rowset $this -> rsFolders all the folders
+ * @param Zend_Db_Table_Row $this -> rFolder the folder selected or null if non selected
  * 
  */
 ?>
@@ -33,4 +35,13 @@
             </a>
         </span>    
     </h1>
+    
+    <?php
+    //create the file browser
+    echo $this -> partial('partials/fileBrowser.phtml' , array(
+        'rsFolders' => $this -> rsFolders , 
+        'rFolder' => $this -> rFolder , 
+        'rsFiles' => $this -> rsFiles));
+    ?>
+    
 </div>
