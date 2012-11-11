@@ -16,6 +16,7 @@ class Application_Model_Acl extends Zend_Acl {
             $this->add(new Zend_Acl_Resource('register')); 
             $this->add(new Zend_Acl_Resource('admin'));
             $this->add(new Zend_Acl_Resource('user'));
+            $this->add(new Zend_Acl_Resource('course'));
 		
             //define the participents
             $this->addRole(new Zend_Acl_Role('guest'));
@@ -27,6 +28,7 @@ class Application_Model_Acl extends Zend_Acl {
             $this->allow('guest','index');
             $this->allow('guest','login');
             $this->allow('guest','register');
+            $this->allow('guest','course');
                 
             //user securityconstraints
             $this->allow('user','user');
