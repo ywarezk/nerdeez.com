@@ -1264,6 +1264,9 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
     {
        //make the table header visible
        $('#' + sId + ' .filesheader').fadeIn('slow');
+       
+       //make the classify dialog visible
+       $('#fileclassify').fadeIn('slow');
     })
     .bind('fileuploadfail', function (e, data) 
     {

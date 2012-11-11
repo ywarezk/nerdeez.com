@@ -21,13 +21,20 @@ class CourseController extends Nerdeez_Controller_Action{
         $iId = 0;
         $aData=$this->getRequest()->getParams();
         $iId = $aData['id'];
+        $iFolder = $aData['folder'];
         $sError = $aData['error'];
         $sStatus = $aData['status'];
         $this -> view -> sError = $sError;
         $this -> view -> sStatus = $sStatus;
         
         //if the id is not positive numeric number redirect to bad url
-        if (!is_numeric($iId) || $iId <= 0){
+        if (!is_numeric($iId) || $iId <= 0 ){
+            $this->_redirector->gotoUrl('/error/error/message/' . urlencode(constant("Application_Model_KSFunctions::cERROR_404")));
+            return;
+        }
+        
+        //check the ifolder
+        if ($iFolder != NULL && (!is_numeric($iFolder) || $iFolder <= 0)){
             $this->_redirector->gotoUrl('/error/error/message/' . urlencode(constant("Application_Model_KSFunctions::cERROR_404")));
             return;
         }
@@ -52,6 +59,24 @@ class CourseController extends Nerdeez_Controller_Action{
         $rsFiles = $mFiles -> fetchAll($mFiles -> select() 
                 -> where ('courses_id = ?' , $iId)
                 -> order ('title ASC'));
+        $this -> view -> rsFiles = $rsFiles;
+        
+        //find the folders
+        $rsFolders = NULL;
+        $mFolders = new Application_Model_DbTable_Folders();
+        $rsFolders = $mFolders -> fetchAll($mFolders -> select() -> order('title ASC'));
+        $this -> rsFolders = $rsFolders;
+        
+        //find the folder row
+        $rFolder = NULL;
+        if ($iFolder != NULL){
+            $rsFolders = $mFolders -> fetchAll($mFolders -> select() -> where ('id = ?' , $iFolder));
+            if ($rsFolders -> count() > 0)
+                $rFolder = $rsFolders -> getRow(0);
+        }
+        $this -> view -> rFolder = $rFolder;
+        
+        
     }
     
 }

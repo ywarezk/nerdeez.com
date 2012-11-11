@@ -1,0 +1,175 @@
+<?php
+/**
+ * the file browser on course page
+ * @param Zend_Db_Table_Rowset $rsFolders all the folders the system defines
+ * @param Zend_Db_Table_Row $rFolder the folder we are currently at Null if we are in home
+ * @param Zend_Db_Table_Rowset $rsFiles all the files of the course
+ */
+?>
+
+<!-- Start of peeking dialog -->
+<div class="peekingdialog" id="peeking">
+    <div class="bgblack registerdialog-header" style="border: 1px solid;border-radius: 5px 5px 5px 5px;height: 23px;padding: 5px;position:static;width: auto;margin-left: 2px;margin-right: 2px;margin-top: 2px;">
+        <h2></h2>
+        <a href="javascript:void(0)" onclick="$('#peeking').fadeOut('normal');$('#glassnoloading').fadeOut('fast');">
+            X
+        </a>
+    </div>
+    <div style="clear: both;height: 90%;margin: 6px auto 0;width: 99%;" id="peeking_iframe">
+    </div>
+</div>
+<!-- End of peeking dialog -->
+
+
+
+<!-- begin filebrowser -->
+<div class="filebrowser">
+    
+    <!-- Begin file upload dialog -->
+    <?php
+    //create the serial number
+    $serial = rand(0, 99999);
+    ?>
+    <div class="uploaddialog">
+        <?php
+        echo $this -> partial('partials/uploadbutton.phtml' , array('iSerial' => $serial , 'sId' => 'uploadFileBrowser' , 'iNumUpload' => 0 , 'iMaxSize' => 209715200 , 'sAcceptFileTypes' => '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 'sUrl' => '/admin/upload')) ;
+        ?>
+        <!-- begin file classify dialog -->
+        <div id="fileclassify" style="display: none;">
+        <form id="uploadpermform" method="post" action="/course/postfiles/">
+            <div class="fileclassify_body">
+                <div class="fileclassify_body_explain">
+                    <div class="kscenter-img"> 
+                        <img width="142" height="105" src="/img/searchface.png">    
+                    </div>
+                    <div class="kscenter-text">
+                        Help us keep the files organized!
+                    </div>
+                </div>
+                <div>
+                    What type of file is this?
+                </div>
+                <select name="folder_papa" onchange="showHWNumber();">
+                    <?php foreach($this -> rsFolders as $rFolder) :?>
+                        <?php if ($rFolder['papa'] == -1) :?>
+                            <?php 
+                            $sSelected = '';
+                            if($this -> rFolder != NULL 
+                                    && ($this -> rFolder['id'] == $rFolder['id'] || $this -> rFolder['papa'] == $rFolder['id'])) {
+                                $sSelected = ' selected="selected"';
+                            }
+                            ?>
+                            <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> />
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
+                <?php 
+                $sDisplay = 'hidden';
+                if ($this -> rFolder != NULL 
+                        && ($this -> rFolder['title'] === 'H.W' || $this -> rFolder['papa'] != -1 )){
+                    $sDisplay = 'block';
+                }
+                ?>
+                <div id="fileclassify_body_hwnumber" style="display: <?php echo $sDisplay; ?>">
+                    <p>
+                        This is H.W Number:
+                    </p>
+                    <select name="hw_number">
+                        <?php foreach($this -> rsFolders as $rFolder): ?>
+                            <?php if ($rFolder['papa'] != -1) :?>
+                                <?php 
+                                $sSelected = '';
+                                if($this -> rFolder != NULL 
+                                        && $this -> rFolder['id'] == $rFolder['id']) {
+                                    $sSelected = ' selected="selected"';
+                                }
+                                ?>
+                                <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> />
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div>
+                    <input type="submit" value="Submit files" />
+                </div>
+            </div>
+        </div>
+        <!-- end file classify dialog -->
+    </form>
+    </div>
+    <!-- End file upload dialog -->
+    
+    <!-- begin the files table -->
+    <div class="filebrowser_filetable">
+        <table style="padding: 10px !important;border-collapse:separate;width:100%;">
+            <tr class="filebrowser-border-bottom">
+                <td>
+                </td>
+                <td class="filebrowser-border-bottom filebrowser-td">
+                </td>
+                <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td" style="width:100%;">
+                    <span class="pink_header">Title</span>
+                </td>
+                <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td" style="text-align:center">
+                    <span class="pink_header">Download</span>
+                </td>
+                <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td" style="text-align:center">
+                    <span class="pink_header">Peek</span>
+                </td>
+            </tr>
+            <?php //first print the folders ?>
+            <?php foreach($this -> rsFolders as $rFolder) :?>
+                <?php if ($this -> rFolder == NULL || $rFolder['papa'] == $this -> rFolder['id']): ?>
+                    <tr>
+                        <td style="padding: 5px;">
+                            <input type="checkbox" val="<?php echo $rFile['value']; ?>" class="ksFileBrowserCheckbox" />
+                        </td>
+                        <td>
+                            <div class="filebrowser-file-icon" style="background-position: 0 -16px;"></div>
+                        </td>
+                        <td>
+                            <?php echo $rFolder['title']; ?>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" onclick="ksDownloadFile(<?php echo $rFolder['id'] ?> , 'Application_Model_DbTable_Folders');">
+                                <img src="/img/download32.png" height="24" width="24"/>
+                            </a>
+                        </td>
+                        <td>
+                            
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+                    
+            <?php //now print the files ?>
+            <?php foreach($this -> rsFiles as $rFile): ?>
+                <tr>
+                    <td style="padding: 5px;">
+                        <input type="checkbox" val="<?php echo $rFile['value']; ?>" class="ksFileBrowserCheckbox" />
+                    </td>
+                    <td>
+                        <div class="filebrowser-file-icon" style="background-position: 0 -16px;"></div>
+                    </td>
+                    <td>
+                        <?php echo $rFile['title']; ?>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" onclick="ksDownloadFile(<?php echo $rFile['id'] ?> , 'Application_Model_DbTable_Files');">
+                            <img src="/img/download32.png" height="24" width="24"/>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="javascript:void(0)" onclick="ksPeek(<?php echo $rFile['id']; ?> , '<?php echo $rFile['title']; ?>');">
+                            <img src="/img/eye.png" height="24" width="24"/>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach;?>
+        </table>
+    </div>
+    <!-- end the file table -->
+    
+</div>
+<!-- end filebrowser -->
+
