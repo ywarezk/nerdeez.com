@@ -84,6 +84,19 @@ abstract class Nerdeez_Db_Table extends Zend_Db_Table_Abstract{
         $this->delete('id =' . (int) $id);
     }
     
+    /**
+     * fetch a row with this id from the table
+     * @param int $id the id of the row to retrieve
+     * @return Zend_Db_Table_Row the row to return or Null if didnt find
+     */
+    public function getRowWithId($id){
+        $rsRows = $this -> fetchAll($this -> select() -> where('id = ?' , $id));
+        if ($rsRows -> count() == 0){
+            return NULL;
+        }
+        return $rsRows -> getRow(0);
+    }
+    
     
     
     

@@ -39,6 +39,9 @@ var cDOWN_ARROW = 40;
 //the ascii code of the up arrow
 var cUP_ARROW = 38;
 
+//teh ascii code for the enter key
+var cEnter = 13;
+
 //for the mouse dragging event
 var gMouseDrag = 0;
 
@@ -489,23 +492,7 @@ function preload(){
      
 }
 
-/**
- * display peeking window
- * @param id the id of the file to peek
- * @deprecated
- */
-function showPeeking(id){ 
-    var iframeurl = "http://docs.google.com/gview?url=http://www."+ window.location.host  + "/filemanager/downloadmulposts/id0/"+ id +"&embedded=true";
-    $("#peeking_iframe").html("");
-    $('<iframe />', {
-        name: 'myFrame',
-        id:   'myFrame',
-        src: iframeurl,
-        width: "100%",
-        height: "100%"
-    }).appendTo('#peeking_iframe');
-    $("#peeking").css('display' , 'block');
-}
+
 
 /**
  * generic function to print errors
@@ -622,6 +609,8 @@ function ksSearchCourseKeyController(e){
         bIsChangeText = true;
     }
     
+    
+    
     //highlight the item
     ksCourseOver(iHighlightedCourse);
     
@@ -645,6 +634,13 @@ function ksSearchCourseKeyController(e){
         var id = $('.courseitem:nth-child(' + (iHighlightedCourse+1) +') .id').text();
         $('#searchcourse_courseid').val(id);
     }
+    
+    //if the enter is pressed then go to selected item page
+    if(iKeycode === cEnter ){
+        id = $('.courseitem.active .id').text();
+        document.location.href = '/course/course/id/' + id;
+    }
+    
     
 }
 
@@ -830,93 +826,7 @@ function ksFileBrowserUncheckAll(){
     $('.ksFileBrowserCheckbox').attr('checked', false);
 }
 
-/**
- * download the list of files
- * @param array aIds the list of ids to download
- */
-function ksDownloadFiles(aIds){
-    //convert the array to json string
-    var sIds = JSON.stringify(aIds);
-    
-    //create an object to send to varify auth
-    var obj=new Object();
-    obj.ids = sIds;
 
-    //check via ajax if user is authorized 
-    $.ajax({
-            type: "POST",
-            url: "/filemanager/auth/",
-            dataType: "json",
-            data: obj ,
-            async: false,
-            success: function(res) {
-                if (res.items[0].status ==='success'){
-                    //if data is equal to 1 than user unauth to download entire folder
-                    if (res.items[0].data == 1){
-                        $('#glassnoloading').slideToggle('normal');
-                        $('#register-folder-dialog').parent().fadeIn('fast');
-                        setSuccessToFailed();
-                        //loading screen
-                        removeLoadingScreen();
-
-                        //display success failure screen
-                        displaySuccessFailure();
-
-                        $("#error").text("Only registered users can download an entire folder");
-                        return;
-                    }
-                    
-                    // if data is equal to 2 than the user tries to download multiple files
-                    if (res.items[0].data == 2){
-                        $('#glassnoloading').slideToggle('normal');
-                        $('#register-muldownload-dialog').parent().fadeIn('fast');
-                        setSuccessToFailed();
-                        //loading screen
-                        removeLoadingScreen();
-
-                        //display success failure screen
-                        displaySuccessFailure();
-
-                        $("#error").text("Only registered users can download multiple files");
-                        return;
-                    }
-                    
-                    // if data is equal to 3 than the user tries to mess with our system
-                    if (res.items[0].data == 3){
-                        setSuccessToFailed();
-                        //loading screen
-                        removeLoadingScreen();
-
-                        //display success failure screen
-                        displaySuccessFailure();
-
-                        $("#error").text("Please choose a file to download");
-                        return;
-                    }
-                }
-            },
-            error: function(res){
-                setSuccessToFailed();
-                //loading screen
-                removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
-                
-                $("#error").text("Connection failure! Try again");
-            }
-    });
-    
-    //user is authorized to download the files continue with download
-    var iframe = document.createElement("iframe");
-    iframe.src = "/filemanager/downloadmulposts/ids/" + sIds;
-    iframe.onload = function() {
-        // iframe has finished loading, download has started
-    }
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-    
-}
 
 /**
  * download all the checked files
@@ -941,24 +851,7 @@ function ksDownloadChecked(){
     removeLoadingScreen();
 }
 
-/**
- * download a single file with the id sent
- * @param int id the kspost id of the file to download
- * @return void
- */
-function ksDownloadFile(id){
-    //create the array of files to download
-    var aIds = new Array();
-    aIds[0] = id;
-    
-    //put the loading screen on
-    loadingScreen();
-    
-    //download the files
-    ksDownloadFiles(aIds);
-    
-    removeLoadingScreen();
-}
+
 
 /**
  * when the user clicks the like button
@@ -1051,28 +944,7 @@ function likePost(id , bIsLike , sQuestions){
     });
 }
 
-/**
- * peek on file 
- * @param int iId the id of the file to peek on
- * @param String sTitle the file title
- */
-function ksPeek(iId , sTitle){
-    var aIds = new Array();
-    aIds[0] = iId;
-    var sIds = JSON.stringify(aIds);
-    var iframeurl = "http://docs.google.com/gview?url=http://"+ window.location.host  + "/filemanager/downloadmulposts/ids/"+ sIds +"&embedded=true";
-    $("#peeking_iframe").html("");
-    $('<iframe />', {
-        name: 'myFrame',
-        id:   'myFrame',
-        src: iframeurl,
-        width: "100%",
-        height: "100%"
-    }).appendTo('#peeking_iframe');
-    $('#glassnoloading').fadeIn('fast');
-    $("#peeking").css('display' , 'block');
-    $('#peeking * h2').text(sTitle);
-}
+
 
 /**
  * when the user clicks to edit his nickname
@@ -1272,12 +1144,14 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
     {
         //alert('5');
         if ($(this).find('tr').length == 2){
-            $('#' + sId + ' .filesheader').fadeOut('slow');
+            $('#' + sId + ' .filesheader').fadeOut('normal');
+            $('#fileclassify').fadeOut('normal');
         }
     })
     .bind('fileuploaddestroy', function (e, data) {
         if ($(this).find('tr').length == 2){
-            $('#' + sId + ' .filesheader').fadeOut('slow');
+            $('#' + sId + ' .filesheader').fadeOut('normal');
+            $('#fileclassify').fadeOut('normal');
         }
     });
 
@@ -2054,7 +1928,7 @@ function loadAbout(){
     //create the js validation
     $('.sendfeedback_form').validate({
         rules: {
-            mail: {
+            email: {
                 required: true,
                 email: true
             },
@@ -2064,7 +1938,7 @@ function loadAbout(){
             }
         },
         messages: {
-            mail: {
+            email: {
                 required: 'Email is required',
                 email: 'Invalid email'
             },
@@ -2074,7 +1948,7 @@ function loadAbout(){
             }
         },
         errorPlacement: function(error, element) {
-             if (element.attr("name") == "mail"){
+             if (element.attr("name") == "email"){
                  $('.register-error-placeholder.mail').html('');
                  $('.register-error-placeholder.mail').append(error);
                  //error.insertAfter("#lastname");
@@ -2224,5 +2098,197 @@ function loadLogin(sId){
              } 
        }
     });
+    
+}
+
+var isEventSupported = (function() {
+
+  var TAGNAMES = {
+    'select': 'input', 'change': 'input',
+    'submit': 'form', 'reset': 'form',
+    'error': 'img', 'load': 'img', 'abort': 'img'
+  };
+
+  function isEventSupported( eventName, element ) {
+
+    element = element || document.createElement(TAGNAMES[eventName] || 'div');
+    eventName = 'on' + eventName;
+
+    // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and "resize", whereas `in` "catches" those
+    var isSupported = eventName in element;
+
+    if ( !isSupported ) {
+      // If it has no `setAttribute` (i.e. doesn't implement Node interface), try generic element
+      if ( !element.setAttribute ) {
+        element = document.createElement('div');
+      }
+      if ( element.setAttribute && element.removeAttribute ) {
+        element.setAttribute(eventName, '');
+        isSupported = typeof element[eventName] == 'function';
+
+        // If property was created, "remove it" (by setting value to `undefined`)
+        if ( typeof element[eventName] != 'undefined' ) {
+          element[eventName] = undefined;
+        }
+        element.removeAttribute(eventName);
+      }
+    }
+
+    element = null;
+    return isSupported;
+  }
+  return isEventSupported;
+})();
+
+
+/**
+ * js init for the course page
+ */
+function loadCourse(){
+    //init the text on the upload explain based on browser drag drop
+    if (isEventSupported('dragstart') && isEventSupported('drop')) {
+        $('#uploaddialog_explain').text("You can also Drag-Drop files to upload files to course");
+    }
+}
+
+/**
+ * when the user selects to classify the files
+ * after he uploads them
+ */
+function showHWNumber(){
+    //grab the text of the select 
+    var sClassifyCombo = $('#fileclassify select[name="folder_papa"] option:selected').text();
+    sClassifyCombo = $.trim(sClassifyCombo);
+    
+    //compare it to H.W if so make the h.w number visible
+    if ('H.W' === sClassifyCombo){
+        $('#fileclassify_body_hwnumber').css('display' , 'table-row');
+    }
+    else{
+        $('#fileclassify_body_hwnumber').fadeOut('normal');
+    }
+}
+
+/**
+ * check if there is no upload in progress and that there is atleast one file uploaded
+ */
+function checkFilesUpload(){
+    //if there is a progress bar pop an error
+    if ($('.files .progress').length > 0){
+        showNerdeezDialog('Upload in progress', 'Please wait untill all your files are finished uploading before submitting this form');
+        return false;
+    }
+    
+    //if there is no files uploaded than pop an error
+    if ($('.files .template-download').length == 0){
+        showNerdeezDialog('No files uploaded', 'You have to upload atleast one file before submitting');
+        return false;
+    }
+    
+    return true;
+    
+}
+
+/**
+ * shows our dialog
+ * @param String header the dialog header
+ * @param String message the message to display
+ */
+function showNerdeezDialog(header , message){
+    $('#nerdeez_error_dialog .nerdeez_error_dialog_header h2').text(header);
+    $('#nerdeez_error_dialog .nerdeez_error_dialog_body .kscenter-text').text(message);
+    $(".glass").slideToggle('normal');
+    $('#nerdeez_error_dialog').fadeIn('normal');
+    
+}
+
+/**
+ * redirect to the folder
+ * @param int the folder id to go to
+ */
+function gotoFolder(iId , iCourse_id){
+    document.location.href = '/course/course/id/' + iCourse_id + '/folder/' + iId;
+}
+
+/**
+ * display peeking window
+ * @param id the id of the file to peek
+ * @deprecated
+ */
+function showPeeking(id){ 
+    var iframeurl = "http://docs.google.com/gview?url=http://www."+ window.location.host  + "/filemanager/downloadmulposts/id0/"+ id +"&embedded=true";
+    $("#peeking_iframe").html("");
+    $('<iframe />', {
+        name: 'myFrame',
+        id:   'myFrame',
+        src: iframeurl,
+        width: "100%",
+        height: "100%"
+    }).appendTo('#peeking_iframe');
+    $("#peeking").css('display' , 'block');
+}
+
+/**
+ * peek on file 
+ * @param int iId the id of the file to peek on
+ * @param String sTitle the file title
+ */
+function ksPeek(iId , sTitle){
+    var aIds = new Array();
+    aIds[0] = iId;
+    var sIds = JSON.stringify(aIds);
+    var iframeurl = "http://docs.google.com/gview?url=http://"+ window.location.host  + "/course/downloadmulfiles/ids/"+ sIds +"&embedded=true";
+    $("#peeking_iframe").html("");
+    $('<iframe />', {
+        name: 'myFrame',
+        id:   'myFrame',
+        src: iframeurl,
+        width: "100%",
+        height: "100%"
+    }).appendTo('#peeking_iframe');
+    $('#glassnoloading').fadeIn('fast');
+    $("#peeking").css('display' , 'block');
+    $('#peeking * h2').text(sTitle);
+}
+
+/**
+ * download a single file with the id sent
+ * @param int id the kspost id of the file to download
+ * @return void
+ */
+function ksDownloadFile(id){
+    //create the array of files to download
+    var aIds = new Array();
+    aIds[0] = id;
+    
+    //put the loading screen on
+    loadingScreen();
+    
+    //download the files
+    ksDownloadFiles(aIds);
+    
+    removeLoadingScreen();
+}
+
+/**
+ * download the list of files
+ * @param array aIds the list of ids to download
+ */
+function ksDownloadFiles(aIds){
+    //convert the array to json string
+    var sIds = JSON.stringify(aIds);
+    
+    //create an object to send to varify auth
+    var obj=new Object();
+    obj.ids = sIds;
+
+    //user is authorized to download the files continue with download
+    var iframe = document.createElement("iframe");
+    iframe.src = "/course/downloadfiles/ids/" + sIds;
+    iframe.onload = function() {
+        // iframe has finished loading, download has started
+    }
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
     
 }

@@ -297,7 +297,6 @@ class Application_Model_UploadHandler
     }
 
     protected function handle_file_upload($uploaded_file, $name, $size, $type, $error, $index = null) {
-        Zend_Session::start(); 
         $file = new stdClass();
         $file->name = $this->trim_file_name($name, $type, $index);
         $file->size = intval($size);
@@ -345,7 +344,7 @@ class Application_Model_UploadHandler
             		$this->orient_image($file_path);
             	}
                 //yariv
-                $file->url = '';/*$this->options['upload_url'].rawurlencode($file->name);*/
+                $file->url = $file_path;
                 foreach($this->options['image_versions'] as $version => $options) {
                     if ($this->create_scaled_image($file->name, $options)) {
                         if ($this->options['upload_dir'] !== $options['upload_dir']) {
@@ -365,31 +364,7 @@ class Application_Model_UploadHandler
             $file->size = $file_size;
             $this->set_file_delete_url($file);
             
-            //save in the session 
-            //yariv 
             
-            //get the serial and validate it
-            $serial = $_POST['serial'];
-            $ksfunctions = new Application_Model_KSFunctions();
-            if (!$ksfunctions -> is_IdValid($serial)){
-                //unlink($file_path);
-                $s3 -> removeObject($file_path);
-                $file->error = 'abort';
-                return $file;
-            }
-            
-            if(!isset ($_SESSION['kstempfiles'])){
-                $_SESSION['kstempfiles'] = array();
-            }
-            if(!isset ($_SESSION['kstempfiles'][$serial])){
-                $_SESSION['kstempfiles'][$serial] = array();
-            }
-            
-            //create the new file object
-            $oSessionFile = new stdClass();
-            $oSessionFile -> name = $file_path;
-            $oSessionFile -> size = $file_size;
-            $_SESSION['kstempfiles'][$serial][] = $oSessionFile;
         }
         return $file;
     }
@@ -461,6 +436,7 @@ class Application_Model_UploadHandler
             header('Content-type: text/plain');
         }
         echo $json;
+        return $info;
     }
 
     public function delete() {

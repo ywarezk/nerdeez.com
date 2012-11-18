@@ -33,18 +33,12 @@ class LoginController extends Nerdeez_Controller_Action{
         Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);   
         
         //get all the params sanitized username password remember me
-        $email = NULL; 
-        $password = NULL;
+        $email = $this->_aData['email']; 
+        $password = $this -> _aData['password'];
         $rememberme = TRUE;
         $data=$this->getRequest()->getParams();
         $rememberme = $data['rememberme'] == '1';
         $ksfunctions = new Application_Model_KSFunctions();
-        $password = $ksfunctions -> sanitize_Title($data['password'] , 20);
-        $email = $ksfunctions -> sanitize_Title($data['email'] , 100);
-        if ($email == NULL || $password == NULL){
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('Invalid email or password'));
-            return;
-        }
         
         //get the ip of the user
         $sIP = NULL;
@@ -97,7 +91,7 @@ class LoginController extends Nerdeez_Controller_Action{
             $logincookies = new Application_Model_DbTable_Logincookies();
             $bIsCookies = FALSE;
             $bIsCookies = isset ($_COOKIE['email']) && isset ($_COOKIE['identifier']);
-            $sOldIdentifier = $ksfunctions -> sanitize_Title($_COOKIE['identifier'] , 200);
+            $sOldIdentifier = $this -> sanitize_Title($_COOKIE['identifier'] , 200);
 
             //find all the old rows that i need to delete
             $rsLogincookies = NULL;
@@ -188,15 +182,7 @@ class LoginController extends Nerdeez_Controller_Action{
         Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
         
         //get params
-        $email = NULL; 
-        $data=$this->getRequest()->getParams();
-        $email = Application_Model_KSFunctions::getInstance()->sanitize_Title($data['email'] , 100);
-        if ($email == NULL){
-            $userData=array(array('status'=>'failed','msg'=>'Invalid Email'));
-            $dojoData= new Zend_Dojo_Data('status',$userData);
-	    echo $dojoData->toJson();
-	    return;
-        }
+        $email = $this -> _aData['email']; 
         
         //find user row with this email
         $row = NULL;
@@ -212,7 +198,8 @@ class LoginController extends Nerdeez_Controller_Action{
         $row = $rows -> getRow(0);
         
         //insert the new row to the forgot database
-        $sToken = Application_Model_KSFunctions::getInstance() -> createSerial();
+        $ksfunctions = new Application_Model_KSFunctions();
+        $sToken = $ksfunctions -> createSerial();
         $aNewForgotRow = array(
             'users_id'      => $row['id'] ,
             'token'         => $sToken ,
@@ -222,26 +209,16 @@ class LoginController extends Nerdeez_Controller_Action{
         $mForgot -> insert($aNewForgotRow);
         
         //send him mail to approve the reset
-        Application_Model_KSFunctions::getInstance()->sendResetPasswordMail($sToken , $row['id'] , $row['email']);
+        $ksfunctions->sendResetPasswordMail($sToken , $row['id'] , $row['email']);
         
         //return  success
-        $userData=array(array('status'=>'failed','msg'=>'Invalid Email'));
-        $dojoData= new Zend_Dojo_Data('status',$userData);
-        echo $dojoData->toJson();
-        return;
+        
     }
     
     public function approveresetAction(){
         //get the params
-        $data=$this->getRequest()->getParams();
-        $id = NULL;
-        $serial = NULL;
-        $id = $data['id'];
-        $serial = Application_Model_KSFunctions::getInstance()->sanitize_Title($data['serial'] , 100);
-        if (!Application_Model_KSFunctions::getInstance()->is_IdValid($id) || $serial == NULL){
-            $this -> view -> sError = "Bad params";
-            return;
-        }
+        $id = $this ->_aData['id'];
+        $serial = $this -> _aData['token'];
         
         //get the login row
         $rForgot = NULL;
@@ -272,7 +249,8 @@ class LoginController extends Nerdeez_Controller_Action{
         
         //create the new password
         $sPassword = NULL;
-        $sPassword = Application_Model_KSFunctions::getInstance() -> createSerial();
+        $ksfunctions = new Application_Model_KSFunctions();
+        $sPassword = $ksfunctions -> createSerial();
         
         //delete all the rows from the table
         foreach ($rsForgot as $rForgot) {
@@ -300,7 +278,7 @@ class LoginController extends Nerdeez_Controller_Action{
         $mUsers -> update($data , 'id = ' . $id);
         
         //send the new password by masil to user
-        Application_Model_KSFunctions::getInstance() ->sendNewPasswordMail($row['email'] , $sPassword);
+        $ksfunctions ->sendNewPasswordMail($row['email'] , $sPassword);
         
         $this -> view -> sStatus = "SUCCESS!";
         $this->view->sPassword = $sPassword;

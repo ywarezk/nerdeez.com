@@ -94,26 +94,15 @@ class Application_Model_DbTable_Courses extends Nerdeez_Db_Table{
      */
     public function search($sSearch){ 
         //sanitize the param
-        $sSanSearch = NULL;
-        $ksfunctions = new Application_Model_KSFunctions();
-        $bIsValid = TRUE;
-        $sSanSearch = $ksfunctions -> sanitize_Title($sSearch , 100);
-        if($sSanSearch == null ){
-            $bIsValid = FALSE;
-        }
+        $sSanSearch = $sSearch;
         
         //grab the course rows that match the search description
         $rsCourses = NULL;
-        if ($bIsValid){
-            $selCourseSelect = $this -> select()
+        $selCourseSelect = $this -> select()
                         -> where('MATCH (title , description) AGAINST (?)' , $sSanSearch)
                         -> orwhere("title LIKE '%" . $sSanSearch . "%'")
                         -> orwhere("description LIKE '%" . $sSanSearch . "%'")
                         -> order ('title ASC');
-        }
-        else{
-            $selCourseSelect = $this -> select() -> order('title ASC');
-        }
         $rsCourses = $this -> fetchAll($selCourseSelect);
         return $rsCourses;
     }

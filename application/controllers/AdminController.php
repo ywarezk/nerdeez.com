@@ -1,7 +1,7 @@
 <?php
 
 /**
- * required in all my controllers
+ * required in filehandlers controllers
  */
 require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action_FileHandler.php';
 
