@@ -1,0 +1,7 @@
+ApplicationName=nerdeez.com
+EnvironmentName=nerdeezcom-env
+Region=eu-west-1
+ServiceEndpoint=https://elasticbeanstalk.eu-west-1.amazonaws.com
+RdsEndpoint=https://rds.eu-west-1.amazonaws.com
+SolutionStack=64bit Amazon Linux running PHP 5.3
+RdsEnabled=No
