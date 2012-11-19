@@ -191,6 +191,7 @@ $bIsDownload = FALSE;
         
         <?php 
         //display the insert form
+        $serial = rand(0, 99999);
         ?>
         <div style="" class="admin_container">
             <h2>Insert new row</h2>
@@ -225,7 +226,6 @@ $bIsDownload = FALSE;
                                 elseif ($sCol === 'path'){
                                 ?>
                                     <?php 
-                                        $serial = rand(0, 99999);
                                         echo $this -> partial('partials/uploadbutton.phtml' , array('iSerial' => $serial , 'sId' => 'uploadFileBrowser' , 'iNumUpload' => 1 , 'iMaxSize' => 209715200 , 'sAcceptFileTypes' => '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 'sUrl' => '/admin/upload')) ;
                                     ?>
                                 <?php

@@ -50,7 +50,7 @@
                         $sTitle = 'No Title';
                         $prefix = '<span style="color: #E20145">Title:</span> ';
                         if ($rCourse['title'] != NULL) $sTitle = $rCourse['title'];
-                        echo $prefix . '<span class="titlecontent">' . $sTitle . '</span>';
+                        echo str_replace('\\', '', $prefix . '<span class="titlecontent">' . $sTitle . '</span>');
                         ?>
                     </h3>
                     <p style="">
@@ -59,7 +59,7 @@
                         $sDescription = 'No Description';
                         $prefix = '<span style="color: #E20145"><b>Description:</b></span> ';
                         if ($rCourse['description'] != NULL) $sDescription = $rCourse['description'];
-                        echo $prefix . $sDescription;
+                        echo str_replace('\\', '', $prefix . $sDescription);
                         ?>
                     </p>
                     <p style="margin-top: -14px;">
@@ -68,7 +68,7 @@
                         $sUniversity = 'No University';
                         $prefix = '<span style="color: #E20145"><b>University:</b></span> ';
                         if ($rUniversity['title'] != NULL) $sUniversity = $rUniversity['title'];
-                        echo $prefix . $sUniversity;
+                        echo str_replace('\\', '', $prefix . $sUniversity);
                         ?>
                     </p>
                 </td>

@@ -745,7 +745,7 @@ box-sizing: border-box;
 }
 
 .filebrowser-file-icon{
-	background-image:url(/img/icons-small.png);height: 16px ; width:16px;
+	background-image:url(/img/mimetypes.png);height: 48px ; width:48px;
 }
 
 .coursepicker-course-icon{
@@ -1123,7 +1123,7 @@ box-sizing: border-box;
 }
 
 .uploaddialog{
-    border-bottom: 1px solid #CCCCCC;
+    /*border-bottom: 1px solid #CCCCCC;*/
     padding: 8px;
 }
 
@@ -1813,3 +1813,206 @@ border: 1px solid #CCCCCC;
 .admin_parentcombo{
     width: 100%;
 }
+
+.filebrowser_data_tr{
+    height: 48px;
+}
+
+.filebrowser_data_tr td{
+    padding: 5px;
+}
+
+.filebrowser_data_tr:nth-child(even) {
+    background-color: #EEEEEE;
+}
+
+.filebrowser_td_right{ 
+    border-right: 1px solid #CCCCCC;
+}
+
+.filebrowser_td_check{
+    border: none !important;
+}
+
+.filebrowser_td_check input{
+    height: 20px;
+    width: 20px;
+}
+
+.filebrowser_td_img{
+    
+}
+
+.filebrowser_td_title{
+    
+}
+
+.filebrowser_td_download, .filebrowser_td_peek{
+    text-align: center;
+}
+
+.filebrowser_td_title p{
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+.filebrowser_table_title{
+    background-color: #333333;
+    height: 40px;
+}
+
+.filebrowser-header-td{
+    font-size: 17px;
+    font-weight: bold;
+}
+    
+.filebrowser_data_tr:hover{
+    background-color: #DDDDDD;
+}
+
+.filebrowser_td_img:hover , .filebrowser_td_title:hover {
+    cursor: pointer;
+}
+
+img
+{  
+    border-style: none !important;
+}
+
+.filebrowser * .hidder{
+    background-color: black;
+    cursor: default;
+    height: 40px;
+    left: 120px;
+    opacity: 0;
+    position: relative;
+    top: -30px;
+    width: 400px;
+    z-index: 1;
+}
+
+#fileclassify * .kscenter-text{
+    display: block;
+    font-weight: bold;
+    height: 30px;
+    position: static;
+    text-align: center;
+    width: 100%;
+    font-size: 18px;
+}
+
+.fileclassify_table{
+    /*border: 1px solid #CCCCCC;*/
+    margin: 0 auto;
+    width: 500px;
+    font-size: 17px;
+}
+
+.fileclassify_table tr{
+    
+}
+
+.fileclassify_table td{
+    padding: 10px;
+}
+
+.fileclassify_table select{
+    width: 100%;
+}
+
+.fileclassify_table_tdleft{
+    text-align: right;
+    width: 180px;
+}
+
+#fileclassify{
+    border: 1px solid #CCCCCC;
+    border-radius: 15px 15px 15px 15px;
+    margin: 0 auto 20px;
+    padding: 10px;
+    width: 600px;
+}
+
+.fileclassify_body_explain{
+    margin-top:10px;
+}
+
+.style-select{
+    background: url("/img/nerdeez-down-arrow.png") no-repeat scroll right center;
+    height: 36px;
+    overflow: hidden;
+    width: 240px;
+}
+
+.style-select select{
+    background: none repeat scroll 0 0 transparent;
+    border: 1px solid #CCCCCC;
+    font-size: 16px;
+    height: 100%;
+    padding: 7px !important;
+    width: 268px;
+    
+}
+
+select{
+    border: 1px solid #AAAAAA;
+    color: #555555;
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    padding: 4px;
+}
+
+#nerdeez_error_dialog{
+    background-color: white;
+    border: 1px solid #CCCCCC;
+    border-radius: 15px 15px 15px 15px;
+    height: 220px;
+    left: 30%;
+    padding: 10px;
+    position: fixed;
+    top: 30%;
+    width: 600px;
+    display: none;
+    z-index: 3;
+}
+
+#nerdeez_error_dialog .nerdeez_error_dialog_header h2{
+    margin-left: 10px;
+    padding: 8px;
+}
+
+#nerdeez_error_dialog .nerdeez_error_dialog_header{
+    background-color: #282828;
+    border-radius: 15px 15px 15px 15px;
+    color: white;
+    height: 36px;
+    margin-left: -8px;
+    margin-top: -25px;
+    width: 615px;
+}
+
+#nerdeez_error_dialog .nerdeez_error_dialog_body{
+    
+}
+
+#nerdeez_error_dialog .nerdeez_error_dialog_body .kscenter-img{
+    
+}
+#nerdeez_error_dialog .nerdeez_error_dialog_body .kscenter-text{
+    
+}
+
+.filebrowser_filetable_navigation{
+    margin-left:20px;margin-top:30px;
+}
+
+.pink_header a{
+    color: #E20045;
+}
+
+.black_header a{
+    color: #292929;
+}
+

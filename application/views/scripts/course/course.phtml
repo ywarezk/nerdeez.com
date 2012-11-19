@@ -4,8 +4,6 @@
  * @param ZEND_DBTABLE_ROW $this -> rCourse the course row 
  * @param ZEND_DBTABLE_ROWSET $this -> rsFiles the files we found 
  * @param String $this -> sError display the error message
- * @param Zend_Db_Table_Rowset $this -> rsFolders all the folders
- * @param Zend_Db_Table_Row $this -> rFolder the folder selected or null if non selected
  * 
  */
 ?>
@@ -22,26 +20,26 @@
     <?php 
         //create the title for this page
     ?>
-    <h1>
+    <h1 style="text-align: center;">
         <span class="pink_header span_header">
-            <a class="pink_header" href="/course/course/id/<?php echo $this -> rCourse['id']; ?>">
-                <?php echo $this -> rCourse['title']; ?>
-            </a>
+                <?php echo str_replace('\\', '', $this -> rCourse['title']); ?>
         </span>
         <img src="/img/arrow.gif" />
         <span class="black_header span_header">
-            <a class="black_header" href="/course/course/id/<?php echo $this -> rCourse['id']; ?>">
-            <?php echo $this -> rCourse['description']; ?>
-            </a>
+            <?php echo str_replace('\\', '', $this -> rCourse['description']); ?>
         </span>    
     </h1>
     
-    <?php
+    <div style="margin-top: 20px;">
+    <?php 
     //create the file browser
-    echo $this -> partial('partials/fileBrowser.phtml' , array(
-        'rsFolders' => $this -> rsFolders , 
-        'rFolder' => $this -> rFolder , 
-        'rsFiles' => $this -> rsFiles));
+    echo $this -> partial ('partials/fileBrowser.phtml' , array(
+        'rsFolders'         => $this -> rsFolders ,
+        'rFolder'           => $this -> rFolder ,
+        'rsFiles'           => $this -> rsFiles ,
+        'rCourse'           => $this -> rCourse ,
+    ));
     ?>
+    </div>
     
 </div>

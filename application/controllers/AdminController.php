@@ -1,7 +1,7 @@
 <?php
 
 /**
- * required in all my controllers
+ * required in filehandlers controllers
  */
 require_once APPLICATION_PATH . '/controllers/Nerdeez_Controller_Action_FileHandler.php';
 
@@ -41,7 +41,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> sTitle = 'Universities';
         
         //set the column which is papa
-        $this -> view -> sPapaCol = array();
+        $this -> view -> sPapaCol = NULL;
         
         //get the columns of the table
         $aCols = NULL;
@@ -110,7 +110,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> sModelName = 'Application_Model_DbTable_Folders';
         
         //set the column which is papa
-        $this -> view -> sPapaCol = array();
+        $this -> view -> sPapaCol = NULL;
         
         //get the columns of the table
         $aCols = NULL;

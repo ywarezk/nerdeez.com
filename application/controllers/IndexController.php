@@ -21,8 +21,8 @@ class IndexController extends Nerdeez_Controller_Action
     {
         //pass error & message to view
         $data=$this->getRequest()->getParams();
-        $this -> view -> sError = $data['error'];
-        $this -> view -> sStatus = $data['message'];
+        $this -> view -> sError = $this -> _aData['error'];
+        $this -> view -> sStatus = $this -> _aData['status'];
         
         //get all the courses and pass them to the view
         $this -> view -> rsCourses = NULL;
@@ -55,14 +55,8 @@ class IndexController extends Nerdeez_Controller_Action
         
         //check message
         $ksfunctions = new Application_Model_KSFunctions();
-        $message = $ksfunctions -> sanitize_Title($data['message'] , 300);
-        $mail = $ksfunctions -> sanitize_Title($data['mail'] , 100);
-        if($message == null ){
-            $userData=array(array('status'=>'failed','data' => 'report must be less than 300 chars and not emapty'));
-            $dojoData= new Zend_Dojo_Data('status',$userData);
-	    echo $dojoData->toJson();
-	    return;
-        }
+        $message = $this -> _aData['message'];
+        $mail = $this -> _aData['email'];
         
         //mail myself the report and send success status
         $ksfunctions -> bugReport($message , $mail);
@@ -93,9 +87,8 @@ class IndexController extends Nerdeez_Controller_Action
         Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
         
         //get the course rows that match the search
-        $data=$this->getRequest()->getParams();
         $mCourses = new Application_Model_DbTable_Courses();
-        $rsCourses = $mCourses -> search($data['search']);
+        $rsCourses = $mCourses -> search($this -> _aData['search']);
         
         //get all the universities
         $rsUniversities = NULL;

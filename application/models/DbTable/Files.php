@@ -44,18 +44,21 @@ class Application_Model_DbTable_Files extends Nerdeez_Db_Table{
     protected $_name = 'files';
     
     /**
-     * just another insert method
-     * @param String $sTitle course title
-     * @param int $iPapa is this type inside another type
-     * @return int the primary key
-     * 
+     * inserts a new row to the files
+     * @param String $sTitle
+     * @param String $sPath
+     * @param int $iCoursesId
+     * @param int $iFoldersId
+     * @param int $iSize
+     * @return int the pk 
      */
-    public function insertWithoutArray($sTitle , $sPath , $iCoursesId , $iFoldersId){
+    public function insertWithoutArray($sTitle , $sPath , $iCoursesId , $iFoldersId , $iSize){
         $aNewRow = array(
             'title'                 => $sTitle , 
             'path'                  => $sPath ,
             'courses_id'            => $iCoursesId , 
             'folders_id'            => $iFoldersId ,
+            'size'                  => $iSize ,
         );
         return parent::insert($aNewRow);
     }

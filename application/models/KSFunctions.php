@@ -99,46 +99,9 @@ class Application_Model_KSFunctions {
     
     //private members
     
-    /**
-     *Strips and trims the tag and makes sure the length is no longer than langth chars
-     * 
-     * @param String $title 
-     * @param int $length check the string is no longer than this length
-     * @return String null if title is invalid or sanitized title if valid
-     */
-    public function sanitize_Title($title , $length){
-        if($title == null) return null;
-        $title = str_replace('\\', '', $title);
-        $link = $this->getMysqlConnection();
-        $data = array('title' => mysql_real_escape_string($title , $link));
-        $filters=array('title' => array('StringTrim' , 'StripTags'));
-        $validators=array('title' => array(array('StringLength', array(0, $length))));
-        $input = new Zend_Filter_Input($filters, $validators, $data);
-        if(!$input->isValid()){         
-            return null;
-        }
-        $data = $input->getEscaped();
-        return $data['title'];       
-    }
     
-    /**
-     * gets the mysql connection data from the config and returns the mysql link resource
-     * @return ResourceBundle MySQL link identifier on success or FALSE on failure. 
-     */
-    public function getMysqlConnection(){
-        //connect to config file 
-        $config = new Zend_Config_Ini('../application/configs/application.ini','production');
-        
-        //get host user password 
-        $host = $config->resources->db->params->host;
-        $user = $config->resources->db->params->username;
-        $pass = $config->resources->db->params->password;
-        
-        $link = mysql_connect('localhost', $user, $pass)
-        OR die(mysql_error());
-        
-        return $link;
-    }
+    
+    
     
     /**
      * 
@@ -270,7 +233,7 @@ class Application_Model_KSFunctions {
         Please confirm your Knowledge-Share account by clicking this link:
         </p>
         <p>
-            <a href="http://'. $this ->sGetUrl() .'/register/activateaccount/id/'. $users_id . '/serial/'. $serial .'">
+            <a href="http://'. $this ->sGetUrl() .'/register/activateaccount/id/'. $users_id . '/token/'. $serial .'">
                 activate account
             </a>
         </p>
@@ -358,6 +321,69 @@ class Application_Model_KSFunctions {
         $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
         $isIdentity = $auth->hasIdentity();
         return $isIdentity;
+    }
+    
+    /**
+     * sends reset password mail
+     * @param String $serial the serial number for the activation 
+     * @param int the row of the user
+     * @param String $email the email address to send to
+     */
+    public function sendResetPasswordMail($serial , $users_id , $email){
+        //create the mail body
+        $body = '<HTML><BODY><CENTER>
+        <h1>' . $this->getSiteName() . ' Password Reset</h1>
+        <p>
+        You recently asked to reset your ' . $this->getSiteName() . ' password. To complete your request, please follow this link:
+        </p>
+        <p>
+            <a href="http://www.' . $this->getSiteUrl(). '/login/approvereset/id/'. $users_id . '/token/'. $serial .'">
+                Reset Password
+            </a>
+        </p>
+        <p>
+        If this is a mistake please ignore this mail
+        </p>
+        <p>
+        Regards, ' . $this->getSiteName() . ' Team
+        </p>
+        </CENTER></BODY>
+        </HTML>';		
+        
+        //mail title
+        $title = $this->getSiteName() . " Reset Password";
+        
+        //send the mail 
+        $this->reportByMail($email, $body, $title);
+    }
+    
+    /**
+     * sends reset password mail
+     * @param String $serial the serial number for the activation 
+     * @param int the row of the user
+     * @param String $email the email address to send to
+     */
+    public function sendNewPasswordMail($email, $password){
+        //create the mail body
+        $body = '<HTML><BODY><CENTER> 
+        <h1>'. $this ->getSiteName() .' New Password</h1>
+        <p>
+        You recently asked to reset your ' . $this ->getSiteName() . ' password. Your new password is:
+        </p>
+        <p>
+            '. $password . '
+        </p>
+        <p>
+        Regards, ' . $this ->getSiteName() . ' Team
+        </p>
+        </CENTER></BODY>
+        </HTML>';		
+        
+        //mail title
+        $title = $this ->getSiteName() . " New Password";
+        
+        //send the mail 
+        $this->reportByMail($email, $body, $title);
     }
 }
 

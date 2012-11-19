@@ -32,37 +32,11 @@ class RegisterController extends Nerdeez_Controller_Action{
         Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
         
         //get the params
-        $mail = NULL;
-        $password = NULL;
-        $repassword = NULL;
-        $data=$this->getRequest()->getParams();
-        $validator = new Zend_Validate_EmailAddress();
+        $mail = $this -> _aData['email'];
+        $password = $this -> _aData['password'];
+        $repassword = $this -> _aData['repassword'];
         $ksfunctions = new Application_Model_KSFunctions();
-        if ($validator->isValid($data['email'])) {
-            $mail = $data['email'];
-        } else {
-            // email is invalid; print the reasons
-            $reasons = '';
-            foreach ($validator->getMessages() as $messageId => $message) {
-                $reasons .= "ERROR: Validation failure '$messageId': $message<br/>";
-            }
-            $reasons = urlencode($reasons);
-            //redirect to the same page just with error
-            $this->_redirector->gotoUrl('/index/index/error/' . $reasons);
-            return;
-        } 
-        $password = $ksfunctions -> sanitize_Title($data['password'] , 20);
-        if($password == null || strlen($password) < 5){
-            //redirect to the same page just with error
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('Invalid password - password have to be more than 5 characters and less than 20!'));
-            return;
-        }
-        $repassword = $ksfunctions -> sanitize_Title($data['repassword'] , 20);
-        if($repassword == null){
-            //redirect to the same page just with error
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('Invalid repassword!'));
-            return;
-        }
+        
         //check password match
         if($password != $repassword ){
             $this->_redirector->gotoUrl('/index/index/error/' . urlencode('repassword must match the password!'));
@@ -102,12 +76,6 @@ class RegisterController extends Nerdeez_Controller_Action{
             }
         }
         
-        //find the unviersity thats simply the first uni
-        /**$uni_id = 0;
-        $mKSPost = new Application_Model_DbTable_KSPost();
-        $select = $mKSPost -> select() -> where("type = 'university'");
-        $university = $mKSPost -> fetchRow($select);
-        $uni_id = $university['id'];*/
         
         //create the row to pass to database
         $salt = $ksfunctions -> createSaltString();
@@ -132,23 +100,9 @@ class RegisterController extends Nerdeez_Controller_Action{
         Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
         
         //grab the params
-        $serial = NULL;
-        $id = NULL;
-        $data=$this->getRequest()->getParams();
+        $serial = $this -> _aData['token'];
+        $id = $this -> _aData['id'];
         $ksfunctions = new Application_Model_KSFunctions();
-        if($ksfunctions -> is_IdValid($data['id'])){
-            $id = $data['id'];                
-        }
-        else{
-            //redirect to registration error
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid activation id!'));
-            return;
-        } 
-        $serial = $ksfunctions -> sanitize_Title($data['serial'] , 20);
-        if($serial == null){
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid serial!'));
-            return;
-        }
         
         //find the row matching
         $row = NULL;
