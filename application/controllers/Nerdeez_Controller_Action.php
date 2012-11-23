@@ -53,6 +53,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'search' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 300) ,
         array('name' => 'password' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
         array('name' => 'repassword' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
+        array('name' => 'disposition' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
         array('name' => 'email' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 100) ,
         array('name' => 'token' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
         array('name' => 'ids' , 'type' => Nerdeez_ParamTypes::JSONARRAYNUMBERS , 'length' => 150 , 'min' => 0 , 'max' => 0) ,
@@ -105,21 +106,26 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
                 //sanitize json array
                 if ($iType === Nerdeez_ParamTypes::JSONARRAYNUMBERS){
                     $aIds = json_decode(str_replace('\\', '', $iValue));
-                    foreach($aIds as $iId){
-                        if (!is_numeric($iId)){
-                            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
-                            return;
+                    if (is_array($aIds)){
+                        foreach($aIds as $iId){
+                            if (!is_numeric($iId)){
+                                $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
+                                return;
+                            }
+                            if ( $iId <= $iMin){
+                                $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
+                                return;
+                            }
+                            if ($iMax > 0 && $iId > $iMax){
+                                $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
+                                return;
+                            }
                         }
-                        if ( $iId <= $iMin){
-                            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
-                            return;
-                        }
-                        if ($iMax > 0 && $iId > $iMax){
-                            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
-                            return;
-                        }
+                        $iValue = $aIds;
                     }
-                    $iValue = $aIds;
+                    else{
+                        $iValue = array($aIds);
+                    }
                 }
             }
             

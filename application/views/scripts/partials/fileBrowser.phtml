@@ -216,7 +216,7 @@
                             ?>
                             <div class="filebrowser-file-icon" style="background-position: <?php echo $backgroundposition; ?>"></div>
                         </td>
-                        <td class="filebrowser_td_right filebrowser_td_title">
+                        <td class="filebrowser_td_right filebrowser_td_title" onclick="ksPeek(<?php echo $rFile['id']; ?> , '<?php echo $rFile['title']; ?>')">
                             <p><?php echo $rFile['title']; ?></p>
                         </td>
                         <td class="filebrowser_td_right filebrowser_td_download">

@@ -122,6 +122,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         
         //grab the ids
         $aIds = $this -> _aData['ids'];
+        $sDisposition = $this -> _aData['disposition'];
         
         //create the model for the posts and files
         $mFiles = new Application_Model_DbTable_Files();
@@ -136,7 +137,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         //if there is only one file
         if ($rsFiles -> count() == 1){
             $rFile = $rsFiles -> getRow(0);
-            $this->download($rFile['path'] , $rFile['title']);
+            ($sDisposition != NULL) ? $this->download($rFile['path'] , $rFile['title'] , $sDisposition) : $this->download($rFile['path'] , $rFile['title']);
             return;
         }
         

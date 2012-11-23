@@ -2237,7 +2237,13 @@ function ksPeek(iId , sTitle){
     var aIds = new Array();
     aIds[0] = iId;
     var sIds = JSON.stringify(aIds);
-    var iframeurl = "http://docs.google.com/gview?url=http://"+ window.location.host  + "/course/downloadmulfiles/ids/"+ sIds +"&embedded=true";
+    if (bIsImage(sTitle)){
+        var iframeurl = "http://"+ window.location.host  + "/course/downloadfiles/ids/"+ iId +"/disposition/inline/";
+    }
+    else{
+        var iframeurl = "http://docs.google.com/gview?url=http://"+ window.location.host  + "/course/downloadfiles/ids/"+ iId +"&embedded=true";
+    }
+    
     $("#peeking_iframe").html("");
     $('<iframe />', {
         name: 'myFrame',
@@ -2291,4 +2297,18 @@ function ksDownloadFiles(aIds){
     iframe.style.display = "none";
     document.body.appendChild(iframe);
     
+}
+
+/**
+ * return true if sFile is name of image file
+ * @param sFile String of file name
+ * @return true if file ext is jpg , bmp, png , gif
+ */
+function bIsImage(sFile){
+    var sExt = sFile.split('.').pop();
+    sExt = sExt.toLowerCase();
+    if (sExt === 'bmp' || sExt === 'jpg' || sExt ==='png' || sExt === 'gif'){
+        return true;
+    }
+    return false;
 }

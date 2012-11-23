@@ -147,7 +147,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
      * try and download the file with the path from s3
      * @param String $sPath the path to the file to download
      */
-    protected function download($sPath , $sTitle = ''){
+    protected function download($sPath , $sTitle = '' , $sContentDispositon = 'attachment'){
         //get the object info
         $s3 = new Nerdeez_Service_Amazon_S3();
         $aObjectInfo = $s3 -> getInfo($sPath);
@@ -156,7 +156,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
             header('Content-type: ' . $aObjectInfo['type']);
             header('Content-length: ' . $aObjectInfo['size']);
             if ($sTitle !== '')
-                header('Content-Disposition: attachment; filename="'.rawurldecode($sTitle).'"');
+                header('Content-Disposition: ' . $sContentDispositon . '; filename="'.rawurldecode($sTitle).'"');
             echo $s3->getObject($sPath);
         }
         else {
@@ -193,12 +193,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         
     }
     
-    protected function downloadFile($path , $title = ''){
-        //check file requested is readable
-        /*if(!is_readable($path)){
-            echo 'Failed reading file';
-            exit();
-        }*/
+    protected function downloadFile($path , $title = '' , $sContentDispositon = 'attachment'){
 
         //get file requested size
         $size = filesize($path);
@@ -247,7 +242,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         //set headers for download
          header('Content-Type: ' . $mime_type);
          
-         header('Content-Disposition: attachment; filename="'.$title.'"');
+         header('Content-Disposition: $sContentDispositon; filename="'.$title.'"');
          
          header("Content-Transfer-Encoding: binary");
          header('Accept-Ranges: bytes');
