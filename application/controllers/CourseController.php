@@ -133,18 +133,30 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
             return;
         }
         
+        //if there is only one file
         if ($rsFiles -> count() == 1){
             $rFile = $rsFiles -> getRow(0);
             $this->download($rFile['path'] , $rFile['title']);
             return;
         }
         
+        //grab the upload dir
+        $sUploadDir = NULL;
+        $config = new Zend_Config_Ini('../application/configs/application.ini','production');
+        $sUploadDir = $config->uploaddir;
         
+        //if there is many files
         $s3 = new Nerdeez_Service_Amazon_S3();
         $aFiles = array();
         foreach ($rsFiles as $rFile){
-            //$aFiles[] = $rFile['path'];
-            $aFiles[] = $s3->getObject($rFile['path']);
+            
+            //save all the files in the hd
+            $sPath = NULL;
+            $iRandPrefix = rand(0, 99999);
+            $aName = explode('nerdeez/', $rFile['path']);
+            $sPath = $sUploadDir . $iRandPrefix . '_' . $aName[1];
+            file_put_contents($sPath, $s3->getObject($rFile['path']));
+            $aFiles[]=$sPath;
         }
         
         //create the zip file 
@@ -152,6 +164,12 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         $zipfile = $zZip -> createZip($aFiles);
         //send the zip file to download
         $this->downloadFile($zipfile,$zipfile);
+        
+        //delete all the files created
+        unlink($zipfile);
+        foreach($aFiles as $sFile){
+            unlink($sFile);
+        }
         
     }
 }
