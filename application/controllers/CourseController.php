@@ -120,15 +120,46 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         $this->_helper->layout()->disableLayout(); 
         Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
         
-        //grab the ids
+        //grab the params ids , disposition , folders
         $aIds = $this -> _aData['ids'];
         $sDisposition = $this -> _aData['disposition'];
+        $aFolders = $this -> _aData['folders'];
+        
+        //if the user entered folders than deal with them
+        $aFoldersIds = array();
+        if (count($aFolders) > 0){
+        
+            //grab all the sons folders
+            $rsFolderSons = NULL;
+            $mFolders = new Application_Model_DbTable_Folders();
+            $rsFolderSons = $mFolders ->fetchAll($mFolders -> select() -> where('papa IN (?)' , $aFolders));
+
+            //grab all the father folders
+            $rsFolderesPapa = NULL;
+            $rsFolderesPapa = $mFolders ->fetchAll($mFolders ->select() ->where('id IN (?)' , $aFolders));
+
+            //create array of ids from all the folders you found
+            foreach ($rsFolderSons as $rFolder) {
+                $aFoldersIds[]=$rFolder['id'];
+            }
+            foreach ($rsFolderesPapa as $rFolder) {
+                $aFoldersIds[]=$rFolder['id'];
+            }
+            
+        }
         
         //create the model for the posts and files
         $mFiles = new Application_Model_DbTable_Files();
         
         //grab the rows
-        $rsFiles = $mFiles->find($aIds);
+        $selFilesSelect = $mFiles ->select();
+        if (count($aIds) > 0){
+            $selFilesSelect = $selFilesSelect -> where('id IN (?)' , $aIds);
+        }
+        if(count($aFoldersIds) > 0){
+            $selFilesSelect = $selFilesSelect -> orwhere('folders_id IN (?)' , $aFoldersIds);
+        }
+        $rsFiles = $mFiles->fetchAll($selFilesSelect);
         if($rsFiles->count() == 0){
             $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
             return;
@@ -149,13 +180,19 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         //if there is many files
         $s3 = new Nerdeez_Service_Amazon_S3();
         $aFiles = array();
+        $aParents = array();
         foreach ($rsFiles as $rFile){
+            /* @var $rFile Zend_Db_Table_Row */
+            //create the folder dir
+            $rParent = $rFile ->findParentRow('Application_Model_DbTable_Folders');
+            mkdir($sUploadDir . $rParent['title']);
+            $aParents[]=$rParent;
             
             //save all the files in the hd
             $sPath = NULL;
             $iRandPrefix = rand(0, 99999);
             $aName = explode('nerdeez/', $rFile['path']);
-            $sPath = $sUploadDir . $iRandPrefix . '_' . $aName[1];
+            $sPath = $sUploadDir . $rParent['title'] . '/' . $iRandPrefix . '_' . $aName[1];
             file_put_contents($sPath, $s3->getObject($rFile['path']));
             $aFiles[]=$sPath;
         }
@@ -166,10 +203,13 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         //send the zip file to download
         $this->downloadFile($zipfile,$zipfile);
         
-        //delete all the files created
+        //delete all the files and folders created
         unlink($zipfile);
         foreach($aFiles as $sFile){
             unlink($sFile);
+        }
+        foreach ($aParents as $rParent) {
+            rmdir($sUploadDir . $rParent['title']);
         }
         
     }

@@ -817,6 +817,7 @@ function displayPostDialog(iPapa){
  */
 function ksFileBrowserCheckAll(){
     $('.ksFileBrowserCheckbox').attr('checked', true);
+    $('.ksFolderBrowserCheckbox').attr('checked', true);
 }
 
 /**
@@ -824,6 +825,7 @@ function ksFileBrowserCheckAll(){
  */
 function ksFileBrowserUncheckAll(){
     $('.ksFileBrowserCheckbox').attr('checked', false);
+    $('.ksFolderBrowserCheckbox').attr('checked', false);
 }
 
 
@@ -834,10 +836,18 @@ function ksFileBrowserUncheckAll(){
 function ksDownloadChecked(){
     //create the array of ids to download
     var aIds=new Array();
+    var aFolders=new Array();
     var counter=0;
     $('.ksFileBrowserCheckbox').each(function(){
         if ($(this).attr("checked") === "checked"){
             aIds[counter] = $(this).attr('val');
+            counter++;
+        }
+    });
+    counter = 0;
+    $('.ksFolderBrowserCheckbox').each(function(){
+        if ($(this).attr("checked") === "checked"){
+            aFolders[counter] = $(this).attr('val');
             counter++;
         }
     });
@@ -846,7 +856,7 @@ function ksDownloadChecked(){
     loadingScreen();
     
     //download the files
-    ksDownloadFiles(aIds);
+    ksDownloadFiles(aIds , aFolders);
     
     removeLoadingScreen();
 }
@@ -2271,7 +2281,7 @@ function ksDownloadFile(id){
     loadingScreen();
     
     //download the files
-    ksDownloadFiles(aIds);
+    ksDownloadFiles(aIds , []);
     
     removeLoadingScreen();
 }
@@ -2280,9 +2290,10 @@ function ksDownloadFile(id){
  * download the list of files
  * @param array aIds the list of ids to download
  */
-function ksDownloadFiles(aIds){
+function ksDownloadFiles(aIds , aFolders){
     //convert the array to json string
     var sIds = JSON.stringify(aIds);
+    var sFolders = JSON.stringify(aFolders);
     
     //create an object to send to varify auth
     var obj=new Object();
@@ -2290,7 +2301,7 @@ function ksDownloadFiles(aIds){
 
     //user is authorized to download the files continue with download
     var iframe = document.createElement("iframe");
-    iframe.src = "/course/downloadfiles/ids/" + sIds;
+    iframe.src = "/course/downloadfiles/ids/" + sIds + '/folders/' + sFolders;
     iframe.onload = function() {
         // iframe has finished loading, download has started
     }
@@ -2300,7 +2311,7 @@ function ksDownloadFiles(aIds){
 }
 
 /**
- * return true if sFile is name of image file
+ * return true if sFile is name of image file   
  * @param sFile String of file name
  * @return true if file ext is jpg , bmp, png , gif
  */
@@ -2311,4 +2322,11 @@ function bIsImage(sFile){
         return true;
     }
     return false;
+}
+
+/**
+ * download all the files that the check box are selected
+ */
+function ksDownloadSelectedFiles(){
+    
 }

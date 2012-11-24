@@ -41,6 +41,12 @@ class Application_Model_DbTable_Folders extends Nerdeez_Db_Table{
     protected $_name = 'folders';
     
     /**
+     * the dependant tables
+     * @var array 
+     */
+    protected $_dependentTables = array('Application_Model_DbTable_Files'); 
+    
+    /**
      * just another insert method
      * @param String $sTitle course title
      * @param int $iPapa is this type inside another type

@@ -57,6 +57,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'email' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 100) ,
         array('name' => 'token' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
         array('name' => 'ids' , 'type' => Nerdeez_ParamTypes::JSONARRAYNUMBERS , 'length' => 150 , 'min' => 0 , 'max' => 0) ,
+        array('name' => 'folders' , 'type' => Nerdeez_ParamTypes::JSONARRAYNUMBERS , 'length' => 150 , 'min' => 0 , 'max' => 0) ,
         
     );
     

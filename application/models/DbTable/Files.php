@@ -44,6 +44,18 @@ class Application_Model_DbTable_Files extends Nerdeez_Db_Table{
     protected $_name = 'files';
     
     /**
+     * the tables that we refrence in this table
+     * @var array
+     */
+    protected $_referenceMap    = array(
+        'Folder' => array(
+            'columns'           => array('folders_id'),
+            'refTableClass'     => 'Application_Model_DbTable_Folders',
+            'refColumns'        => array('id')
+        ),
+    );
+    
+    /**
      * inserts a new row to the files
      * @param String $sTitle
      * @param String $sPath

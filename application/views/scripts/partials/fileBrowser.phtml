@@ -177,7 +177,7 @@
                         || ($this -> rFolder == NULL && $rFolder['papa'] == -1 )): ?>
                     <tr class="filebrowser_data_tr">
                         <td class="filebrowser_td_check">
-                            <input type="checkbox" val="<?php echo $rFile['id']; ?>" class="ksFileBrowserCheckbox" />
+                            <input type="checkbox" val="<?php echo $rFolder['id']; ?>" class="ksFolderBrowserCheckbox" />
                         </td>
                         <td class="filebrowser_td_right filebrowser_td_img" onclick="gotoFolder(<?php echo $rFolder['id']; ?> , <?php echo $this -> rCourse['id']; ?>);">
                             <img src="/img/Folder.svg.png" />
@@ -228,6 +228,24 @@
                 <?php endif; ?>
             <?php endforeach;?>
         </table>
+        <!-- begin multiple downloads section -->
+        <div style="margin-left: 15px;height: 70px;">
+            <div style="">
+                <img src="/img/arrow_ltr.png" />
+                <span style="">
+                    <a onclick="ksFileBrowserCheckAll();" href="javascript:void(0)"> Check All </a>
+                    /
+                    <a onclick="ksFileBrowserUncheckAll();" href="javascript:void(0)"> UnCheck All </a>
+                </span>
+                <br/>
+                <span style="margin-left: 10px;top: 5px; position:relative;">
+                    <a onclick="ksDownloadChecked();" href="javascript:void(0)">
+                        Download selected files
+                    </a>
+                </span>
+            </div>
+        </div>
+        <!-- end of multiple downloads  -->
     </div>
     <!-- end the file table -->
     
