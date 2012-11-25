@@ -78,7 +78,18 @@ class IndexController extends Nerdeez_Controller_Action
     public function privacyAction(){}
     
     /**
+     * when the user want s to view the community guidelines
+     */
+    public function communityguidelinesAction(){}
+    
+    /**
+     * in the guidelines there is a safety section
+     */
+    public function safetyAction(){}
+    
+    /**
      * when the user input text in the search course text box
+     * @deprecated
      *  
      */
     public function searchcourseAction(){ 

@@ -1005,6 +1005,7 @@ box-sizing: border-box;
     height: 23px;
     padding: 5px;
     position: relative;
+    border: 1px solid;border-radius: 5px 5px 5px 5px;height: 23px;padding: 5px;position:static;width: auto;margin-left: 2px;margin-right: 2px;margin-top: 2px;
 }
 
 .registerdialog-header > h2{
@@ -1105,6 +1106,19 @@ box-sizing: border-box;
     position: fixed;
     top: 10%;
     width: 80%;
+    z-index: 3;
+}
+
+.flagdialog{
+    background-color: white;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px 5px 5px 5px;
+    clear: both;
+    display: none;
+    left: 30%;
+    position: fixed;
+    top: 10%;
+    width: 800px;
     z-index: 3;
 }
 
@@ -2014,5 +2028,35 @@ select{
 
 .black_header a{
     color: #292929;
+}
+
+#flagdialog{
+    
+}
+
+#reasonlist{
+    display: none;
+    margin-top: -16px;
+    margin-left: 160px;
+    position: absolute;
+}
+
+#reasonsfreetext{
+    display: none;
+    margin: 0 auto;
+    width: 500px;
+}
+
+#reasonmessage{
+    display: none;
+    
+}
+
+textarea{
+    resize:none;
+}
+
+#reasonspanmesseage{
+    font-weight: bold;
 }
 

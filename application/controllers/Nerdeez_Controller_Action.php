@@ -55,6 +55,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'repassword' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
         array('name' => 'disposition' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
         array('name' => 'email' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 100) ,
+        array('name' => 'title' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 100) ,
         array('name' => 'token' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
         array('name' => 'ids' , 'type' => Nerdeez_ParamTypes::JSONARRAYNUMBERS , 'length' => 150 , 'min' => 0 , 'max' => 0) ,
         array('name' => 'folders' , 'type' => Nerdeez_ParamTypes::JSONARRAYNUMBERS , 'length' => 150 , 'min' => 0 , 'max' => 0) ,
@@ -294,6 +295,46 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $auth->getStorage()->write($oUser);
         
         //the end
+    }
+    
+    /**
+     * for the ajax functions call this to disable the view loading
+     */
+    protected function disableView(){
+        $this->_helper->layout()->disableLayout(); 
+        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+    }
+    
+    /**
+     * gets a value from the config file
+     * @param String $sKey the key to retrieve
+     * @return String the value 
+     */
+    protected function getFromConfig($sKey){
+        $config = new Zend_Config_Ini('../application/configs/application.ini','production');
+        return $config->{$sKey};
+    }
+    
+    /**
+     *send mail to {$mail} with  content {$body}
+     * 
+     * @param String $mail - the mail address
+     * @param String $body  - the text content of the mail 
+     */
+    public function reportByMail($email , $body , $title){
+        $headers = 'MIME-Version: 1.0' . "\r\n";
+        $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+        $headers .= 'From: admin@nerdeez.com' . "\r\n";
+        @mail($email,$title,$body,$headers);
+    }
+    
+    /**
+     * when ajax was completed successfully pass it to the user
+     */
+    public function ajaxReturnSuccess(){
+        $userData=array(array('status'=>'success','data'=>$result));
+        $dojoData= new Zend_Dojo_Data('status',$userData);
+	echo $dojoData->toJson();
     }
     
 }

@@ -1989,6 +1989,9 @@ function loadSearchCourse(){
         $('#expendcourselist').toggleClass('active');
         $('#courselist').fadeToggle('normal');
     });
+    
+    
+    
 }
 
 /**
@@ -2325,8 +2328,95 @@ function bIsImage(sFile){
 }
 
 /**
- * download all the files that the check box are selected
+ * display the dialog for reporting flag
  */
-function ksDownloadSelectedFiles(){
+function showReportFlag(){
+    $('#flagdialog').fadeIn('normal');
+    $('#glassloading').slideToggle('normal');
+}
+
+/**
+ * put events to the reasons menus
+ */
+function loadReasonsMenu(){
+    $('#reasonsfreetexttextarea').on('keyup' , function(ev){
+        ksSetTextHelper($('#reasonsfreetexttextarea'));
+        
+    });
     
+    $('li.leaf').each(function(){
+        $(this).on('click' , function(){
+            $('#reasonspanmesseage').text($.trim($(this).children('span').text()));
+            //$('#reasonmessage').fadeIn('normal');
+            $('#reasonmessage').css('display' , 'inline');
+            $('#reasonsfreetext').fadeIn('normal');
+            $('#reasonlist').fadeOut('normal');
+            $('#reasonsbutton').toggleClass('active');
+        });
+    });
+}
+
+/**
+ * submit the flag dialog
+ */
+function sendFlagReport(){
+    //check if the form is valid
+    if($('#reasonmessage').css('display') === 'none'){
+        $('#flagdialog .about_status').text('Please choose a reason why this content is inappropriate');
+        return;
+    } 
+    
+    //put the loading screen on
+    loadingScreen();
+    
+    //create an object to send to varify auth
+    var obj=new Object();
+    obj.id = $('#reasonshidden').val();
+    obj.message = $('#reasonsfreetexttextarea').val();
+    obj.title = $.trim($('#reasonspanmesseage').text());
+    
+    //send the reset information via ajax
+    $.ajax({
+            type: "POST",
+            url: "/course/flag/",
+            dataType: "json",
+            data: obj ,
+            async: false,
+            success: function(res) {
+                if (res.items[0].status ==='success'){
+                    setSuccessToSuccess();
+                    //loading screen
+                    removeLoadingScreen();
+
+                    //display success failure screen
+                    displaySuccessFailure();
+                    
+                    
+                    $('#glassnoloading').fadeOut('normal');
+                    $('#flagdialog').fadeOut('normal');
+                }
+                else{
+                    setSuccessToFailed();
+                    //loading screen
+                    removeLoadingScreen();
+
+                    //display success failure screen
+                    displaySuccessFailure();
+                    
+                    $('#flagdialog .about_status').text(res.items[0].msg);
+
+                }
+            },
+            error: function(res){
+                setSuccessToFailed();
+                //loading screen
+                removeLoadingScreen();
+                 
+                //display success failure screen
+                displaySuccessFailure();
+                
+                
+                $('#flagdialog .about_status').ext('Error! Connection failure. Try again');
+            }
+    });
 }

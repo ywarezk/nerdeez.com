@@ -10,7 +10,7 @@
 
 <!-- Start of peeking dialog -->
 <div class="peekingdialog" id="peeking">
-    <div class="bgblack registerdialog-header" style="border: 1px solid;border-radius: 5px 5px 5px 5px;height: 23px;padding: 5px;position:static;width: auto;margin-left: 2px;margin-right: 2px;margin-top: 2px;">
+    <div class="bgblack registerdialog-header" >
         <h2></h2>
         <a href="javascript:void(0)" onclick="$('#peeking').fadeOut('normal');$('#glassnoloading').fadeOut('fast');">
             X
@@ -20,7 +20,6 @@
     </div>
 </div>
 <!-- End of peeking dialog -->
-
 
 <!-- begin filebrowser -->
 <div class="filebrowser">
@@ -167,6 +166,9 @@
                 <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="width:100%;">
                     <span class="pink_header">Title</span>
                 </td>
+                <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="width:100%;">
+                    <span class="pink_header">Flag</span>
+                </td>
                 <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="text-align:center">
                     <span class="pink_header">Download</span>
                 </td>
@@ -184,6 +186,8 @@
                         </td>
                         <td class="filebrowser_td_right filebrowser_td_title" onclick="gotoFolder(<?php echo $rFolder['id']; ?> , <?php echo $this -> rCourse['id']; ?>);">
                             <p><?php echo $rFolder['title']; ?></p>
+                        </td>
+                        <td class="filebrowser_td_right filebrowser_td_title" >
                         </td>
                         <td class="filebrowser_td_right filebrowser_td_download"> 
                             <a href="javascript:void(0)" onclick="ksDownloadFile(<?php echo $rFolder['id'] ?> , 'Application_Model_DbTable_Folders');">
@@ -218,6 +222,11 @@
                         </td>
                         <td class="filebrowser_td_right filebrowser_td_title" onclick="ksPeek(<?php echo $rFile['id']; ?> , '<?php echo $rFile['title']; ?>')">
                             <p><?php echo $rFile['title']; ?></p>
+                        </td>
+                        <td class="filebrowser_td_right filebrowser_td_title" >
+                            <a href="javascript:void(0)" onclick="showReportFlag();">
+                                <img src="/img/flag.png" />
+                            </a>
                         </td>
                         <td class="filebrowser_td_right filebrowser_td_download">
                             <a href="javascript:void(0)" onclick="ksDownloadFile(<?php echo $rFile['id'] ?>);">

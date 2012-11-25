@@ -17,6 +17,9 @@
         ?> 
         <?php 
             $this->headLink()->prependStylesheet('/styles/styles.css');
+            $this->headLink()->prependStylesheet('/styles/superfish-navbar.css');
+            $this->headLink()->prependStylesheet('/styles/superfish-vertical.css');
+            $this->headLink()->prependStylesheet('/styles/superfish.css');
             $this->headLink(array('rel' => 'SHORTCUT ICON',
                                   'href' => '/img/favicon.ico'),
                                   'PREPEND');
@@ -29,6 +32,7 @@
             //attach common javascriopt files
             //$this->headScript()->prependFile('/js/tooltip.js');
             $this->headScript()->prependFile('/js/jquery.ksfunctions.js');
+            $this->headScript()->prependFile('/js/superfish.js');
             $this->headScript()->prependFile('/js/jquery.validate.min.js');
             $this->headScript()->prependFile('/js/jquery-1.7.1.min.js');
             echo $this->headScript(); 
@@ -99,6 +103,14 @@
                     |
                     <a href="/index/privacy" class="footer_anchor">
                         Privacy
+                    </a>
+                    |
+                    <a href="/index/communityguidelines" class="footer_anchor">
+                        Community Guidelines
+                    </a>
+                    |
+                    <a href="/index/safety" class="footer_anchor">
+                        Safety Tips
                     </a>
                     |
                     <a href="http://ykapps.com" class="footer_anchor">

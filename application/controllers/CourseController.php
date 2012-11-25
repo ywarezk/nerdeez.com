@@ -213,6 +213,41 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         }
         
     }
+    
+    /**
+     * when the user reports a copyright violation
+     */
+    public function flagAction(){
+        //disable view 
+        $this->disableView();
+        
+        //get the params sent
+        $iId = $this -> _aData['id'];
+        $sMessage = $this -> _aData['message'];
+        $sTitle = $this -> _aData['title'];
+        
+        //get the admin mail
+        $sEmail = $this -> getFromConfig('BugReportMail');
+        
+        //create the body
+        $sBody = NULL;
+        $sBody = 
+            '
+                <html>
+                    <body>
+                        <h1>Copy right violation report</h1>
+                        <h2>Reason: ' . $sTitle . '</h2>
+                        <h3>Freetext: ' . $sMessage . '</h3>
+                    </body>
+                </html>
+            ';
+        
+        //send the report via mail
+        $this->reportByMail($sEmail, $sBody, 'Copy right violation report');
+        
+        //send success
+        $this ->ajaxReturnSuccess();
+    }
 }
 
 ?>
