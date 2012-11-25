@@ -45,14 +45,9 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
                 -> order ('title ASC'));
         $this -> view -> rsFiles = $rsFiles;
         
-        //find the folders
-        $rsFolders = NULL;
-        $mFolders = new Application_Model_DbTable_Folders();
-        $rsFolders = $mFolders -> fetchAll($mFolders -> select() -> order('title ASC'));
-        $this ->view -> rsFolders = $rsFolders;
-        
         //find the folder row
         $rFolder = NULL;
+        $mFolders = new Application_Model_DbTable_Folders();
         if ($iFolder != NULL){
             $rsFolders = $mFolders -> fetchAll($mFolders -> select() -> where ('id = ?' , $iFolder));
             if ($rsFolders -> count() > 0)
@@ -60,7 +55,23 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         }
         $this -> view -> rFolder = $rFolder;
         
+        //get all the folders
+        $rsFolders = NULL;
+        $rsFolders = $mFolders ->fetchAll($mFolders ->select() -> order('title ASC'));
+        $this -> view -> rsFolders = $rsFolders;
         
+        //find the folders
+        $rsFoldersShown = NULL;
+        $selFolders = $mFolders ->select();
+        if ($rFolder != NULL){
+            $selFolders = $selFolders ->where('papa = ?' , $rFolder['id']);
+        }
+        else{
+            $selFolders = $selFolders ->where('papa = -1');
+        }
+        $selFolders = $selFolders ->order('title ASC');
+        $rsFoldersShown = $mFolders -> fetchAll($selFolders);
+        $this ->view -> rsFoldersShown = $rsFoldersShown;
     }
     
     /**

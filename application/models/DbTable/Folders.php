@@ -6,6 +6,45 @@
 require_once APPLICATION_PATH . '/models/DbTable/Nerdeez_Db_Table.php';
 
 /**
+ * custom folder row class
+ */
+class Nerdeez_Folder_Row extends Zend_Db_Table_Row_Abstract
+{
+    /**
+     * return the size of the folder in this course page
+     * @param int $iCourseId the course this folder belongs to
+     * @return int the size in bytes
+     */
+    public function getSize($iCourseId){
+        //get all the sons of this row
+        $rsFolders = NULL;
+        $mFolders = $this ->getTable();
+        $rsFolders = $mFolders ->fetchAll($mFolders ->select() ->where('papa = ?' , $this['id']));
+        
+        //create array of all the ids
+        $aIds = array();
+        $aIds[]=$this['id'];
+        foreach ($rsFolders as $rFolder) {
+            $aIds[]=$rFolder['id'];
+        }
+        
+        //fetch all the files belong to the folders
+        $rsFiles = NULL;
+        $mFiles = new Application_Model_DbTable_Files();
+        $rsFiles = $mFiles ->fetchAll($mFiles ->select() 
+                -> where('folders_id IN (?)' , $aIds)
+                ->where('courses_id = ?' , $iCourseId));
+        
+        //from all the files calculate and return the size
+        $iSize = 0;
+        foreach ($rsFiles as $rFile) {
+            $iSize+=$rFile['size'];
+        }
+        return $iSize;
+    }
+}
+
+/**
  * file browser will have identical folders in all the courses
  * this will controll these folders
  *
@@ -60,6 +99,12 @@ class Application_Model_DbTable_Folders extends Nerdeez_Db_Table{
         );
         return parent::insert($aNewRow);
     }
+    
+    /**
+     * our custom folder row
+     * @var String 
+     */
+    protected $_rowClass = 'Nerdeez_Folder_Row';
     
 }
 
