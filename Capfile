@@ -1,3 +1,3 @@
 require 'rubygems'
-require 'railsless-deploy'
-load 'application/configs/deploy.rb
+require 'zend-framework-deploy'
+load    'application/configs/deploy'

@@ -1,0 +1,236 @@
+<?php
+/**
+ * the file browser on course page
+ * @param Zend_Db_Table_Rowset $rsFolders all the folders the system defines
+ * @param Zend_Db_Table_Row $rFolder the folder we are currently at Null if we are in home
+ * @param Zend_Db_Table_Row $rCourse the course row that this file browser belong to
+ * @param Zend_Db_Table_Rowset $rsFiles all the files of the course
+ */
+?>
+
+<!-- Start of peeking dialog -->
+<div class="peekingdialog" id="peeking">
+    <div class="bgblack registerdialog-header" style="border: 1px solid;border-radius: 5px 5px 5px 5px;height: 23px;padding: 5px;position:static;width: auto;margin-left: 2px;margin-right: 2px;margin-top: 2px;">
+        <h2></h2>
+        <a href="javascript:void(0)" onclick="$('#peeking').fadeOut('normal');$('#glassnoloading').fadeOut('fast');">
+            X
+        </a>
+    </div>
+    <div style="clear: both;height: 90%;margin: 6px auto 0;width: 99%;" id="peeking_iframe">
+    </div>
+</div>
+<!-- End of peeking dialog -->
+
+
+<!-- begin filebrowser -->
+<div class="filebrowser">
+    <h2 style="color: rgb(226, 0, 69); margin-left: 30px;">
+        Course Files
+    </h2>
+    
+    <!-- Begin file upload dialog -->
+    <?php
+    //create the serial number
+    $serial = rand(0, 99999);
+    ?>
+    <div class="uploaddialog">
+        <form id="uploadpermform" method="post" action="/course/postfiles/" onSubmit="return checkFilesUpload();">
+            <div class="uploaddialog_uploadsection">
+                <div class="kscenter">
+                    <div class="kscenter-img"> 
+                        <img width="142" height="105" src="/img/searchface.png">    
+                    </div>
+                    <div class="kscenter-text" id="uploaddialog_explain">
+                    </div>
+                </div>
+                <div>
+                    <?php
+                    echo $this -> partial('partials/uploadbutton.phtml' , array('iSerial' => $serial , 'sId' => 'uploadFileBrowser' , 'iNumUpload' => 0 , 'iMaxSize' => 209715200 , 'sAcceptFileTypes' => '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 'sUrl' => '/course/upload')) ;
+                    ?>
+                </div>
+                <div id="fileclassify" style="display: none; margin-bottom: 20px;">
+                    <div class="fileclassify_body">
+                        <div class="fileclassify_body_explain">
+                            <div class="kscenter-text">
+                                Help us keep the files organized!
+                            </div>
+                        </div>
+                        <table class="fileclassify_table">
+                            <tr>
+                                <td class="fileclassify_table_tdleft">
+                                    What type of file is this?
+                                </td>
+                                <td>
+                                    <div class="style-select">
+                                        <select name="folder_papa" onchange="showHWNumber();">
+                                            <?php foreach($this -> rsFolders as $rFolder) :?>
+                                                <?php if ($rFolder['papa'] == -1) :?>
+                                                    <?php 
+                                                    $sSelected = '';
+                                                    if($this -> rFolder != NULL 
+                                                            && ($this -> rFolder['id'] == $rFolder['id'] || $this -> rFolder['papa'] == $rFolder['id'])) {
+                                                        $sSelected = ' selected="selected"';
+                                                        $rFolderPapa = $rFolder;
+                                                    }
+                                                    ?>
+                                                    <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> >
+                                                        <?php echo $rFolder['title']; ?>
+                                                    </option>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php 
+                            $sDisplay = 'none';
+                            if ($this -> rFolder != NULL 
+                                    && ($this -> rFolder['title'] === 'H.W' || $this -> rFolder['papa'] != -1 )){
+                                $sDisplay = 'table-row';
+                            }
+                            ?>
+                            <tr id="fileclassify_body_hwnumber" style="display: <?php echo $sDisplay; ?>">
+                                <td class="fileclassify_table_tdleft">
+                                    This is H.W Number:
+                                </td>
+                                <td>
+                                    <div class="style-select">
+                                        <select name="hw_number">
+                                            <?php foreach($this -> rsFolders as $rFolder): ?>
+                                                <?php if ($rFolder['papa'] != -1) :?>
+                                                    <?php 
+                                                    $sSelected = '';
+                                                    if($this -> rFolder != NULL 
+                                                            && $this -> rFolder['id'] == $rFolder['id']) {
+                                                        $sSelected = ' selected="selected"';
+                                                    }
+                                                    ?>
+                                                    <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> >
+                                                        <?php echo $rFolder['title']; ?>
+                                                    </option>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div style="clear: both; height: 40px; width: 110px; margin: 0px auto;">
+                    <button class="submit btn primary-btn flex-table-btn js-submit" type="submit" value="Submit files" >
+                        Submit Files
+                    </button>
+                </div>
+            </div>
+            <script type="text/javascript">loadCourse();</script>
+            <input type="hidden" name="serial" value="<?php echo $serial; ?>" />
+            <input type="hidden" name="id" value="<?php echo $this -> rCourse['id']; ?>" />
+        </form>
+    </div>
+        
+    <!-- End file upload dialog -->
+    
+    <!-- begin the files table -->
+    <div class="filebrowser_filetable">
+        <div class="filebrowser_filetable_navigation">
+            <h3>
+                <span class="pink_header">
+                    <a href="/course/course/id/<?php echo $this -> rCourse['id']; ?>">
+                        HOME
+                    </a>
+                    <?php if ($this -> rFolder != NULL): ?>
+                        <img src="/img/arrow.gif" />
+                        <span class="black_header">
+                            <a href="/course/course/id/<?php echo $this -> rCourse['id']; ?>/folder/<?php echo $rFolderPapa['id']; ?>">
+                                <?php echo $rFolderPapa['title']; ?>
+                            </a>
+                        </span>
+                        <?php if ($this -> rFolder['papa'] != -1): ?>
+                        <img src="/img/arrow.gif" />
+                        <span class="pink_header">
+                            <a href="/course/course/id/<?php echo $this -> rCourse['id']; ?>/folder/<?php echo $this -> rFolder['id']; ?>">
+                                <?php echo $this -> rFolder['title']; ?>
+                            </a>
+                        </span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                </span>
+            </h3>
+        </div>
+        <table style="padding: 10px !important;border-collapse:separate;width:100%;">
+            <tr class="filebrowser-border-bottom filebrowser_table_title">
+                <td class="filebrowser-border-bottom filebrowser-td filebrowser-header-td">
+                </td>
+                <td class="filebrowser-border-bottom filebrowser-td filebrowser-header-td">
+                </td>
+                <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="width:100%;">
+                    <span class="pink_header">Title</span>
+                </td>
+                <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="text-align:center">
+                    <span class="pink_header">Download</span>
+                </td>
+            </tr>
+            <?php //first print the folders ?>
+            <?php foreach($this -> rsFolders as $rFolder) :?>
+                <?php if (($this -> rFolder != NULL && $rFolder['papa'] == $this -> rFolder['id']) 
+                        || ($this -> rFolder == NULL && $rFolder['papa'] == -1 )): ?>
+                    <tr class="filebrowser_data_tr">
+                        <td class="filebrowser_td_check">
+                            <input type="checkbox" val="<?php echo $rFile['id']; ?>" class="ksFileBrowserCheckbox" />
+                        </td>
+                        <td class="filebrowser_td_right filebrowser_td_img" onclick="gotoFolder(<?php echo $rFolder['id']; ?> , <?php echo $this -> rCourse['id']; ?>);">
+                            <img src="/img/Folder.svg.png" />
+                        </td>
+                        <td class="filebrowser_td_right filebrowser_td_title" onclick="gotoFolder(<?php echo $rFolder['id']; ?> , <?php echo $this -> rCourse['id']; ?>);">
+                            <p><?php echo $rFolder['title']; ?></p>
+                        </td>
+                        <td class="filebrowser_td_right filebrowser_td_download"> 
+                            <a href="javascript:void(0)" onclick="ksDownloadFile(<?php echo $rFolder['id'] ?> , 'Application_Model_DbTable_Folders');">
+                                <img src="/img/download32.png" height="24" width="24"/>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach; ?>
+                    
+            <?php //now print the files ?>
+            <?php foreach($this -> rsFiles as $rFile): ?>
+                <?php if ($this -> rFolder != NULL && $rFile['folders_id'] == $this -> rFolder['id']): ?>
+                    <tr class="filebrowser_data_tr">
+                        <td class="filebrowser_td_check">
+                            <input type="checkbox" val="<?php echo $rFile['id']; ?>" class="ksFileBrowserCheckbox" />
+                        </td>
+                        <td class="filebrowser_td_right filebrowser_td_img" onclick="ksPeek(<?php echo $rFile['id']; ?> , '<?php echo $rFile['title']; ?>')">
+                            <?php 
+                            //determine the background position from the extension
+                            $ext = strtolower(pathinfo($rFile['title'], PATHINFO_EXTENSION));
+                            switch ($ext) {
+                                case 'jpg' || 'bmp' || 'gif' || 'png':
+                                    $backgroundposition = '-10px -8px;';
+                                    break;
+                                default:
+                                    $backgroundposition = '0 0;';
+                                    break;
+                            }
+                            ?>
+                            <div class="filebrowser-file-icon" style="background-position: <?php echo $backgroundposition; ?>"></div>
+                        </td>
+                        <td class="filebrowser_td_right filebrowser_td_title">
+                            <p><?php echo $rFile['title']; ?></p>
+                        </td>
+                        <td class="filebrowser_td_right filebrowser_td_download">
+                            <a href="javascript:void(0)" onclick="ksDownloadFile(<?php echo $rFile['id'] ?>);">
+                                <img src="/img/download32.png" height="24" width="24"/>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+            <?php endforeach;?>
+        </table>
+    </div>
+    <!-- end the file table -->
+    
+</div>
+<!-- end filebrowser -->
+
