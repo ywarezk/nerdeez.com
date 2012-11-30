@@ -1,0 +1,49 @@
+<?php
+/**
+ * this file will add specific admin operations for the files 
+ */
+?>
+
+<!-- start of zip file add form -->
+<div class="admin_container">
+    <h2>Add files by zip</h2>
+    <p style="text-align: center;">
+        The hirechy is from university -&gt; course -&gt; papaFolder -&gt; sonFolder | file -&gt; file
+    </p>
+    <div class="addbyzip" style="width: 500px; margin: 0 auto;">
+        <form method="post" action="/admin/addbyzip/">
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <?php
+                            $serial = rand(0, 99999);
+                            echo $this -> partial('partials/uploadbutton.phtml' , array('iSerial' => $serial , 'sId' => 'uploadZipFiles' , 'iNumUpload' => 1 , 'iMaxSize' => 209715200 , 'sAcceptFileTypes' => '/(\\.|\\/)(zip)$/i' , 'sUrl' => '/admin/upload')) ;
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center">
+                        <input type="hidden" name="serial" value="<?php echo $serial; ?>">
+                        <button tabindex="0" type="submit" class="submit btn primary-btn js-submit">
+                            Submit
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+<!-- end of zip add files dialog -->
+
+<!-- start of s3 clean dialog --> 
+<div class="admin_container">
+    <h2>Clean my s3</h2>
+    <div style="width: 500px; margin: 0 auto;">
+        <form method="post" action="/admin/cleans3/" style="text-align: center">
+            <button tabindex="0" type="submit" class="submit btn primary-btn js-submit">
+                Submit
+            </button>
+        </form>
+    </div>
+</div>
+<!-- end of s3 clean dialog --> 

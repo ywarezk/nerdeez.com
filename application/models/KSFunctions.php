@@ -385,6 +385,16 @@ class Application_Model_KSFunctions {
         //send the mail 
         $this->reportByMail($email, $body, $title);
     }
+    
+    /**
+     * from the full path im grabbing just the name
+     * @param String $sPath the path to grab
+     * @return String the name of the file
+     */
+    public function grabFileNameFromPath($sPath){
+        $aPath = explode('/', $sPath);
+        return $aPath[count($aPath) - 1];
+    }
 }
 
 ?>

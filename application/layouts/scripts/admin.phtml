@@ -17,13 +17,8 @@
 $bIsDownload = FALSE;
 ?>
 
-<div class="wrapper"> 
-    <?php
-    //the menu displayed for the admin
-    echo $this -> render('menus/admin_menu.phtml');
-    ?>
+    
      
-    <div class="inview-wrapper">
         
         <?php 
         //create the status divs
@@ -200,7 +195,7 @@ $bIsDownload = FALSE;
                     <table style="width: 100%;">
                         <?php 
                         foreach($this -> aCols as $sCol){
-                            if($sCol === 'id' || $sCol === 'size')continue;
+                            if($sCol === 'id' || $sCol === 'size' || $sCol === 'md5_hash')continue;
                         ?>    
                         <tr>
                             <td style="padding: 10px; text-align: right; font-weight: bold; font-size: 15px;">
@@ -256,5 +251,10 @@ $bIsDownload = FALSE;
                 </form>
             </div>
         </div>
-    </div>
-</div>
+        
+        <!-- display the rest of the content file -->
+        <?php 
+            echo $this->layout()->content;
+        ?>
+        <!-- end of file content -->
+        

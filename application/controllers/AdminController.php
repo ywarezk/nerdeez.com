@@ -40,9 +40,6 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         //set the title of the page
         $this -> view -> sTitle = 'Universities';
         
-        //set the column which is papa
-        $this -> view -> sPapaCol = NULL;
-        
         //get the columns of the table
         $aCols = NULL;
         $mUniversities = new Application_Model_DbTable_Universities();
@@ -60,11 +57,14 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         //get the rowset of the papa
         $rsPapas = NULL;
         $this -> view -> rsPapas = $rsPapas;
+        
+        //set the column which is papa
+        $this -> view -> sPapaCol = array();
     }
     
     /**
      * a place for the admin to modify the courses table
-     * gonna add here an option for adding by csv
+     * gonna add here an option for adding by csv  
      */
     public function coursesAction(){
         //set the title of the page
@@ -110,7 +110,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> sModelName = 'Application_Model_DbTable_Folders';
         
         //set the column which is papa
-        $this -> view -> sPapaCol = NULL;
+        $this -> view -> sPapaCol = array();
         
         //get the columns of the table
         $aCols = NULL;
@@ -172,10 +172,6 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         //start the session
         Zend_Session::start();
         
-        //grab the params
-        $aData = NULL;
-        $aData=$this->getRequest()->getParams();
-        
         //grab the model text
         $sModel = $aData['model'];
         
@@ -192,21 +188,18 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             if ($sCol === 'id')continue;
             if ($sCol === 'size')continue;
             if ($sCol === 'path'){ // there is a file uploaded grab the path
-                $serial = $aData['serial'];
-                $counter = 0;
-                foreach ($_SESSION['kstempfiles'][$serial] as $oSingleFile){
-                    $aParams[$sCol] = $oSingleFile -> name;
-                    $aParams['size'] = $oSingleFile -> size;
-                    $_SESSION['kstempfiles'][$counter] = NULL;
-                    $counter ++;
-                }
+                $oSingleFile = $this->_aFiles[0];
+                /* @var $oSingleFile Nerdeez_Files  */
+                $aParams[$sCol] = $oSingleFile -> sUrl;
+                $aParams['size'] = $oSingleFile -> iSize;
+                $aParams['md5_hash'] = $oSingleFile -> sHash;
                 continue;
             }
             if ($aData[$sCol] === ''){
                 $aParams[$sCol] = NULL;
                 continue;
             }
-            $aParams[$sCol] = $aData[$sCol];
+            $aParams[$sCol] = $this -> _aData[$sCol];
         }
         
         //insert the actual row
@@ -235,10 +228,23 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         
         //create the model
         $mModel = new $sModel();
+        /* @var $mModel Nerdeez_Db_Table */
         
-        //delete all the rows
-        foreach ($aIds as $sId) {
-            $mModel -> deleteRowWithId($sId);
+        //get the columns from the model
+        $aCols = NULL;
+        $aCols = $mModel->info(Zend_Db_Table_Abstract::COLS);
+        
+        //grab all the rows
+        $rsRows = $mModel ->fetchAll($mModel ->select() -> where('id IN (?)' , $aIds));
+        
+        //delete all the rows if need delete s3 files also
+        $s3 = new Nerdeez_Service_Amazon_S3();
+        foreach($rsRows as $rRow){
+            /* @var $rRow Zend_Db_Table_Row */
+            if (in_array('path', $aCols)){
+                $s3 ->removeObject($rRow['path']);
+            }
+            $rRow ->delete();
         }
         
         //pass success
@@ -328,6 +334,177 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $aData=$this->getRequest()->getParams();
         $this -> view -> sError = $aData['error'];
         $this -> view -> sStatus = $aData['status'];
+    }
+    
+    /**
+     * when admin uploads files to courses via a single zip file
+     */
+    public function addbyzipAction(){
+        //disable the view 
+        $this->disableView();
+        
+        //get the zip file as a nerdeez file object
+        /* @var $nfFile Nerdeez_Files */
+        $nfFile = $this->_aFiles[0];
+        
+        //get the path to extract
+        $sUploadDir = $this ->getUploadDir();
+        
+        //get the zip file to local file system
+        $s3 = new Nerdeez_Service_Amazon_S3();
+        file_put_contents($sUploadDir . $nfFile -> sFullName , $s3->getObject($nfFile -> sUrl));
+        
+        //extract the zip file
+        $this->extractZip($sUploadDir . $nfFile -> sFullName);
+        
+        //grab the list of all the files extracted
+        $aUniFiles = glob($sUploadDir . 'zipcache/' . '*', GLOB_MARK);
+        
+        //iterate on outer folders each folder represents a university
+        $ksfunctions = new Application_Model_KSFunctions();
+        $mUniversities = new Application_Model_DbTable_Universities();
+        $mCourses = new Application_Model_DbTable_Courses();
+        $mFiles = new Application_Model_DbTable_Files();
+        $mFolders = new Application_Model_DbTable_Folders();
+        $s3 = new Nerdeez_Service_Amazon_S3();
+        $s3->createBucket("nerdeez");
+        foreach ($aUniFiles as $sUniFile) {
+            
+            //if the file is not a dir here you can continue
+            if(!is_dir($sUniFile))continue;
+            
+            //if there is a university with this title than grab it else create it
+            $iUniId = 0;
+            $sUniTitle = $ksfunctions ->grabFileNameFromPath($sUniFile);
+            $rUni = $mUniversities ->fetchRow($mUniversities ->select() ->where('title = ?' , $sUniTitle));
+            if ($rUni == NULL){
+                $iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
+            }
+            else{
+                $iUniId = $rUni['id'];
+            }
+            
+            //iterate on all the courses inside a university
+            $aCourseFiles = glob($sUniFile . '*', GLOB_MARK);
+            foreach ($aCourseFiles as $sCourseFile) {
+                
+                //if the file is not a dir here you can continue
+                if(!is_dir($sUniFile))continue;
+                
+                //if there is a course with this title than grab it else create it
+                $iCourseId = 0;
+                $sCourseTitle = $ksfunctions ->grabFileNameFromPath($sCourseFile);
+                $rCourse = $mCourses ->fetchRow($mCourses ->select() ->where('title = ?' , $sCourseTitle));
+                if ($rCourse == NULL){
+                    $iCourseId = $mCourses ->insertWithoutArray($sCourseTitle, $iUniId);
+                }
+                else{
+                    $iCourseId = $rCourse['id'];
+                }
+                
+                //iterate on all the folders inside the courses
+                $aFolderPapas = glob($sCourseFile . '*' , GLOB_MARK);
+                foreach ($aFolderPapas as $sFolderPapa) {
+                    //if the file is not a dir here you can continue
+                    if(!is_dir($sUniFile))continue;
+                    
+                    //get the folder id if not existing than continue
+                    $iFolderPapaId = 0;
+                    $sFolderPapaTitle = $ksfunctions ->grabFileNameFromPath($sFolderPapa);
+                    $rFolderPapa = $mFolders ->fetchRow($mFolders ->select() -> where ('title = ?' , $sFolderPapaTitle));
+                    if ($rFolderPapa == NULL)continue;
+                    $iFolderPapaId = $rFolderPapa['id'];
+                    
+                    //iterate on all the files inside this folder
+                    $aFolderSons = glob($sFolderPapa . '*' , GLOB_MARK);
+                    foreach ($aFolderSons as $sFolderSon) {
+                        
+                        //if this is file than insert it to the database and upload to s3
+                        $sFileTitle = $ksfunctions ->grabFileNameFromPath($sFolderSon);
+                        if (!is_dir($sFolderSon)){
+                            $sPath = 'nerdeez/' . rand( 0 , 99999) . '_' . $sFileTitle;
+                            $hash = md5_file($sFolderSon);
+                            $isRowExist = $this ->isFileExist($hash);
+                            if ($isRowExist === FALSE){
+                                $mFiles ->insertWithoutArray($sFileTitle, $sPath, $iCourseId, $iFolderPapaId, filesize($sFolderSon) , $hash);
+                                $s3->putObject( $sPath, 
+                                    file_get_contents($sFolderSon),
+                                    array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
+                                    Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));
+                            }
+                            else{
+                                $mFiles ->insertWithoutArray($sFileTitle, $isRowExist['path'], $iCourseId, $iFolderPapaId, $isRowExist['size'] , $hash);
+                            }
+                        }
+                        
+                        //this is a folder than iterate on sons and insert all files inside it
+                        else{
+                            
+                            //find the folder son
+                            $iFolderSon = 0;
+                            $rFolderSon = $mFolders ->fetchRow($mFolders -> select() -> where('title = ?' , $sFileTitle));
+                            if ($rFolderSon == NULL) continue;
+                            $iFolderSon = $rFolderSon['id'];
+                            
+                            //iterate on all the files and insert them
+                            $aFiles = glob($sFolderPapa . '*' , GLOB_MARK);
+                            foreach($aFiles as $sFile){
+                                if(is_dir($sFile))continue;
+                                $sFileTitleSon = $ksfunctions ->grabFileNameFromPath($sFile);
+                                $sPathSon = 'nerdeez/' . rand( 0 , 99999) . '_' . $sFileTitleSon;
+                                $hash = md5_file($sFile);
+                                $isRowExist = $this ->isFileExist($hash);
+                                if ($isRowExist === FALSE){
+                                    $mFiles ->insertWithoutArray($sFileTitleSon, $sPathSon, $iCourseId, $iFolderSon, filesize($sFile) , $hash);
+                                    $s3->putObject( $sPath, 
+                                        file_get_contents($sFile),
+                                        array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
+                                        Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));
+                                }
+                                else{
+                                    $mFiles ->insertWithoutArray($sFileTitle, $isRowExist['path'], $iCourseId, $iFolderSon, $isRowExist['size'] , $hash);
+                                    
+                                }
+                                
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        //clear whats left from the zip file and delete the file
+        $this ->clearZipDir();
+        unlink($sUploadDir . $nfFile -> sFullName);
+        $s3 ->removeObject($nfFile -> sUrl);
+        
+        //redirect to the same url
+        $this->_redirector->gotoUrl($this->getReferer() . '/status/success/');
+    }
+    
+    /**
+     * when we click in files to clean our s3
+     */
+    public function cleans3Action(){
+        //disable the view
+        $this->disableView();
+        
+        //iterate on all the  files in s3
+        $mFiles = new Application_Model_DbTable_Files();
+        $s3 = new Nerdeez_Service_Amazon_S3();
+        $list = $s3->getObjectsByBucket("nerdeez");
+        foreach($list as $name) {
+            
+            //search for the file in the files table if not there than delete the file
+            $rFile = $mFiles ->fetchRow($mFiles -> select() -> where ('path = ?' , 'nerdeez/' . $name));
+            if ($rFile == NULL){
+                $s3 ->removeObject('nerdeez/' . $name);
+            }
+            
+        }
+        
+        //redirect to the same url
+        $this->_redirector->gotoUrl($this->getReferer() . '/status/success/');
     }
     
 }

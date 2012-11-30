@@ -84,7 +84,6 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
         
         //get all the params
-        $iSerial = $this -> _aData['serial'];
         $iFolderPapa = $this -> _aData['folder_papa'];
         $iHwNumber = $this -> _aData['hw_number'];
         $iId = $this -> _aData['id'];
@@ -106,16 +105,32 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
                 $iFoldersId = $rFolder['id'];
         }
         
+        //create the s3 object
+        $s3 = new Nerdeez_Service_Amazon_S3();
+        $s3->createBucket("nerdeez");
+        
         //iterate on all the files uploaded and create a row in the files table for all of them
         $mFiles = new Application_Model_DbTable_Files();
-        foreach ($this -> _aFiles[$iSerial] as $nfFile) {
+        foreach ($this -> _aFiles as $nfFile) {
             /* @var $nfFile Nerdeez_Files */
-            $nfFile = unserialize (serialize ($nfFile));
-            $mFiles ->insertWithoutArray($nfFile -> sName, 
+            $bIsExist = $this->isFileExist($nfFile -> sHash);
+            if ($bIsExist === FALSE){
+                $mFiles ->insertWithoutArray($nfFile -> sName, 
                     $nfFile -> sUrl, 
                     $iId, 
                     $iFoldersId , 
-                    $nfFile -> iSize); 
+                    $nfFile -> iSize ,
+                    $nfFile -> sHash); 
+            }
+            else{
+                $mFiles ->insertWithoutArray($nfFile -> sName, 
+                    $bIsExist['path'], 
+                    $iId, 
+                    $iFoldersId , 
+                    $nfFile -> iSize ,
+                    $nfFile -> sHash); 
+                $s3 ->removeObject($nfFile -> sUrl);
+            }
         }
         
         //redirect the user to the place he uploaded the files
@@ -128,8 +143,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
      */
     public function downloadfilesAction(){
         //disable view rendering
-        $this->_helper->layout()->disableLayout(); 
-        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        $this->disableView();
         
         //grab the params ids , disposition , folders
         $aIds = $this -> _aData['ids'];
@@ -209,8 +223,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         }
         
         //create the zip file 
-        $zZip = new Application_Model_Zip();
-        $zipfile = $zZip -> createZip($aFiles);
+        $zipfile = $this -> createZip($aFiles);
         //send the zip file to download
         $this->downloadFile($zipfile,$zipfile);
         

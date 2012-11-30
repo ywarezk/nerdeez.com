@@ -1978,9 +1978,11 @@ function loadAbout(){
  * init the search course item
  */
 function loadSearchCourse(){
+    
+    
     $('#searchcourseform * input[type="text"]').on('keyup' , function(ev){
         ksSetTextHelper($('#searchcourseform * input[type="text"]'));
-        searchCourse(ev);
+        searchCourse(ev); 
     });
     $('#searchcourseform * input[type="text"]').on('keydown' , function(ev){
         ksSearchCourseKeyController(ev);
@@ -1989,9 +1991,6 @@ function loadSearchCourse(){
         $('#expendcourselist').toggleClass('active');
         $('#courselist').fadeToggle('normal');
     });
-    
-    
-    
 }
 
 /**
@@ -2419,4 +2418,17 @@ function sendFlagReport(){
                 $('#flagdialog .about_status').ext('Error! Connection failure. Try again');
             }
     });
+}
+
+/**
+ * common actions that i preform at start up
+ */
+function initCommonActions(){
+   $("#footer").pinFooter();
+   //center the search course
+    iHeightSearchcourse = $('.front-searchcourse').height();
+    iHeightDocument = $(document).height();
+    
+    iMargin = (iHeightDocument / 3) - (iHeightSearchcourse / 2) - $('#footer').height();
+    $('.front-searchcourse').css('margin-top' , "" + iMargin + "px");
 }

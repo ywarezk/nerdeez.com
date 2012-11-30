@@ -18,76 +18,86 @@ cause the home button to look active
     <?php
     //create the status divs
     ?>
-    <div id="error" class="about_status"><?php echo $this -> sError; ?></div>
-    <div id="status" class="about_status"><?php echo $this -> sStatus; ?></div>
+    <!--<div id="error" class="about_status"><?php echo $this -> sError; ?></div>
+    <div id="status" class="about_status"><?php echo $this -> sStatus; ?></div>-->
     
-    <div class="border-style border-radius front-searchcourse" style="margin-top:15px;"> 
+    <div class="front-searchcourse" style="background: none repeat scroll 0 0 transparent;border: medium none;"> 
         <div id="searchcourseform">
-            <div class="kscenter">
-                <div  class="kscenter-img"> 
-                    <img src="/img/searchface.png" height="105" width="142"/>    
-                </div>
-                <div class="kscenter-text">
-                    Enter your course name or title in the text field below.
-                </div>
-            </div>
-            <div style="margin-top: 10px; margin-bottom: 20px;">
-                <div style="padding-left: 10px;padding-right: 10px;">
-                        <div class="front-card">
-                            <table class="flex-table password-signin">
-                                <tbody>
-                                    <tr>
-                                        <td class="flex-table-primary" style="padding-right: 0 !important; width:100% !important;">
-                                            <div class="placeholding-input searchcourse flex-table-form">
-                                                <input 
-                                                    type="text" 
-                                                    maxlength="300" 
-                                                    class="text-input flex-table-input" 
-                                                    id="searchcourse_input" 
-                                                    name="search" 
-                                                    title="Search Course"
-                                                    spellcheck="false"
-                                                    dir="ltr"
-                                                    style="width: 99%;height: 100%;font-size: 17px;font-weight: normal;border-radius: 3px 0 0 3px;border-right: none; box-shadow: none; " 
-                                                    tabindex="1" 
-                                                    autocomplete="off"
-                                                    />
-                                                <span class="placeholder" style="font-size: 16px;top: 5px;">Type course name/number or press &darr; to view course list</span>
-
-                                            </div> 
-                                            <input type="hidden" name="id" value="-1" id="searchcourse_courseid" />
-                                        </td>
-                                        <td style="padding 0; border:none;">
-                                            <button 
-                                                class="submit btn primary-btn flex-table-btn js-submit btnradio" 
-                                                type="button" 
-                                                tabindex="2" 
-                                                style="height:36px;left:-16px;position:relative;top:-1px;width:40px;"
-                                                id="expendcourselist">
-                                                <span class="button-icon-wrapper" >
-                                                    <img alt="" src="/img/arrow-down.png" style="left: 2px;position: relative;top: -3px;" class="button-icon-image" />
-                                                </span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td  style="padding-right: 14px">
-                                            <div id="courselist" class="border-style">
-                                            <?php
-                                            echo $this -> partial ('partials/courselist.phtml' , array ('rsCourses' => $this -> rsCourses, 'rsUniversities' => $this -> rsUniversities));
-                                            ?>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+            <table>
+                <tr>
+                    <td rowspan="2" style="padding: 5px; vertical-align: top;">
+                        <img src="/img/tip.png" height="100" width="138"/>
+                    </td>
+                    <td style="width: 100%; height: 55px; vertical-align: bottom;">
+                        <div class="searchcourseform_text">
+                            Enter your course name or title in the text field below.
                         </div>
-                </div> 
-            </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="">
+                            <div style="padding-left: 10px;padding-right: 10px;">
+                                <div class="front-card">
+                                    <table class="flex-table password-signin">
+                                        <tbody>
+                                            <tr>
+                                                <td class="flex-table-primary" style="padding-right: 0 !important; width:100% !important;">
+                                                    <div class="placeholding-input searchcourse flex-table-form">
+                                                        <input 
+                                                            type="text" 
+                                                            maxlength="300" 
+                                                            class="text-input flex-table-input" 
+                                                            id="searchcourse_input" 
+                                                            name="search" 
+                                                            title="Search Course"
+                                                            spellcheck="false"
+                                                            dir="ltr"
+                                                            style="width: 99%;height: 100%;font-size: 17px;font-weight: normal;border-radius: 3px 0 0 3px;border-right: none; box-shadow: none; " 
+                                                            tabindex="1" 
+                                                            autocomplete="off"
+                                                            />
+                                                        <span class="placeholder" style="font-size: 16px;top: 5px;">Type course name/number or press &darr; to view course list</span>
+
+                                                    </div> 
+                                                    <input type="hidden" name="id" value="-1" id="searchcourse_courseid" />
+                                                </td>
+                                                <td style="padding 0; border:none;">
+                                                    <button 
+                                                        class="submit btn primary-btn flex-table-btn js-submit btnradio" 
+                                                        type="button" 
+                                                        tabindex="2" 
+                                                        style="height:36px;left:-16px;position:relative;top:-1px;width:40px;"
+                                                        id="expendcourselist">
+                                                        <span class="button-icon-wrapper" >
+                                                            <img alt="" src="/img/arrow-down.png" style="left: 2px;position: relative;top: -3px;" class="button-icon-image" />
+                                                        </span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td  style="padding-right: 14px">
+                                                    <div id="courselist" class="border-style">
+                                                    <?php
+                                                    echo $this -> partial ('partials/courselist.phtml' , array ('rsCourses' => $this -> rsCourses, 'rsUniversities' => $this -> rsUniversities));
+                                                    ?>
+                                                    </div>
+                                                </td>
+                                                <td></td>
+                                                <td>
+
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> 
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+            
         </div>
     </div>
     <script type="text/javascript">

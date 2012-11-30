@@ -301,6 +301,10 @@ class Application_Model_UploadHandler
         $file->name = $this->trim_file_name($name, $type, $index);
         $file->size = intval($size);
         $file->type = $type;
+        
+        //yariv - calculate md5 file
+        $file -> hash = md5_file($uploaded_file);
+        
         if ($this->validate($uploaded_file, $file, $error, $index)) {
             $this->handle_form_data($file, $index);
             

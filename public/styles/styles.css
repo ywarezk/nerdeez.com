@@ -9,23 +9,18 @@
         
 */
 
-html { 
-    font-family: verdana,helvetica,arial,sans-serif;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+html, body{
+    margin:0;
+   padding:0;
+   height:100%;
+   font-family: verdana,helvetica,arial,sans-serif;
+   background-color: #E8E8E8;
 }
 
 ul {
     list-style: none outside none;
 }
 
-body{
-    margin: 0;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
 
 a{
     text-decoration: none;
@@ -58,12 +53,8 @@ input, textarea, select {
 .wrapper{
     /*background: url("/img/bgwrapper.png") repeat scroll 0 0 transparent;*/
     /*left: 181px;*/
-    min-height: 100%;
-    padding: 0px 14px 15px;
-    position: relative;
     /*width: 770px;*/
-    clear: both;
-    margin: 0 auto 30px;
+    margin: 0 auto;
     min-width: 850px;
 }
 
@@ -78,7 +69,8 @@ input, textarea, select {
 
 /* the black background common for dialogs menu and footer etc */ 
 .bgblack{ 
-    background-color: #292929;
+    /*background-color: #292929;*/
+    background-image: url("/img/header.png");
 }
 
 
@@ -150,10 +142,10 @@ input, textarea, select {
 
 
 .nav .active .active_a {
-    background-color: #222222;
+    /*background-color: #222222;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5) inset;
     color: #FFFFFF;
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);*/
 } 
 
 /* the style for div wrapping text inputs*/
@@ -300,6 +292,7 @@ body.ms-windows, body.ms-windows label, body.ms-windows input, body.ms-windows t
 
 .front-searchcourse{
     margin: 0 auto;
+    background-color: white;
 }
 
 .front-searchcourse .searchcourse {
@@ -689,9 +682,10 @@ box-sizing: border-box;
 }
 
 .inview-wrapper{
-    margin-bottom: 50px;
+    /*margin-bottom: 50px;
     padding: 10px;
-    position: relative; top: 30px;clear: both;
+    position: relative; top: 30px;clear: both;*/
+    margin-top: 40px;
 }
 
 .about_status{
@@ -2060,3 +2054,59 @@ textarea{
     font-weight: bold;
 }
 
+#container{
+   position:relative;
+   /*height: 100%;*/
+   padding-bottom: 50px;
+}
+
+#header{
+    height: 80px;
+}
+
+#body{
+}
+
+#footer{
+    height: 50px;
+    /*position: relative;
+    top: 50px;*/
+    opacity: 0.8;
+}
+
+.nav-new{
+    background-image: url("/img/icons.png"); width: 42px; height: 42px; margin-top: -2.5px;
+}
+
+.nav-text{
+    position: relative;  font-size: 16px; top: 9px; font-family: Helvetica;
+}
+
+.navitem a:hover * i.home{
+    background-position: -80px 6px !important;
+}
+
+.navitem a:hover * i.about{
+    background-position: -80px -75px !important;
+}
+
+.searchcourseform_image{
+    float: left;
+}
+
+.searchcourseform_textsearchcontainer{
+    float: right;
+}
+
+.searchcourseform_text{
+    font-weight: bold;
+    margin-left: 12px;
+}
+
+#searchcourseform , .middlebox{
+    background: none repeat scroll 0 0 white;
+    border: 3px solid #FFFFFF;
+    border-radius: 30px 30px 30px 30px;
+    box-shadow: 0 10px 5px #888888;
+    padding: 20px;
+}

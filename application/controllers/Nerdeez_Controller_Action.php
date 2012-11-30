@@ -130,15 +130,17 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
                     }
                 }
             }
-            
-            
-            
             //value is sanitized now you can put it in our array and sleep in peace
             $this -> _aData[$sName] = $iValue;
-            
-            //check the remember me cookies
-            $this ->rememberMe();
         }
+        
+        //check the remember me cookies
+        $this ->rememberMe();
+
+        $layout = new Zend_Layout();
+        $layout->setLayoutPath(APPLICATION_PATH . '/layouts/scripts/guest.phtml');
+        $layout -> menu = $this -> view -> render ('partials/menus/guest_menu.phtml');
+        
     }
     
     /**
@@ -335,6 +337,24 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $userData=array(array('status'=>'success','data'=>$result));
         $dojoData= new Zend_Dojo_Data('status',$userData);
 	echo $dojoData->toJson();
+    }
+    
+    /**
+     * gets the role of the user
+     * @return String user , guest
+     */
+    public function getRole(){
+        $auth = Zend_Auth::getInstance();
+        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
+        return $auth -> getIdentity() -> role;
+    }
+    
+    /**
+     * gets the upload dir from the config
+     * @return String the path
+     */
+    public function getUploadDir(){
+        return $this->getFromConfig('uploaddir');
     }
     
 }

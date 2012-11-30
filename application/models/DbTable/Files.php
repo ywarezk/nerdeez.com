@@ -34,6 +34,7 @@ class Application_Model_DbTable_Files extends Nerdeez_Db_Table{
      */
     protected $_aAlterStatments = array(
         "ALTER TABLE `files` ADD `size` INT UNSIGNED NOT NULL DEFAULT '0'" ,
+        "ALTER TABLE `files` ADD `md5_hash` VARCHAR( 100 ) NULL DEFAULT NULL" ,
     );
     
     /**
@@ -64,13 +65,14 @@ class Application_Model_DbTable_Files extends Nerdeez_Db_Table{
      * @param int $iSize
      * @return int the pk 
      */
-    public function insertWithoutArray($sTitle , $sPath , $iCoursesId , $iFoldersId , $iSize){
+    public function insertWithoutArray($sTitle , $sPath , $iCoursesId , $iFoldersId , $iSize , $sHash = NULL){
         $aNewRow = array(
             'title'                 => $sTitle , 
             'path'                  => $sPath ,
             'courses_id'            => $iCoursesId , 
             'folders_id'            => $iFoldersId ,
             'size'                  => $iSize ,
+            'md5_hash'              => $sHash ,
         );
         return parent::insert($aNewRow);
     }

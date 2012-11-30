@@ -32,6 +32,7 @@
             //attach common javascriopt files
             //$this->headScript()->prependFile('/js/tooltip.js');
             $this->headScript()->prependFile('/js/jquery.ksfunctions.js');
+            $this->headScript()->prependFile('/js/jquery.ez-pinned-footer.js');
             $this->headScript()->prependFile('/js/superfish.js');
             $this->headScript()->prependFile('/js/jquery.validate.min.js');
             $this->headScript()->prependFile('/js/jquery-1.7.1.min.js');
@@ -51,19 +52,11 @@
           })();*/
 
         </script>
+        <script type="text/javascript">
+            
+        </script>
     </head> 
     <body>
-        <!-- <img src="/img/newlogoblack.png" style="display: none;" /> -->
-        <div class="content">
-        
-        <div class="bgblack" style="height: 80px; position: absolute;width: 100%;"></div>
-        
-         
-        <div id="overlay"></div>
-        
-        <!--
-        main content 
-        -->
         
         <?php /* NESTED LAYOUT SUPPORT */ ?> 
         <?php 
@@ -73,81 +66,90 @@
             else{
                 $this->layout()->setLayout('guest');
             }
-            echo $this->layout()->render();
+            //echo $this->layout()->render();
 
         ?> 
         
-        </div>
-        
-        <div id="glassloading" class="glass">
+        <!-- the black on top -->
+        <div class="bgblack" style="height: 80px; position: absolute;width: 100%;top:0;"></div>
+        <!-- end -->
+         
+        <!-- will hold all the content -->
+        <div id="container" class="wrapper">
+            
+            <!-- will hold the header menu and such -->
+            <div id="header">
+                <?php echo $this->layout() ->menu;  ?>
+            </div>
+            <!-- end header -->
+            
+            <!-- begin hold the main content -->
+            <div id="body" class="wrapper">
+                <?php echo $this->layout()->render(); ?>
+            </div>
             
         </div>
+        <!-- end hold all the content -->
+        
+        
+        
+        <!-- begin glass to prevent background clicks -->
+        <div id="glassloading" class="glass"></div>
+         <!-- end glass to prevent background clicks -->
+        
+        <!-- begin loading screen -->
         <div class="glass_loaddialog border-radius border-style">
             <h2>Loading ...</h2>
             <div align="center">
                 <img src="/img/loading_1.gif" width="100" height="100"/>
             </div>
         </div>
+        <!-- end loading screen  -->
+        
+        <!-- begin report success failure -->
         <div id="success">
             <img src="/img/success.png" />
             <span style="font-size: 100px; position: relative; top: -100px; left: 20px; color: green;">Success</span>
         </div>
+        <!-- end report success failure -->
         
-        <div class="bgblack" style="height: 50px; margin-top: -50px;">
-            <div style="color: white; text-align: center;top:5px;position:relative;">
-                <div style="">
-                    © 2012 Nerdeez<br/>
-                    <a href="/index/terms" class="footer_anchor">
-                        Terms
-                    </a>
-                    |
-                    <a href="/index/privacy" class="footer_anchor">
-                        Privacy
-                    </a>
-                    |
-                    <a href="/index/communityguidelines" class="footer_anchor">
-                        Community Guidelines
-                    </a>
-                    |
-                    <a href="/index/safety" class="footer_anchor">
-                        Safety Tips
-                    </a>
-                    |
-                    <a href="http://ykapps.com" class="footer_anchor">
-                        Created by YKApps
-                    </a>
-                </div>
-            </div> 
-        </div>
         
-        <!-- Begin error dialog -->
-        <div id="nerdeez_error_dialog">
-            <div class="nerdeez_error_dialog_header">
-                <h2>
-                    
-                </h2>
-            </div>
-            <div class="nerdeez_error_dialog_body kscenter">
-                <div class="kscenter-img"> 
-                    <img width="142" height="105" src="/img/searchface.png">    
-                </div>
-                <div class="kscenter-text">
-                    
-                </div>
-            </div>
-            <div style="text-align: center; width: 100%; position: static; margin-top: 20px;">
-                <button 
-                    style="top: -1px; height: 36px;" 
-                    class="submit btn primary-btn js-submit" 
-                    type="button" 
-                    onclick="$('#nerdeez_error_dialog').fadeOut('normal');$('.glass').slideToggle('normal');">
-                    <span class="button-text">
-                    OK
-                    </span>
-                </button>
+        <!-- begin footer -->
+        <div id="footer" class="bgblack">
+            <div>
+                <div style="color: white; text-align: center;top:5px;position:relative;">
+                    <div style="">
+                        © 2012 Nerdeez<br/>
+                        <a href="/index/terms" class="footer_anchor">
+                            Terms
+                        </a>
+                        |
+                        <a href="/index/privacy" class="footer_anchor">
+                            Privacy
+                        </a>
+                        |
+                        <a href="/index/communityguidelines" class="footer_anchor">
+                            Community Guidelines
+                        </a>
+                        |
+                        <a href="/index/safety" class="footer_anchor">
+                            Safety Tips
+                        </a>
+                        |
+                        <a href="http://ykapps.com" class="footer_anchor">
+                            Created by YKApps
+                        </a>
+                    </div>
+                </div> 
             </div>
         </div>
-        <!-- End error dialog-->
+        <!-- end footer -->
+        
+        <!-- common js initialization here -->
+        <script type="text/javascript">
+            initCommonActions();
+        </script>
+        <!-- end common -->
         
     </body> 
 </html>
