@@ -100,25 +100,122 @@ function formatSize($bytes, $precision = 2){
                             <div class="kscenter-text" id="uploaddialog_explain">
                             </div>
                         </div>-->
-                        <table class="uploadfirststep">
+                        <div id="filebrowserdrop">
+                            <table class="uploadfirststep">
+                                <tr>
+                                    <td class="uploadfirststep_image">
+                                        <div style="width: 163px;">
+
+                                        </div>
+                                        <img src="/img/smiling.png" />
+                                    </td>
+                                    <td class="uploadfirststep_text">
+                                        <div >1. Click upload, or drag n'drop files here, to upload them to course</div>
+                                    </td>
+                                    <td class="uploadfirststep_button">
+                                        <?php
+                                        echo $this -> partial('partials/uploadbutton.phtml' , 
+                                                array('iSerial' => $serial , 
+                                                    'sId' => 'uploadFileBrowser' , 
+                                                    'iNumUpload' => 0 , 
+                                                    'iMaxSize' => 209715200 , 
+                                                    'sAcceptFileTypes' => '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 
+                                                    'sUrl' => '/course/upload' , 
+                                                    'sFilesId' => 'filebrowseruploadfiles' , 
+                                                    'sDropId' => 'filebrowserdrop')) ;
+                                        ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <table class="uploadfirststep" id="fileclassify" style="display: none; margin-top: 57px;">
                             <tr>
-                                <td class="uploadfirststep_image">
+                                <td class="uploadfirststep_image" style="width:105px;">
                                     <div style="width: 163px;">
                                         
                                     </div>
-                                    <img src="/img/smiling.png" />
+                                    <img src="/img/questionmark.png" />
                                 </td>
-                                <td class="uploadfirststep_text">
-                                    <div >1. Click upload, or drag n'drop files here, to upload them to course</div>
+                                <td class="uploadfirststep_text" style="width: 250px !important;">
+                                    <div>2. What type of file is this?</div>
+                                </td>
+                                <td style="width:190px;">
+                                    <div class="style-select" style="width:170px !important;">
+                                        <select name="folder_papa" onchange="showHWNumber();" style="width:198px !important;">
+                                            <?php foreach($this -> rsFolders as $rFolder) :?>
+                                                <?php if ($rFolder['papa'] == -1) :?>
+                                                    <?php 
+                                                    $sSelected = '';
+                                                    if($this -> rFolder != NULL 
+                                                            && ($this -> rFolder['id'] == $rFolder['id'] || $this -> rFolder['papa'] == $rFolder['id'])) {
+                                                        $sSelected = ' selected="selected"';
+                                                        $rFolderPapa = $rFolder;
+                                                    }
+                                                    ?>
+                                                    <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> >
+                                                        <?php echo $rFolder['title']; ?>
+                                                    </option>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td style="width:70px">
+                                    <?php 
+                                    $sDisplay = 'none';
+                                    if ($this -> rFolder != NULL 
+                                            && ($this -> rFolder['title'] === 'H.W' || $this -> rFolder['papa'] != -1 )){
+                                        $sDisplay = 'table-row';
+                                    }
+                                    ?>
+                                    <div style="display: <?php echo $sDisplay; ?>" class="fileclassify_body_hwnumber">
+                                        Number
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="display: <?php echo $sDisplay; ?>;width:120px !important;" class="fileclassify_body_hwnumber style-select">
+                                        <select name="hw_number" style="width:148px !important;">
+                                            <?php foreach($this -> rsFolders as $rFolder): ?>
+                                                <?php if ($rFolder['papa'] != -1) :?>
+                                                    <?php 
+                                                    $sSelected = '';
+                                                    if($this -> rFolder != NULL 
+                                                            && $this -> rFolder['id'] == $rFolder['id']) {
+                                                        $sSelected = ' selected="selected"';
+                                                    }
+                                                    ?>
+                                                    <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> >
+                                                        <?php echo $rFolder['title']; ?>
+                                                    </option>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
                                 </td>
                                 <td class="uploadfirststep_button">
-                                    <?php
-                                    echo $this -> partial('partials/uploadbutton.phtml' , array('iSerial' => $serial , 'sId' => 'uploadFileBrowser' , 'iNumUpload' => 0 , 'iMaxSize' => 209715200 , 'sAcceptFileTypes' => '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 'sUrl' => '/course/upload')) ;
-                                    ?>
+                                    <button class="filebrowserbutton" type="submit" value="Submit files" >
+                                        Submit
+                                    </button>
                                 </td>
                             </tr>
                         </table>
-                        <div id="fileclassify" style="display: none; margin-bottom: 20px;">
+                        
+                        <div id="filebrowseruploadfiles" style="margin-top: 57px;">
+                            <?php 
+                            //echo $this -> render('partials/filetable.phtml');
+                            ?>
+                            
+                            <table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
+                                    <tr class="filesheader">
+                                        <td class="filebrowser-td">Filename</td>
+                                        <td class="filebrowser-td filebrowser-td-left">Size</td>
+                                        <td class="filebrowser-td filebrowser-td-left">Progress</td>
+                                        <td class="filebrowser-td filebrowser-td-left">Delete</td>
+                                    </tr>
+                            </tbody></table> 
+                        </div>
+                        <!--<div  style="display: none; margin-bottom: 20px;" id="fileclassify"> 
                             <div class="fileclassify_body">
                                 <div class="fileclassify_body_explain">
                                     <div class="kscenter-text">
@@ -186,12 +283,12 @@ function formatSize($bytes, $precision = 2){
                                     </tr>
                                 </table>
                             </div>
-                        </div>
-                        <div style="clear: both; height: 40px; width: 110px; margin: 0px auto;">
+                        </div>-->
+                        <!--<div style="clear: both; height: 40px; width: 110px; margin: 0px auto;">
                             <button class="submit btn primary-btn flex-table-btn js-submit" type="submit" value="Submit files" >
                                 Submit Files
                             </button>
-                        </div>
+                        </div>-->
                     </div>
                     <script type="text/javascript">loadCourse();</script>
                     <input type="hidden" name="serial" value="<?php echo $serial; ?>" />

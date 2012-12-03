@@ -7,6 +7,8 @@
  * @param int $this -> iMaxSize the max file size
  * @param String $this -> sAcceptFileTypes regular string of the file types allowed
  * @param String $this -> sUrl thee url to upload to
+ * @param String $this -> sDropId the id of the block containing the drop zone and the table
+ * @param String $this -> sFilesId the id of the block containing the files zone
  */
 ?>
 
@@ -52,7 +54,6 @@
     </tbody></table>
 <!--</form>-->
 </div>
-
 
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
@@ -105,7 +106,24 @@
 </script>
 
 
+<?php
+//get the id for the drag drop and the files table
+$sDropId = $sFilesId = NULL;
+if (!isset($this -> sDropId)){
+    $sDropId = $this -> sId;
+}
+else{
+    $sDropId = $this -> sDropId;
+}
+if (!isset($this -> sFilesId)){
+    $sFilesId = $this -> sId;
+}
+else{
+    $sFilesId = $this -> sFilesId;
+}
+
+?>
 
 <script type="text/javascript">
-ksInitUpload('<?php echo $this -> sId; ?>' , <?php echo $this -> iSerial; ?> , <?php echo $this -> iNumUpload; ?> , <?php echo $this -> iMaxSize; ?>, <?php echo $this -> sAcceptFileTypes; ?> , '<?php echo $this -> sUrl; ?>' );
+ksInitUpload('<?php echo $this -> sId; ?>' , <?php echo $this -> iSerial; ?> , <?php echo $this -> iNumUpload; ?> , <?php echo $this -> iMaxSize; ?>, <?php echo $this -> sAcceptFileTypes; ?> , '<?php echo $this -> sUrl; ?>' , '<?php echo $sDropId; ?>' , '<?php echo $sFilesId; ?>');
 </script>

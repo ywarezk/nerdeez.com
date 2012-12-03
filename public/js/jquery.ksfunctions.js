@@ -1118,7 +1118,7 @@ function ksInitUpload1(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFil
  * @param String sDropOverElement the id of the element below the drop target 
  * @param String sUrl the url to upload the file to
  */
-function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFileTypes , sUrl){
+function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFileTypes , sUrl , sDropId , sFilesId){
     if (iNumDownloads == 0)iNumDownloads = undefined;
     if (iMaxFileSize == 0)iMaxFileSize = undefined;
     
@@ -1132,7 +1132,8 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
         maxNumberOfFiles: iNumDownloads,
         maxFileSize: iMaxFileSize,
         acceptFileTypes: sAcceptFileTypes, 
-        dropZone: $('#' + sId +' .dropzone'),
+        filesContainer: $('#' + sFilesId + ' .files'),
+        dropZone: $('#' + sFilesId +' .dropzone'),
         formData: [
                     {
                         name: 'serial',
@@ -1145,7 +1146,7 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
     .bind('fileuploadadd', function (e, data) 
     {
        //make the table header visible
-       $('#' + sId + ' .filesheader').fadeIn('slow');
+       $('#' + sFilesId + ' .filesheader').fadeIn('slow');
        
        //make the classify dialog visible
        $('#fileclassify').fadeIn('slow');
@@ -1154,13 +1155,13 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
     {
         //alert('5');
         if ($(this).find('tr').length == 2){
-            $('#' + sId + ' .filesheader').fadeOut('normal');
+            $('#' + sFilesId + ' .filesheader').fadeOut('normal');
             $('#fileclassify').fadeOut('normal');
         }
     })
     .bind('fileuploaddestroy', function (e, data) {
         if ($(this).find('tr').length == 2){
-            $('#' + sId + ' .filesheader').fadeOut('normal');
+            $('#' + sFilesId + ' .filesheader').fadeOut('normal');
             $('#fileclassify').fadeOut('normal');
         }
     });
@@ -2174,10 +2175,10 @@ function showHWNumber(){
     
     //compare it to H.W if so make the h.w number visible
     if ('H.W' === sClassifyCombo){
-        $('#fileclassify_body_hwnumber').css('display' , 'table-row');
+        $('.fileclassify_body_hwnumber').css('display' , 'block');
     }
     else{
-        $('#fileclassify_body_hwnumber').fadeOut('normal');
+        $('.fileclassify_body_hwnumber').fadeOut('normal');
     }
 }
 

@@ -1936,11 +1936,12 @@ img
 }
 
 #fileclassify{
-    border: 1px solid #CCCCCC;
+    /*border: 1px solid #CCCCCC;
     border-radius: 15px 15px 15px 15px;
     margin: 0 auto 20px;
     padding: 10px;
-    width: 600px;
+    width: 600px;*/
+    width: 100%;
 }
 
 .fileclassify_body_explain{
@@ -1952,6 +1953,7 @@ img
     height: 36px;
     overflow: hidden;
     width: 240px;
+    background-color: white;
 }
 
 .style-select select{
@@ -2146,6 +2148,8 @@ textarea{
     height: 57px;
     margin-top: 25px;
     position: relative;
+    font-size: 15px;
+    color: white;
 }
 
 .uploadfirststep_image{
@@ -2153,8 +2157,6 @@ textarea{
 }
 
 .uploadfirststep_text{
-    color: white;
-    font-size: 15px;
     width: 100%;
 }
 
@@ -2189,4 +2191,18 @@ textarea{
     left: 31px;
     position: relative;
     top: 20px;
+}
+
+#fileclassify * .uploadfirststep_image img{
+    left: 50px !important;
+    top: -9px !important;
+}
+
+.filebrowserbutton{
+    background-color: #E62A59;
+    border: medium none;
+    color: white;
+    font-size: 15px;
+    height: 57px;
+    width: 100%;
 }
