@@ -833,7 +833,7 @@ function ksFileBrowserUncheckAll(){
 /**
  * download all the checked files
  */
-function ksDownloadChecked(){
+function ksDownloadChecked(iCourseId){
     //create the array of ids to download
     var aIds=new Array();
     var aFolders=new Array();
@@ -856,7 +856,7 @@ function ksDownloadChecked(){
     loadingScreen();
     
     //download the files
-    ksDownloadFiles(aIds , aFolders);
+    ksDownloadFiles(aIds , aFolders , iCourseId);
     
     removeLoadingScreen();
 }
@@ -1085,11 +1085,13 @@ function ksInitUpload1(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFil
         //alert('5');
         if ($(this).find('tr').length == 2){
             $('#' + sId + ' .filesheader').fadeOut('slow');
+            $('.filebrowsertooltip').css('display' , 'none');
         }
     })
     .bind('fileuploaddestroy', function (e, data) {
         if ($(this).find('tr').length == 2){
             $('#' + sId + ' .filesheader').fadeOut('slow');
+            $('.filebrowsertooltip').css('display' , 'none');
         }
     });
 
@@ -1118,7 +1120,7 @@ function ksInitUpload1(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFil
  * @param String sDropOverElement the id of the element below the drop target 
  * @param String sUrl the url to upload the file to
  */
-function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFileTypes , sUrl , sDropId , sFilesId){
+function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFileTypes , sUrl){
     if (iNumDownloads == 0)iNumDownloads = undefined;
     if (iMaxFileSize == 0)iMaxFileSize = undefined;
     
@@ -1132,8 +1134,9 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
         maxNumberOfFiles: iNumDownloads,
         maxFileSize: iMaxFileSize,
         acceptFileTypes: sAcceptFileTypes, 
-        filesContainer: $('#' + sFilesId + ' .files'),
-        dropZone: $('#' + sFilesId +' .dropzone'),
+        filesContainer: $('#' + sId + '_files .files'),
+        fileInput: $('#' + sId + '_input'),
+        dropZone: $('#' + sId +'_dropzone'),
         formData: [
                     {
                         name: 'serial',
@@ -1146,22 +1149,34 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
     .bind('fileuploadadd', function (e, data) 
     {
        //make the table header visible
-       $('#' + sFilesId + ' .filesheader').fadeIn('slow');
+       $('#' + sId + '_files .files .filesheader').fadeIn('slow');
+       $('#' + sId + '_files').fadeIn('slow');
        
        //make the classify dialog visible
        $('#fileclassify').fadeIn('slow');
+       handleSubmitFilesButton();
     })
     .bind('fileuploadfail', function (e, data) 
     {
         //alert('5');
-        if ($(this).find('tr').length == 2){
-            $('#' + sFilesId + ' .filesheader').fadeOut('normal');
+        if ($('#' + sId + '_files .files').find('tr').length == 2 && $('#' + sId + '_files .files').find('error').length == 0){
+            $('#' + sId + '_files .files .filesheader').fadeOut('normal');
+            $('#' + sId + '_files').fadeOut('normal');
             $('#fileclassify').fadeOut('normal');
+            $('.filebrowsertooltip').fadeOut('normal');
         }
     })
+    .bind('fileuploaddone', function (e, data) {
+        //handleSubmitFilesButton();
+    })
+    .bind('fileuploadcompleted', function (e, data) {
+        handleSubmitFilesButton();
+    })
     .bind('fileuploaddestroy', function (e, data) {
-        if ($(this).find('tr').length == 2){
-            $('#' + sFilesId + ' .filesheader').fadeOut('normal');
+        if ($('#' + sId + '_files .files').find('tr').length == 2){
+            $('#' + sId + '_files .files .filesheader').fadeOut('normal');
+            $('.filebrowsertooltip').fadeOut('normal');
+            $('#' + sId + '_files').fadeOut('normal');
             $('#fileclassify').fadeOut('normal');
         }
     });
@@ -2160,46 +2175,146 @@ var isEventSupported = (function() {
 function loadCourse(){
     //init the text on the upload explain based on browser drag drop
     if (isEventSupported('dragstart') && isEventSupported('drop')) {
-        $('#uploaddialog_explain').text("You can also Drag-Drop files to upload files to course");
+        $('#uploaddialog_explain').text("1. Click upload, or drag n'drop files here, to upload them to course");
     }
+    else{
+        $('#uploaddialog_explain').text("1. Click upload to upload files to course");
+    }
+    
+    
 }
 
 /**
- * when the user selects to classify the files
- * after he uploads them
+ * when the user selects the number 2 selects or upload finishes
  */
-function showHWNumber(){
+function handleSubmitFilesButton(){
     //grab the text of the select 
     var sClassifyCombo = $('#fileclassify select[name="folder_papa"] option:selected').text();
     sClassifyCombo = $.trim(sClassifyCombo);
     
     //compare it to H.W if so make the h.w number visible
     if ('H.W' === sClassifyCombo){
+        bIsSecondSelectVisible = true;
         $('.fileclassify_body_hwnumber').css('display' , 'block');
     }
     else{
+        bIsSecondSelectVisible = false;
         $('.fileclassify_body_hwnumber').fadeOut('normal');
     }
+    
+    //if there is a progress bar than button should be disabled
+    if($('.progress').length > 0){
+        diableFileBrowserSubmit()
+        return;
+    }
+    
+    //if there is no rows in the files table than should be diabled
+    /*if ($('#filebrowser_upload_files').find('tr').length >=2){
+        diableFileBrowserSubmit()
+        return;
+    }*/
+    
+    //if there is no complete in the table than disable
+    if ($('.filebrowsercomplete').length == 0){
+        diableFileBrowserSubmit()
+        return;
+    }
+    
+    //if the first select had a null value
+    if ($('#fileclassify select[name="folder_papa"] option:selected').val() == 0){
+        diableFileBrowserSubmit()
+        return;
+    }
+    
+    //if the second is visible select check if the value iss not null
+    if (bIsSecondSelectVisible){
+        if ($('.fileclassify_body_hwnumber select').val() == 0){
+            diableFileBrowserSubmit()
+            return;
+        }
+    }
+    
+    enableFileBrowserSubmit();
+}
+
+function diableFileBrowserSubmit(){
+    $('#submitfilebrowser').addClass('disable');
+    $('#submitfilebrowser').removeClass('enable');
+}
+function enableFileBrowserSubmit(){
+    $('#submitfilebrowser').addClass('enable');
+    $('#submitfilebrowser').removeClass('disable');
+    $('.filebrowsertooltip').fadeOut('normal');
 }
 
 /**
  * check if there is no upload in progress and that there is atleast one file uploaded
  */
 function checkFilesUpload(){
-    //if there is a progress bar pop an error
-    if ($('.files .progress').length > 0){
-        showNerdeezDialog('Upload in progress', 'Please wait untill all your files are finished uploading before submitting this form');
-        return false;
+    //if the button is enabled than return true
+    if ($('#submitfilebrowser').hasClass('enable')){
+        return true;
     }
     
-    //if there is no files uploaded than pop an error
-    if ($('.files .template-download').length == 0){
-        showNerdeezDialog('No files uploaded', 'You have to upload atleast one file before submitting');
-        return false;
+    //if there is a progress than 
+    if($('.progress').length > 0){
+        showFileTableError('Wait until upload is finished');
+    }
+    else{
+        hideFileTableError();
     }
     
-    return true;
+    if ($('.filebrowsercomplete').length == 0){
+        showFileTableError('There has to be atleast one successful file upload');
+    }
+    else{
+        hideFileTableError();
+    }
     
+    if ($('#fileclassify select[name="folder_papa"] option:selected').val() == 0){
+        showFolderPapaError('Please choose a value from the list');
+    }
+    else{
+        hideFolderPapaError();
+    }
+    
+    //if the second is visible select check if the value iss not null
+    if ($('.fileclassify_body_hwnumber').css('display') === 'block'){
+        if ($('.fileclassify_body_hwnumber select').val() == 0){
+            showFolderSonError('Please choose a value from the list');
+        }
+        else{
+            hideFolderSonError();
+        }
+    }
+    
+    return false
+}
+
+function showFileTableError(sMessage){
+    $('#filebrowsertooltip_filetable .filebrowsertooltip_text span').text(sMessage);
+    $('#filebrowsertooltip_filetable').fadeIn('normal');
+}
+
+function showFolderPapaError(sMessage){
+    $('#filebrowsertooltip_folderpapa .filebrowsertooltip_text span').text(sMessage);
+    $('#filebrowsertooltip_folderpapa').fadeIn('normal');
+}
+
+function showFolderSonError(sMessage){
+    $('#filebrowsertooltip_folderson .filebrowsertooltip_text span').text(sMessage);
+    $('#filebrowsertooltip_folderson').fadeIn('normal');
+}
+function hideFileTableError(){
+    $('#filebrowsertooltip_filetable').fadeOut('normal');
+}
+
+function hideFolderPapaError(){
+    $('#filebrowsertooltip_folderpapa').fadeOut('normal');
+}
+
+function hideFolderSonError(){
+    $('#filebrowsertooltip_folderson').fadeOut('normal');
 }
 
 /**
@@ -2284,7 +2399,24 @@ function ksDownloadFile(id){
     loadingScreen();
     
     //download the files
-    ksDownloadFiles(aIds , []);
+    ksDownloadFiles(aIds , [] , 0);
+    
+    removeLoadingScreen();
+}
+
+/**
+ * when the user chose to download a folder
+ */
+function downloadFolder(iFolder , iCourse){
+    //create the array of files to download
+    var aIds = new Array();
+    aIds[0] = iFolder;
+    
+    //put the loading screen on
+    loadingScreen();
+    
+    //download the files
+    ksDownloadFiles([] , aIds , iCourse);
     
     removeLoadingScreen();
 }
@@ -2293,7 +2425,7 @@ function ksDownloadFile(id){
  * download the list of files
  * @param array aIds the list of ids to download
  */
-function ksDownloadFiles(aIds , aFolders){
+function ksDownloadFiles(aIds , aFolders , iCourseId){
     //convert the array to json string
     var sIds = JSON.stringify(aIds);
     var sFolders = JSON.stringify(aFolders);
@@ -2304,7 +2436,7 @@ function ksDownloadFiles(aIds , aFolders){
 
     //user is authorized to download the files continue with download
     var iframe = document.createElement("iframe");
-    iframe.src = "/course/downloadfiles/ids/" + sIds + '/folders/' + sFolders;
+    iframe.src = "/course/downloadfiles/ids/" + sIds + '/folders/' + sFolders + '/id/' + iCourseId;
     iframe.onload = function() {
         // iframe has finished loading, download has started
     }
@@ -2432,4 +2564,8 @@ function initCommonActions(){
     
     iMargin = (iHeightDocument / 3) - (iHeightSearchcourse / 2) - $('#footer').height();
     $('.front-searchcourse').css('margin-top' , "" + iMargin + "px");
+}
+
+function clickedUploadInCourse(){
+    $('#filebrowser_upload_input').click();
 }

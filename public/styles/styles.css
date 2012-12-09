@@ -1134,6 +1134,7 @@ box-sizing: border-box;
 .uploaddialog{
     /*border-bottom: 1px solid #CCCCCC;*/
     padding: 8px;
+    position: relative;
 }
 
 .regbutton{
@@ -2162,6 +2163,10 @@ textarea{
 
 .uploadfirststep_button{
     width: 127px;
+    cursor: pointer;
+}
+.uploadfirststep_button:hover{
+    color: #CCCCCC;
 }
 
 .uploadfirststep_image img{
@@ -2205,4 +2210,116 @@ textarea{
     font-size: 15px;
     height: 57px;
     width: 100%;
+}
+
+.filebrowsericon{
+    background-image: url("/img/icons.png");
+    background-repeat: no-repeat;
+    height: 48px;
+    width: 48px;
+}
+
+.filebrowsericon.folder{
+    background-position: -77px -75px;
+}
+
+
+.filebrowserdownloadimage{
+    background-image: url("/img/icons.png");
+    background-position: -80px -150px;
+    height: 32px;
+    width: 32px;
+}
+
+.filebrowserdownloadimage:hover{
+    background-position: -80px -150px;
+}
+
+.filebrowserflag{
+    background-image: url("/img/icons.png");
+    background-position: 5px -150px;
+    background-repeat: no-repeat;
+    height: 28px;
+    width: 34px;
+}
+
+.filebrowser_data_tr:hover .filebrowsericon.folder{
+    background-position: -77px -75px;
+}
+
+.uploadfirststep_button * .files_positioner{
+    
+}
+
+.uploadfirststep_button * .files_positioner input[type="file"]{
+    left: -999px !important;top: -999px !important;position: absolute !important;
+}
+
+
+
+
+.files_positioner{
+    position: relative; left: -94px; opacity: 0; top: -64px;
+}
+
+.files_positioner input[type="file"]{
+    cursor: pointer; height: 60px;
+}
+
+#filebrowser_upload{
+    background-color: #E62A59;
+    display: block;
+    height: 57px;
+    width: 127px;
+}
+
+#filebrowser_upload:hover{
+    color: #CCCCCC;
+}
+
+#filebrowser_upload_input{
+    left: -9999px;
+    position: absolute;
+    top: -9999px;
+}
+
+.filebrowserbutton.disable{
+    background-color: #acacac;
+    
+}
+.filebrowserbutton.enable{
+    background-color: #E62A59;
+    
+}
+
+.filebrowsercomplete{
+    color: green; font-weight: bold; width: 100%;border-right: 1px solid #DDDDDD;
+}
+
+#submitfilebrowser:hover{
+    color: #CCCCCC;
+}
+
+.filebrowsertooltip{
+    display: inline; float: right; position: relative; top: -50px; right: 180px;
+}
+
+.filebrowsertooltip_text{
+    background-color: rgb(40, 40, 40); padding: 8px; font-size: 15px;
+}
+
+.filebrowsertooltip_img{
+    margin: 0 auto; width:16px; height:16px;
+}
+
+#filebrowsertooltip_folderpapa{
+    left: 350px !important; top: 100px !important;
+    position: absolute !important;
+    right: auto !important;
+}
+
+#filebrowsertooltip_folderson{
+    float: left !important; top: 100px !important; left: 610px !important;
+    position: absolute !important;
+    right: auto !important;
 }

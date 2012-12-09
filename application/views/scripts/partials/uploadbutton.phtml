@@ -1,19 +1,25 @@
 <?php
 /**
  * attaching this partial will add upload capabilities
+ * its the user responsibility to set a drop zone with id of $this -> sId + _dropzone
+ * its the user responsibility to set a f $this -> sId + _dropzone
  * @param String $this -> sId the id of the form
  * @param int $this -> iSerial the serial identifier for the files uploaded
  * @param int $this -> iNumUpload number of uploads allowed
  * @param int $this -> iMaxSize the max file size
  * @param String $this -> sAcceptFileTypes regular string of the file types allowed
  * @param String $this -> sUrl thee url to upload to
- * @param String $this -> sDropId the id of the block containing the drop zone and the table
- * @param String $this -> sFilesId the id of the block containing the files zone
  */
 ?>
 
 
  <div id="<?php echo $this -> sId; ?>">
+     <input type="file" 
+                           style="height: 30px; cursor: pointer;" 
+                           multiple="multiple" 
+                           name="files[]"
+                           data-url="/filemanager/upload/"
+                           />
     <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
     <div class="row fileupload-buttonbar">
         <div class="span7">
@@ -21,15 +27,10 @@
                 <label class="fileinput-button">
                     <span>Upload</span>
                 </label>
-                <div class="hidder"></div>
-                <div style="position: relative; left: -94px; opacity: 0; top: -64px;">
-                    <input type="file" 
-                           style="height: 30px; cursor: pointer;" 
-                           multiple="multiple" 
-                           name="files[]"
-                           data-url="/filemanager/upload/"
-                           />
-                </div>
+                <!--<div class="hidder"></div>
+                <div class="files_positioner" style="">
+                    
+                </div>-->
             </div>
         </div>
     </div>

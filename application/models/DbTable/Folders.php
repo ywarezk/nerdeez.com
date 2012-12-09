@@ -6,16 +6,20 @@
 require_once APPLICATION_PATH . '/models/DbTable/Nerdeez_Db_Table.php';
 
 /**
+ * the row will be displyed in the filebrowser
+ * thus must extend this class
+ */
+require_once APPLICATION_PATH . '/models/DbTable/Nerdeez_Db_Table_Row_Files.php';
+
+/**
  * custom folder row class
  */
-class Nerdeez_Folder_Row extends Zend_Db_Table_Row_Abstract
+class Nerdeez_Folder_Row extends Nerdeez_Db_Table_Row_Files
 {
     /**
-     * return the size of the folder in this course page
-     * @param int $iCourseId the course this folder belongs to
-     * @return int the size in bytes
+     * @see parent::getSize($iCourseId = 0)
      */
-    public function getSize($iCourseId){
+    public function getSize($iCourseId = 0){
         //get all the sons of this row
         $rsFolders = NULL;
         $mFolders = $this ->getTable();
@@ -41,6 +45,40 @@ class Nerdeez_Folder_Row extends Zend_Db_Table_Row_Abstract
             $iSize+=$rFile['size'];
         }
         return $iSize;
+    }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files::getClickJsEvent()
+     * @param type $iCourseId
+     * @return type
+     */
+    public function getClickJsEvent($iCourseId = 0){
+        return 'gotoFolder(' . $this['id'] . ' , ' . $iCourseId . ');';
+    }
+    
+    /**
+     * @see parent::getCheckboxClass()
+     * @return string
+     */
+    public function getCheckboxClass(){
+        return 'ksFolderBrowserCheckbox';
+    }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     * @return string
+     */
+    public function getImageClass(){
+        return 'folder';
+    }
+    
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     * @param type $iCourseId
+     */
+    public function getJsDownloadEvent($iCourseId = 0){
+        return 'downloadFolder(' . $this['id'] . ' , ' . $iCourseId . ');';
     }
 }
 

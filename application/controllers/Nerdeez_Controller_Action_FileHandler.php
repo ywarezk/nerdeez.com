@@ -104,10 +104,12 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         if (isset ($this->_aData['serial'])){
             $this->_aFiles = array();
             $counter = 0;
-            foreach ($_SESSION['kstempfiles'][$this->_aData['serial']] as $nfFile) {
-                $this->_aFiles[]=unserialize (serialize ($nfFile));
-                $_SESSION['kstempfiles'][$this->_aData['serial']][$counter] = NULL;
-                $counter++;
+            if (isset($_SESSION['kstempfiles'][$this->_aData['serial']]) && $_SESSION['kstempfiles'][$this->_aData['serial']] != NULL){
+                foreach ($_SESSION['kstempfiles'][$this->_aData['serial']] as $nfFile) {
+                    $this->_aFiles[]=unserialize (serialize ($nfFile));
+                    //$_SESSION['kstempfiles'][$this->_aData['serial']][$counter] = NULL;
+                    $counter++;
+                }
             }
         }
     }
@@ -155,7 +157,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
                 
                 //for all the files build a file object and put it in the session
                 foreach ($info as $oFile) {
-                    $nfFile = new Nerdeez_Files($oFile ->name, $oFile -> size, $oFile -> type, $oFile -> url , $oFile -> hash);
+                    $nfFile = new Nerdeez_Files($oFile ->name, $oFile -> size, $oFile -> type, $oFile -> url , $oFile -> hashing);
                     $_SESSION['kstempfiles'][$serial][] = $nfFile;
                 }
                 break;
@@ -179,7 +181,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
      * try and download the file with the path from s3
      * @param String $sPath the path to the file to download
      */
-    protected function download($sPath , $sTitle = '' , $sContentDispositon = 'attachment'){
+    protected function download($sPath , $sTitle = ''){
         //get the object info
         $s3 = new Nerdeez_Service_Amazon_S3();
         $aObjectInfo = $s3 -> getInfo($sPath);
@@ -188,7 +190,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
             header('Content-type: ' . $aObjectInfo['type']);
             header('Content-length: ' . $aObjectInfo['size']);
             if ($sTitle !== '')
-                header('Content-Disposition: ' . $sContentDispositon . '; filename="'.rawurldecode($sTitle).'"');
+                header('Content-Disposition: attachment; filename="'.rawurldecode($sTitle).'"');
             echo $s3->getObject($sPath);
         }
         else {
