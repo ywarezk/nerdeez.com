@@ -2436,7 +2436,7 @@ function ksDownloadFiles(aIds , aFolders , iCourseId){
 
     //user is authorized to download the files continue with download
     var iframe = document.createElement("iframe");
-    iframe.src = "/course/downloadfiles/ids/" + sIds + '/folders/' + sFolders + '/id/' + iCourseId;
+    iframe.src = "/course/downloadfiles/ids/" + sIds + '/folders/' + sFolders + '/id/' + iCourseId + '/disposition/attachment/';
     iframe.onload = function() {
         // iframe has finished loading, download has started
     }

@@ -181,7 +181,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
      * try and download the file with the path from s3
      * @param String $sPath the path to the file to download
      */
-    protected function download($sPath , $sTitle = ''){
+    protected function download($sPath , $sTitle = '' , $sDisposition = 'attachment'){
         //get the object info
         $s3 = new Nerdeez_Service_Amazon_S3();
         $aObjectInfo = $s3 -> getInfo($sPath);
@@ -190,7 +190,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
             header('Content-type: ' . $aObjectInfo['type']);
             header('Content-length: ' . $aObjectInfo['size']);
             if ($sTitle !== '')
-                header('Content-Disposition: attachment; filename="'.rawurldecode($sTitle).'"');
+                header('Content-Disposition: '. $sDisposition .'; filename="'.rawurldecode($sTitle).'"');
             echo $s3->getObject($sPath);
         }
         else {

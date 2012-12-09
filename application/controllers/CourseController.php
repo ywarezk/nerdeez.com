@@ -158,6 +158,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         $aIds = $this -> _aData['ids'];
         $iCourse = $this -> _aData['id'];
         $aFolders = $this -> _aData['folders'];
+        $sDisposition = $this -> _aData['disposition'];
         
         //set the icourse to be default od zero
         if ($iCourse == NULL)
@@ -209,7 +210,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         //if there is only one file
         if ($rsFiles -> count() == 1){
             $rFile = $rsFiles -> getRow(0);
-            $this->download($rFile['path'] , $rFile['title']);
+            $this->download($rFile['path'] , $rFile['title'] , $sDisposition);
             return;
         }
         
