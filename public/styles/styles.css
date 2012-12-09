@@ -2323,3 +2323,32 @@ textarea{
     position: absolute !important;
     right: auto !important;
 }
+
+#admininsertfilesupload{
+    background-color: #E62A59;
+    cursor: pointer;
+    height: 30px;
+    margin: 0 auto;
+    text-align: center;
+    width: 100px;
+}
+
+#admininsertfilesupload:hover{
+    color: #CCCCCC;
+}
+#admininsertfilesupload span:hover{
+    color: #CCCCCC;
+}
+
+#admininsertfilesupload span{
+    color: white;
+    font-size: 14px;
+    position: relative;
+    top: 6px;
+}
+
+#admininsertfilesupload_input{
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}

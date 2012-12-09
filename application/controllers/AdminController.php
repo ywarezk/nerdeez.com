@@ -169,11 +169,10 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      * when we are using the insert table in our admin to insert a new row
      */
     public function insertrowAction(){
-        //start the session
-        Zend_Session::start();
+        $this->disableView();
         
         //grab the model text
-        $sModel = $aData['model'];
+        $sModel = $this->_aData['model'];
         
         //create the actual model
         $mModel = new $sModel();
@@ -187,6 +186,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         foreach ($aCols as $sCol) {
             if ($sCol === 'id')continue;
             if ($sCol === 'size')continue;
+            if ($sCol === 'md5_hash')continue;
             if ($sCol === 'path'){ // there is a file uploaded grab the path
                 $oSingleFile = $this->_aFiles[0];
                 /* @var $oSingleFile Nerdeez_Files  */
@@ -203,10 +203,15 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         }
         
         //insert the actual row
-        $mModel -> insert($aParams);
+        try{
+            $mModel -> insert($aParams);
+        }
+        catch (Exception $e){
+            echo $e ->getMessage();
+        }
         
         //redirect to the same url
-        $this->_redirector->gotoUrl($this->getReferer() . 'status/success/');
+        $this->_redirector->gotoUrl($this->getReferer() . '/status/success/');
     }
     
     /**
