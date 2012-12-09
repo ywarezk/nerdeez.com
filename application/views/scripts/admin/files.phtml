@@ -4,6 +4,8 @@
  */
 ?>
 
+<input type="file" multiple="multiple" name="files[]" id="adminzipupload_input" class="adminupload_input"/>
+
 <!-- start of zip file add form -->
 <div class="admin_container">
     <h2>Add files by zip</h2>
@@ -17,8 +19,29 @@
                     <td colspan="2">
                         <?php
                             $serial = rand(0, 99999);
-                            echo $this -> partial('partials/uploadbutton.phtml' , array('iSerial' => $serial , 'sId' => 'uploadZipFiles' , 'iNumUpload' => 1 , 'iMaxSize' => 209715200 , 'sAcceptFileTypes' => '/(\\.|\\/)(zip)$/i' , 'sUrl' => '/admin/upload')) ;
+                            //echo $this -> partial('partials/uploadbutton.phtml' , array('iSerial' => $serial , 'sId' => 'uploadZipFiles' , 'iNumUpload' => 1 , 'iMaxSize' => 209715200 , 'sAcceptFileTypes' => '/(\\.|\\/)(zip)$/i' , 'sUrl' => '/admin/upload')) ;
                         ?>
+                        <div id="adminzipupload" class="adminupload" onclick="$('#adminzipupload_input').click();">
+                            <span>upload</span>
+                        </div>
+                        <div id="adminzipupload_files">
+                            <table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
+                                <tr class="filesheader">
+                                    <td class="filebrowser-td">Filename</td>
+                                    <td class="filebrowser-td filebrowser-td-left">Size</td>
+                                    <td class="filebrowser-td filebrowser-td-left">Progress</td>
+                                    <td class="filebrowser-td filebrowser-td-left">Delete</td>
+                                </tr>
+                            </tbody></table> 
+                        </div>
+                        <script type="text/javascript">
+                            ksInitUpload('adminzipupload' , 
+                                <?php echo $serial; ?> , 
+                                    1 , 
+                                    0, 
+                                    '/(\\.|\\/)(zip)$/i' , 
+                                    '/admin/upload/');
+                        </script>
                     </td>
                 </tr>
                 <tr>

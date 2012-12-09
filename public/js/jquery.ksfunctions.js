@@ -482,12 +482,14 @@ function preload(){
     //add dragenter dragleave dragdrop events to window
     $(document).on('dragenter', function (e) {
         e.preventDefault();
-        $('.dropzone').fadeIn('normal');
+        //$('.dropzone').fadeIn('normal');
+        $('.dropzone').addClass('dragover');
     });
     $(document).on('drop', function (e) {
         e.preventDefault();
-        $('.dropzone').fadeOut('normal');
+        $('.dropzone').removeClass('dragover');
     });
+    
     
      
 }

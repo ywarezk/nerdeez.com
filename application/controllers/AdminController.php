@@ -383,7 +383,8 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             $sUniTitle = $ksfunctions ->grabFileNameFromPath($sUniFile);
             $rUni = $mUniversities ->fetchRow($mUniversities ->select() ->where('title = ?' , $sUniTitle));
             if ($rUni == NULL){
-                $iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
+                //$iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
+                continue;
             }
             else{
                 $iUniId = $rUni['id'];
@@ -394,7 +395,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             foreach ($aCourseFiles as $sCourseFile) {
                 
                 //if the file is not a dir here you can continue
-                if(!is_dir($sUniFile))continue;
+                if(!is_dir($sCourseFile))continue;
                 
                 //if there is a course with this title than grab it else create it
                 $iCourseId = 0;
@@ -411,7 +412,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                 $aFolderPapas = glob($sCourseFile . '*' , GLOB_MARK);
                 foreach ($aFolderPapas as $sFolderPapa) {
                     //if the file is not a dir here you can continue
-                    if(!is_dir($sUniFile))continue;
+                    if(!is_dir($sFolderPapa))continue;
                     
                     //get the folder id if not existing than continue
                     $iFolderPapaId = 0;
@@ -452,7 +453,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                             $iFolderSon = $rFolderSon['id'];
                             
                             //iterate on all the files and insert them
-                            $aFiles = glob($sFolderPapa . '*' , GLOB_MARK);
+                            $aFiles = glob($sFolderSon . '*' , GLOB_MARK);
                             foreach($aFiles as $sFile){
                                 if(is_dir($sFile))continue;
                                 $sFileTitleSon = $ksfunctions ->grabFileNameFromPath($sFile);
@@ -461,7 +462,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                                 $isRowExist = $this ->isFileExist($hash);
                                 if ($isRowExist === FALSE){
                                     $mFiles ->insertWithoutArray($sFileTitleSon, $sPathSon, $iCourseId, $iFolderSon, filesize($sFile) , $hash);
-                                    $s3->putObject( $sPath, 
+                                    $s3->putObject( $sPathSon, 
                                         file_get_contents($sFile),
                                         array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
                                         Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));

@@ -418,16 +418,18 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
      */
     protected function extractZip($sPath){
         //get the path to extract the zip
-        $sPath = $this ->getUploadDir() . 'zipcache';
+        $sPathToExtract = $this ->getUploadDir() . 'zipcache';
         
         //if the dir doesnt exist i will create it
-        if (!is_dir($sPath)){
-            mkdir($sPath);
+        if (!is_dir($sPathToExtract)){
+            mkdir($sPathToExtract);
         }
         
         //extract the zip to the destination
         $zip = new ZipArchive();
-        return $zip ->extractTo($sPath);
+        $zip->open($sPath);
+        $zip ->extractTo($sPathToExtract);
+        $zip ->close();
     }
     
     /**
@@ -453,7 +455,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         elseif(is_dir($str)){
             $scan = glob(rtrim($str,'/').'/*');
             foreach($scan as $index=>$path){
-                recursiveDelete($path);
+                $this -> recursiveDelete($path);
             }
             return @rmdir($str);
         }

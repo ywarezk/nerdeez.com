@@ -1377,7 +1377,7 @@ box-sizing: border-box;
     width: 100%;
 }
 
-.dropzone{
+/*.dropzone{
     background-color: #E07796;
     display: none;
     height: 50px;
@@ -1389,7 +1389,7 @@ box-sizing: border-box;
 
 .dropzone.drag-enter{
     display: block !important;
-}
+}*/
 
 #overlay{
     position: absolute;        
@@ -2325,6 +2325,10 @@ textarea{
 }
 
 #admininsertfilesupload{
+    
+}
+
+.adminupload{
     background-color: #E62A59;
     cursor: pointer;
     height: 30px;
@@ -2333,22 +2337,30 @@ textarea{
     width: 100px;
 }
 
-#admininsertfilesupload:hover{
+
+
+.adminupload:hover{
     color: #CCCCCC;
 }
-#admininsertfilesupload span:hover{
+.adminupload span:hover{
     color: #CCCCCC;
 }
 
-#admininsertfilesupload span{
+.adminupload span{
     color: white;
     font-size: 14px;
     position: relative;
     top: 6px;
 }
 
-#admininsertfilesupload_input{
+.adminupload_input{
     position: absolute;
     top: -9999px;
     left: -9999px;
+}
+
+.dropzone.dragover{
+    background-color: #E62A59 !important;
+    opacity: 0.7;
+    
 }

@@ -19,7 +19,7 @@ $bIsDownload = FALSE;
 
     
         <!-- will hold all the file upload inputs -->
-        <input type="file" multiple="multiple" name="files[]" id="admininsertfilesupload_input"/>
+        <input type="file" multiple="multiple" name="files[]" id="admininsertfilesupload_input" class="adminupload_input"/>
         <!-- end file input list -->
         
         <?php 
@@ -222,7 +222,7 @@ $bIsDownload = FALSE;
                                 }
                                 elseif ($sCol === 'path'){
                                 ?>
-                                    <div id="admininsertfilesupload" onclick="$('#admininsertfilesupload_input').click();">
+                                    <div id="admininsertfilesupload" class="adminupload" onclick="$('#admininsertfilesupload_input').click();">
                                         <span>upload</span>
                                     </div>
                                     <div id="admininsertfilesupload_files">
@@ -238,7 +238,7 @@ $bIsDownload = FALSE;
                                     <script type="text/javascript">
                                         ksInitUpload('admininsertfilesupload' , 
                                             <?php echo $serial; ?> , 
-                                                0 , 
+                                                1 , 
                                                 209715200, 
                                                 '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 
                                                 '/admin/upload/');
