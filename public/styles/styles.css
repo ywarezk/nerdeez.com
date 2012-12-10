@@ -101,6 +101,7 @@ input, textarea, select {
 .nav > li{
     float: left;
     position: relative;
+    padding-left: 15px;
 }
 
 /* the span inside the navigation */
@@ -121,7 +122,7 @@ input, textarea, select {
     font-weight: bold;
     height: 12px;
     line-height: 1;
-    padding: 10px 12px 9px;
+    /*padding: 10px 12px 9px;*/
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75);
 }
 
@@ -719,6 +720,8 @@ box-sizing: border-box;
 
 .footer_anchor{
     color: #CCCCCC;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 .insearch{
@@ -1133,6 +1136,7 @@ box-sizing: border-box;
 .uploaddialog{
     /*border-bottom: 1px solid #CCCCCC;*/
     padding: 8px;
+    position: relative;
 }
 
 .regbutton{
@@ -1375,7 +1379,7 @@ box-sizing: border-box;
     width: 100%;
 }
 
-.dropzone{
+/*.dropzone{
     background-color: #E07796;
     display: none;
     height: 50px;
@@ -1387,7 +1391,7 @@ box-sizing: border-box;
 
 .dropzone.drag-enter{
     display: block !important;
-}
+}*/
 
 #overlay{
     position: absolute;        
@@ -1935,11 +1939,12 @@ img
 }
 
 #fileclassify{
-    border: 1px solid #CCCCCC;
+    /*border: 1px solid #CCCCCC;
     border-radius: 15px 15px 15px 15px;
     margin: 0 auto 20px;
     padding: 10px;
-    width: 600px;
+    width: 600px;*/
+    width: 100%;
 }
 
 .fileclassify_body_explain{
@@ -1951,6 +1956,7 @@ img
     height: 36px;
     overflow: hidden;
     width: 240px;
+    background-color: white;
 }
 
 .style-select select{
@@ -2079,7 +2085,7 @@ textarea{
 }
 
 .nav-text{
-    position: relative;  font-size: 16px; top: 9px; font-family: Helvetica;
+    font-size: 16px; font-family: Helvetica;
 }
 
 .navitem a:hover * i.home{
@@ -2109,4 +2115,254 @@ textarea{
     border-radius: 30px 30px 30px 30px;
     box-shadow: 0 10px 5px #888888;
     padding: 20px;
+}
+
+#searchcourseform{
+    background-image: url('/img/squares.png') !important;
+}
+
+.navitem.active * span.nav-text{
+    color: #E20045 !important;
+}
+
+.navitem a:hover{
+    text-decoration: underline !important;
+}
+
+.navitem.navseparator span{
+    color: white !important;
+}
+
+.navitem.navseparator span:hover{
+    color: white !important;
+}
+
+.arrowicon{
+    background-image: url("/img/icons.png");
+    background-repeat: no-repeat;
+    height: 16px;
+    width: 16px;
+    background-position: 2px 5px;
+}
+
+.uploadfirststep{
+    background-color: #bdccd4;
+    width: 100%;
+    height: 57px;
+    margin-top: 25px;
+    position: relative;
+    font-size: 15px;
+    color: white;
+}
+
+.uploadfirststep_image{
+   position: relative;
+}
+
+.uploadfirststep_text{
+    width: 100%;
+}
+
+.uploadfirststep_button{
+    width: 127px;
+    cursor: pointer;
+}
+.uploadfirststep_button:hover{
+    color: #CCCCCC;
+}
+
+.uploadfirststep_image img{
+    left: 25px;
+    position: absolute;
+    top: -26px;
+}
+
+.uploadfirststep_button * .span7{
+    width: 0 !important;
+}
+
+.uploadfirststep_button * .hider{
+    width: 0 !important;
+}
+
+.uploadfirststep_button #uploadFileBrowser{
+    background-color: #E62A59 !important;
+    height: 57px !important;
+    width: 127px !important;
+}
+
+.uploadfirststep_button * .fileinput-button{
+    background: none repeat scroll 0 0 transparent;
+    color: white !important;
+    font-size: 15px;
+    left: 31px;
+    position: relative;
+    top: 20px;
+}
+
+#fileclassify * .uploadfirststep_image img{
+    left: 50px !important;
+    top: -9px !important;
+}
+
+.filebrowserbutton{
+    background-color: #E62A59;
+    border: medium none;
+    color: white;
+    font-size: 15px;
+    height: 57px;
+    width: 100%;
+}
+
+.filebrowsericon{
+    background-image: url("/img/icons.png");
+    background-repeat: no-repeat;
+    height: 48px;
+    width: 48px;
+}
+
+.filebrowsericon.folder{
+    background-position: -77px -75px;
+}
+
+
+.filebrowserdownloadimage{
+    background-image: url("/img/icons.png");
+    background-position: -80px -150px;
+    height: 32px;
+    width: 32px;
+}
+
+.filebrowserdownloadimage:hover{
+    background-position: -80px -150px;
+}
+
+.filebrowserflag{
+    background-image: url("/img/icons.png");
+    background-position: 5px -150px;
+    background-repeat: no-repeat;
+    height: 28px;
+    width: 34px;
+}
+
+.filebrowser_data_tr:hover .filebrowsericon.folder{
+    background-position: -77px -75px;
+}
+
+.uploadfirststep_button * .files_positioner{
+    
+}
+
+.uploadfirststep_button * .files_positioner input[type="file"]{
+    left: -999px !important;top: -999px !important;position: absolute !important;
+}
+
+
+
+
+.files_positioner{
+    position: relative; left: -94px; opacity: 0; top: -64px;
+}
+
+.files_positioner input[type="file"]{
+    cursor: pointer; height: 60px;
+}
+
+#filebrowser_upload{
+    background-color: #E62A59;
+    display: block;
+    height: 57px;
+    width: 127px;
+}
+
+#filebrowser_upload:hover{
+    color: #CCCCCC;
+}
+
+#filebrowser_upload_input{
+    left: -9999px;
+    position: absolute;
+    top: -9999px;
+}
+
+.filebrowserbutton.disable{
+    background-color: #acacac;
+    
+}
+.filebrowserbutton.enable{
+    background-color: #E62A59;
+    
+}
+
+.filebrowsercomplete{
+    color: green; font-weight: bold; width: 100%;border-right: 1px solid #DDDDDD;
+}
+
+#submitfilebrowser:hover{
+    color: #CCCCCC;
+}
+
+.filebrowsertooltip{
+    display: inline; float: right; position: relative; top: -50px; right: 180px;
+}
+
+.filebrowsertooltip_text{
+    background-color: rgb(40, 40, 40); padding: 8px; font-size: 15px;
+}
+
+.filebrowsertooltip_img{
+    margin: 0 auto; width:16px; height:16px;
+}
+
+#filebrowsertooltip_folderpapa{
+    left: 350px !important; top: 100px !important;
+    position: absolute !important;
+    right: auto !important;
+}
+
+#filebrowsertooltip_folderson{
+    float: left !important; top: 100px !important; left: 610px !important;
+    position: absolute !important;
+    right: auto !important;
+}
+
+#admininsertfilesupload{
+    
+}
+
+.adminupload{
+    background-color: #E62A59;
+    cursor: pointer;
+    height: 30px;
+    margin: 0 auto;
+    text-align: center;
+    width: 100px;
+}
+
+
+
+.adminupload:hover{
+    color: #CCCCCC;
+}
+.adminupload span:hover{
+    color: #CCCCCC;
+}
+
+.adminupload span{
+    color: white;
+    font-size: 14px;
+    position: relative;
+    top: 6px;
+}
+
+.adminupload_input{
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+.dropzone.dragover{
+    background-color: #E62A59 !important;
+    opacity: 0.7;
+    
 }

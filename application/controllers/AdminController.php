@@ -169,11 +169,10 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      * when we are using the insert table in our admin to insert a new row
      */
     public function insertrowAction(){
-        //start the session
-        Zend_Session::start();
+        $this->disableView();
         
         //grab the model text
-        $sModel = $aData['model'];
+        $sModel = $this->_aData['model'];
         
         //create the actual model
         $mModel = new $sModel();
@@ -187,6 +186,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         foreach ($aCols as $sCol) {
             if ($sCol === 'id')continue;
             if ($sCol === 'size')continue;
+            if ($sCol === 'md5_hash')continue;
             if ($sCol === 'path'){ // there is a file uploaded grab the path
                 $oSingleFile = $this->_aFiles[0];
                 /* @var $oSingleFile Nerdeez_Files  */
@@ -203,10 +203,15 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         }
         
         //insert the actual row
-        $mModel -> insert($aParams);
+        try{
+            $mModel -> insert($aParams);
+        }
+        catch (Exception $e){
+            echo $e ->getMessage();
+        }
         
         //redirect to the same url
-        $this->_redirector->gotoUrl($this->getReferer() . 'status/success/');
+        $this->_redirector->gotoUrl($this->getReferer() . '/status/success/');
     }
     
     /**
@@ -378,7 +383,8 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             $sUniTitle = $ksfunctions ->grabFileNameFromPath($sUniFile);
             $rUni = $mUniversities ->fetchRow($mUniversities ->select() ->where('title = ?' , $sUniTitle));
             if ($rUni == NULL){
-                $iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
+                //$iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
+                continue;
             }
             else{
                 $iUniId = $rUni['id'];
@@ -389,7 +395,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             foreach ($aCourseFiles as $sCourseFile) {
                 
                 //if the file is not a dir here you can continue
-                if(!is_dir($sUniFile))continue;
+                if(!is_dir($sCourseFile))continue;
                 
                 //if there is a course with this title than grab it else create it
                 $iCourseId = 0;
@@ -406,7 +412,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                 $aFolderPapas = glob($sCourseFile . '*' , GLOB_MARK);
                 foreach ($aFolderPapas as $sFolderPapa) {
                     //if the file is not a dir here you can continue
-                    if(!is_dir($sUniFile))continue;
+                    if(!is_dir($sFolderPapa))continue;
                     
                     //get the folder id if not existing than continue
                     $iFolderPapaId = 0;
@@ -447,7 +453,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                             $iFolderSon = $rFolderSon['id'];
                             
                             //iterate on all the files and insert them
-                            $aFiles = glob($sFolderPapa . '*' , GLOB_MARK);
+                            $aFiles = glob($sFolderSon . '*' , GLOB_MARK);
                             foreach($aFiles as $sFile){
                                 if(is_dir($sFile))continue;
                                 $sFileTitleSon = $ksfunctions ->grabFileNameFromPath($sFile);
@@ -456,7 +462,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                                 $isRowExist = $this ->isFileExist($hash);
                                 if ($isRowExist === FALSE){
                                     $mFiles ->insertWithoutArray($sFileTitleSon, $sPathSon, $iCourseId, $iFolderSon, filesize($sFile) , $hash);
-                                    $s3->putObject( $sPath, 
+                                    $s3->putObject( $sPathSon, 
                                         file_get_contents($sFile),
                                         array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
                                         Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));

@@ -46,9 +46,11 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'status' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 200) ,
         array('name' => 'message' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 300) ,
         array('name' => 'serial' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 99999) ,
-        array('name' => 'folder_papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 100) ,
-        array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 100) ,
-        array('name' => 'id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 0) ,
+        array('name' => 'folder_papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,
+        array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,
+        array('name' => 'id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
+        array('name' => 'courses_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
+        array('name' => 'folders_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
         array('name' => 'folder' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 0) ,
         array('name' => 'search' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 300) ,
         array('name' => 'password' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
@@ -136,10 +138,12 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         
         //check the remember me cookies
         $this ->rememberMe();
-
+        
+        //set the layout
         $layout = new Zend_Layout();
         $layout->setLayoutPath(APPLICATION_PATH . '/layouts/scripts/guest.phtml');
         $layout -> menu = $this -> view -> render ('partials/menus/guest_menu.phtml');
+        
         
     }
     
@@ -355,6 +359,45 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      */
     public function getUploadDir(){
         return $this->getFromConfig('uploaddir');
+    }
+    
+    /**
+     * is this development or production server
+     * @return Bool TRUE if this is production server
+     */
+    protected function isProduction(){
+        //server is development
+        if ($_SERVER['SERVER_ADDR'] === $this->getFromConfig('developmentip')){
+            return FALSE;
+        }
+        else{
+            return TRUE;
+        }
+    }
+    
+    /**
+     * 
+     */
+    public function preDispatch() {
+        parent::preDispatch();
+        
+        //set all the js files and css files
+        $layout = new Zend_Layout();
+        if ($this -> isProduction()){
+            $layout -> getView() -> headScript() -> appendFile('/js/static.min.js');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/static.min.css');
+        }
+        else{
+            $layout -> getView() -> headScript() -> prependFile('/js/jquery.ksfunctions.js');
+            $layout -> getView() -> headScript() -> prependFile('/js/jquery.ez-pinned-footer.js');
+            $layout -> getView() -> headScript() -> prependFile('/js/superfish.js');
+            $layout -> getView() -> headScript() -> prependFile('/js/jquery.validate.min.js');
+            $layout -> getView() -> headScript() -> prependFile('/js/jquery-1.7.1.min.js');
+            $layout -> getView() -> headLink()->prependStylesheet('/js/styles.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/js/superfish-navbar.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/js/superfish-vertical.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/js/superfish.css');
+        }
     }
     
 }

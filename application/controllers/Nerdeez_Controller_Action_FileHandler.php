@@ -104,10 +104,12 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         if (isset ($this->_aData['serial'])){
             $this->_aFiles = array();
             $counter = 0;
-            foreach ($_SESSION['kstempfiles'][$this->_aData['serial']] as $nfFile) {
-                $this->_aFiles[]=unserialize (serialize ($nfFile));
-                $_SESSION['kstempfiles'][$this->_aData['serial']][$counter] = NULL;
-                $counter++;
+            if (isset($_SESSION['kstempfiles'][$this->_aData['serial']]) && $_SESSION['kstempfiles'][$this->_aData['serial']] != NULL){
+                foreach ($_SESSION['kstempfiles'][$this->_aData['serial']] as $nfFile) {
+                    $this->_aFiles[]=unserialize (serialize ($nfFile));
+                    //$_SESSION['kstempfiles'][$this->_aData['serial']][$counter] = NULL;
+                    $counter++;
+                }
             }
         }
     }
@@ -155,7 +157,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
                 
                 //for all the files build a file object and put it in the session
                 foreach ($info as $oFile) {
-                    $nfFile = new Nerdeez_Files($oFile ->name, $oFile -> size, $oFile -> type, $oFile -> url , $oFile -> hash);
+                    $nfFile = new Nerdeez_Files($oFile ->name, $oFile -> size, $oFile -> type, $oFile -> url , $oFile -> hashing);
                     $_SESSION['kstempfiles'][$serial][] = $nfFile;
                 }
                 break;
@@ -179,7 +181,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
      * try and download the file with the path from s3
      * @param String $sPath the path to the file to download
      */
-    protected function download($sPath , $sTitle = '' , $sContentDispositon = 'attachment'){
+    protected function download($sPath , $sTitle = '' , $sDisposition = 'attachment'){
         //get the object info
         $s3 = new Nerdeez_Service_Amazon_S3();
         $aObjectInfo = $s3 -> getInfo($sPath);
@@ -188,7 +190,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
             header('Content-type: ' . $aObjectInfo['type']);
             header('Content-length: ' . $aObjectInfo['size']);
             if ($sTitle !== '')
-                header('Content-Disposition: ' . $sContentDispositon . '; filename="'.rawurldecode($sTitle).'"');
+                header('Content-Disposition: '. $sDisposition .'; filename="'.rawurldecode($sTitle).'"');
             echo $s3->getObject($sPath);
         }
         else {
@@ -206,23 +208,24 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         parent::preDispatch();
         
         //set to include the fielupload js files
-        $layout = new Zend_Layout();
-        $layout->getView()->headScript()->appendFile('/js/jquery-ui.min.js');
-        $layout->getView()->headScript()->appendFile('/js/jquery.ui.widget.js');
-        $layout->getView()->headScript()->appendFile('/js/tmpl.min.js');
-        $layout->getView()->headScript()->appendFile('/js/load-image.min.js');
-        $layout->getView()->headScript()->appendFile('/js/canvas-to-blob.min.js');
-        $layout->getView()->headScript()->appendFile('/js/bootstrap.min.js');
-        $layout->getView()->headScript()->appendFile('/js/bootstrap-image-gallery.min.js');
-        $layout->getView()->headScript()->appendFile('/js/jquery.iframe-transport.js');
-        $layout->getView()->headScript()->appendFile('/js/jquery.fileupload.js');
-        $layout->getView()->headScript()->appendFile('/js/jquery.fileupload-fp.js');
-        $layout->getView()->headScript()->appendFile('/js/jquery.fileupload-ui.js');
-        $layout->getView()->headScript()->appendFile('/js/locale.js');
-        
-        //set to include the file upload css files
-        $layout->getView()->headLink()->prependStylesheet('/styles/bootstrap.min.css');
-        
+        if (!$this->isProduction()){
+            $layout = new Zend_Layout();
+            $layout->getView()->headScript()->appendFile('/js/jquery-ui.min.js');
+            $layout->getView()->headScript()->appendFile('/js/jquery.ui.widget.js');
+            $layout->getView()->headScript()->appendFile('/js/tmpl.min.js');
+            $layout->getView()->headScript()->appendFile('/js/load-image.min.js');
+            $layout->getView()->headScript()->appendFile('/js/canvas-to-blob.min.js');
+            $layout->getView()->headScript()->appendFile('/js/bootstrap.min.js');
+            $layout->getView()->headScript()->appendFile('/js/bootstrap-image-gallery.min.js');
+            $layout->getView()->headScript()->appendFile('/js/jquery.iframe-transport.js');
+            $layout->getView()->headScript()->appendFile('/js/jquery.fileupload.js');
+            $layout->getView()->headScript()->appendFile('/js/jquery.fileupload-fp.js');
+            $layout->getView()->headScript()->appendFile('/js/jquery.fileupload-ui.js');
+            $layout->getView()->headScript()->appendFile('/js/locale.js');
+
+            //set to include the file upload css files
+            $layout->getView()->headLink()->prependStylesheet('/styles/bootstrap.min.css');
+        }
     }
     
     protected function downloadFile($path , $title = '' , $sContentDispositon = 'attachment'){
@@ -416,16 +419,18 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
      */
     protected function extractZip($sPath){
         //get the path to extract the zip
-        $sPath = $this ->getUploadDir() . 'zipcache';
+        $sPathToExtract = $this ->getUploadDir() . 'zipcache';
         
         //if the dir doesnt exist i will create it
-        if (!is_dir($sPath)){
-            mkdir($sPath);
+        if (!is_dir($sPathToExtract)){
+            mkdir($sPathToExtract);
         }
         
         //extract the zip to the destination
         $zip = new ZipArchive();
-        return $zip ->extractTo($sPath);
+        $zip->open($sPath);
+        $zip ->extractTo($sPathToExtract);
+        $zip ->close();
     }
     
     /**
@@ -451,7 +456,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         elseif(is_dir($str)){
             $scan = glob(rtrim($str,'/').'/*');
             foreach($scan as $index=>$path){
-                recursiveDelete($path);
+                $this -> recursiveDelete($path);
             }
             return @rmdir($str);
         }

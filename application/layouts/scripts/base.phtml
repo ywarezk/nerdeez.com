@@ -16,12 +16,12 @@
             echo $this->headMeta(); 
         ?> 
         <?php 
-            $this->headLink()->prependStylesheet('/styles/styles.css');
+            /*$this->headLink()->prependStylesheet('/styles/styles.css');
             $this->headLink()->prependStylesheet('/styles/superfish-navbar.css');
             $this->headLink()->prependStylesheet('/styles/superfish-vertical.css');
-            $this->headLink()->prependStylesheet('/styles/superfish.css');
+            $this->headLink()->prependStylesheet('/styles/superfish.css');*/
             $this->headLink(array('rel' => 'SHORTCUT ICON',
-                                  'href' => '/img/favicon.ico'),
+                                  'href' => '/img/favicon.ico'), 
                                   'PREPEND');
             echo $this->headLink(); 
         ?> 
@@ -31,25 +31,26 @@
         <?php 
             //attach common javascriopt files
             //$this->headScript()->prependFile('/js/tooltip.js');
-            $this->headScript()->prependFile('/js/jquery.ksfunctions.js');
+            /*$this->headScript()->prependFile('/js/jquery.ksfunctions.js');
             $this->headScript()->prependFile('/js/jquery.ez-pinned-footer.js');
             $this->headScript()->prependFile('/js/superfish.js');
             $this->headScript()->prependFile('/js/jquery.validate.min.js');
-            $this->headScript()->prependFile('/js/jquery-1.7.1.min.js');
+            $this->headScript()->prependFile('/js/jquery-1.7.1.min.js');*/
             echo $this->headScript(); 
         ?> 
       
         
         <script type="text/javascript">
-          /*var _gaq = _gaq || [];
-          _gaq.push(['_setAccount', 'UA-30424827-1']);
-          _gaq.push(['_trackPageview']);
 
-          (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-          })();*/
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-36919461-1']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+              var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+              ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+              var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
 
         </script>
         <script type="text/javascript">
@@ -57,6 +58,56 @@
         </script>
     </head> 
     <body>
+        
+        <!-- The template to display files available for upload -->
+        <script id="template-upload" type="text/x-tmpl">
+        {% for (var i=0, file; file=o.files[i]; i++) { %}
+            <tr class="template-upload fade">
+                <td class="name"><span>{%=file.name%}</span></td>
+                <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+                {% if (file.error) { %}
+                    <td class="error" colspan="1"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+                {% } else if (o.files.valid && !i) { %}
+                    <td style="padding-left: 5px; padding-right: 5px;width:50%;">
+                        <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
+                    </td>
+
+                {% } else { %}
+                    <td colspan="2"></td>
+                {% } %}
+                <td class="cancel">{% if (!i) { %}
+                    <button class="btn btn-warning">
+                        <img src="/img/trash.png" />
+                    </button>
+                {% } %}</td>
+            </tr>
+        {% } %}
+        </script>
+        <!-- The template to display files available for download -->
+        <script id="template-download" type="text/x-tmpl">
+        {% for (var i=0, file; file=o.files[i]; i++) { %}
+            <tr class="template-download fade">
+                {% if (file.error) { %}
+                    <td class="name"><span>{%=file.name%}</span></td>
+                    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+                    <td class="error" colspan="1"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+                {% } else { %}
+
+                    <td class="name">
+                        {%=file.name%}
+                    </td>
+                    <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+                    <td class="filebrowsercomplete" >COMPLETE</td>
+                {% } %}
+                <td class="delete">
+                    <button class="btn btn-warning" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">
+                        <img src="/img/trash.png" />
+                    </button>
+                </td>
+            </tr>
+        {% } %}
+        </script>
+        
         
         <?php /* NESTED LAYOUT SUPPORT */ ?> 
         <?php 
@@ -135,10 +186,7 @@
                         <a href="/index/safety" class="footer_anchor">
                             Safety Tips
                         </a>
-                        |
-                        <a href="http://ykapps.com" class="footer_anchor">
-                            Created by YKApps
-                        </a>
+                         
                     </div>
                 </div> 
             </div>
