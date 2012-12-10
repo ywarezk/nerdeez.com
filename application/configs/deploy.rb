@@ -1,23 +1,20 @@
 # general settings
 default_run_options[:pty] = true
-set :use_sudo, false
+set :use_sudo, true
  
 # source control settings
 set :scm, :git
-set :deploy_via, :export
-set :repository, "git@github.com:ywarezk/nerdeez.com.git"
-set :branch, "production"
+set :deploy_via, :remote_cache
+set :repository, "ssh://git@github.com:ywarezk/nerdeez.com.git"
  
 role :app, "nerdeez.com"
 role :web, "nerdeez.com"
-role :db, "nerdeez.com", :primary => true
+role :db, "nerdeez", :primary => true
  
 set :deploy_to, "/home/ywarezk2824/public_html/"
 
 set :user, "ywarezk2824"
 set :password, "KhruiNhe$%Vhpv"
-
-
 
 namespace :deploy do
  
