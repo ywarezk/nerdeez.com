@@ -1168,6 +1168,16 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
             $('.filebrowsertooltip').fadeOut('normal');
         }
     })
+    .bind('fileuploadfailed', function (e, data) 
+    {
+        alert('5');
+        
+    })
+    .bind('fileuploaddestroyed', function (e, data) 
+    {
+        alert('6');
+        
+    })
     .bind('fileuploaddone', function (e, data) {
         //handleSubmitFilesButton();
     })

@@ -720,6 +720,8 @@ box-sizing: border-box;
 
 .footer_anchor{
     color: #CCCCCC;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 .insearch{
