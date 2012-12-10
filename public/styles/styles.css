@@ -55,7 +55,7 @@ input, textarea, select {
     /*left: 181px;*/
     /*width: 770px;*/
     margin: 0 auto;
-    min-width: 850px;
+    min-width: 1000px;
 }
 
 
@@ -2222,15 +2222,15 @@ textarea{
 }
 
 .filebrowsericon.folder{
-    background-position: -77px -75px;
+    background-position: -85px -75px;
 }
 
 
 .filebrowserdownloadimage{
     background-image: url("/img/icons.png");
-    background-position: -80px -150px;
-    height: 32px;
-    width: 32px;
+    background-position: -10px -162px;
+    height: 38px;
+    width: 42px;
 }
 
 .filebrowserdownloadimage:hover{
@@ -2239,10 +2239,10 @@ textarea{
 
 .filebrowserflag{
     background-image: url("/img/icons.png");
-    background-position: 5px -150px;
+    background-position: -242px -79px;
     background-repeat: no-repeat;
-    height: 28px;
-    width: 34px;
+    height: 32px;
+    width: 38px;
 }
 
 .filebrowser_data_tr:hover .filebrowsericon.folder{
@@ -2366,3 +2366,23 @@ textarea{
     opacity: 0.7;
     
 }
+
+.filebrowsericon.pdf{
+    
+}
+.filebrowsericon.zip{
+    
+}
+.filebrowsericon.rar{
+    background-position: -244px -234px;
+}
+.filebrowsericon.doc , .filebrowsericon.docx{
+    
+}
+.filebrowsericon.xls , .filebrowsericon.xlsx{
+    background-position: -404px -235px;
+}
+.filebrowsericon.gif , .filebrowsericon.bmp , .filebrowsericon.jpg , .filebrowsericon.png{
+    background-position: -325px -235px;
+}
+

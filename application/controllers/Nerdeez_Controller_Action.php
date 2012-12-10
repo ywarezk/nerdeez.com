@@ -338,7 +338,17 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      * when ajax was completed successfully pass it to the user
      */
     public function ajaxReturnSuccess(){
-        $userData=array(array('status'=>'success','data'=>$result));
+        $userData=array(array('status'=>'success','data'=>''));
+        $dojoData= new Zend_Dojo_Data('status',$userData);
+	echo $dojoData->toJson();
+    }
+    
+    /**
+     * when ajax was completed successfully pass it to the user
+     * @param String $sMsg the failed message to send
+     */
+    public function ajaxReturnFailed($sMsg = ''){
+        $userData=array(array('status'=>'failed','msg'=>$sMsg));
         $dojoData= new Zend_Dojo_Data('status',$userData);
 	echo $dojoData->toJson();
     }
@@ -393,10 +403,10 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             $layout -> getView() -> headScript() -> prependFile('/js/superfish.js');
             $layout -> getView() -> headScript() -> prependFile('/js/jquery.validate.min.js');
             $layout -> getView() -> headScript() -> prependFile('/js/jquery-1.7.1.min.js');
-            $layout -> getView() -> headLink()->prependStylesheet('/js/styles.css');
-            $layout -> getView() -> headLink()->prependStylesheet('/js/superfish-navbar.css');
-            $layout -> getView() -> headLink()->prependStylesheet('/js/superfish-vertical.css');
-            $layout -> getView() -> headLink()->prependStylesheet('/js/superfish.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/styles.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish-navbar.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish-vertical.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish.css');
         }
     }
     

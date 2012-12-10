@@ -513,6 +513,81 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this->_redirector->gotoUrl($this->getReferer() . '/status/success/');
     }
     
+    /**
+     * when the admin choose to preform our admin actions on the database
+     */
+    public function databaseAction(){
+        //set the layout to be the guest
+        Zend_Layout::getMvcInstance()->assign('nestedLayout', 'guest');
+    }
+    
+    /**
+     * the script to run to backup the database
+     */
+    public function backupdbAction(){
+        $this ->disableView();
+        $result = 0;
+        try{
+            require_once APPLICATION_PATH . '/models/Nerdeez_Script_Backup_Db.php';
+        }
+        catch(Exception $e){
+            $this->ajaxReturnFailed('Couldnt find the backup script');
+            return;
+        }
+        
+        switch ($result) {
+            case 1:
+                $this->ajaxReturnFailed('failed to execute shell command');
+                return;
+                break;
+            case 2:
+                $this->ajaxReturnFailed('the file is not in the hd');
+                return;
+                break;
+        }
+        
+        //return success
+        $this ->ajaxReturnSuccess();
+    }
+    
+    /**
+     * will work only in development and will transfer db from production to development
+     */
+    public function transferdbAction(){
+        $this->disableView();
+        
+        //if this is production server do nothing
+        if ($this->isProduction()){
+            $this->ajaxReturnFailed('This will work only in development server');
+            return;
+        }
+        
+        $result = 0;
+        try{
+            require_once APPLICATION_PATH . '/models/Nerdeez_Script_Transfer_Db.php';
+        }
+        catch(Exception $e){
+            $this->ajaxReturnFailed('Couldnt find the backup script');
+            return;
+        }
+        
+        switch ($result) {
+            case 1:
+                $this->ajaxReturnFailed('failed to execute shell command');
+                return;
+                break;
+            case 2:
+                $this->ajaxReturnFailed('the file is not in the hd');
+                return;
+                break;
+        }
+        
+        //return success
+        $this ->ajaxReturnSuccess();
+    }
+    
+    
+    
 }
 
 ?>

@@ -46,7 +46,7 @@ class Nerdeez_Files_Row extends Nerdeez_Db_Table_Row_Files
      */
     public function getImageClass(){
         //determine the background position from the extension
-        $ext = strtolower(pathinfo($rFile['title'], PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo($this['title'], PATHINFO_EXTENSION));
         return $ext;
     }
     

@@ -1,0 +1,32 @@
+<!-- display information -->
+<div id="error" class="about_status"><?php echo $this -> sError; ?></div>
+<div id="status" class="about_status"><?php echo $this -> sStatus; ?></div>
+<!-- end information -->
+
+<!--  backup db admin -->
+<div class="admin_container">
+    <h2>
+        Backup Database
+    </h2>
+    <p>
+        The nerdeez database will be dumped in this directory /upload/backup.sql
+    </p>
+    <button onclick="backupDB();">
+        Backup
+    </button>
+</div>
+<!-- end backup db admin -->
+
+<!-- begin grab db from production/development -->
+<div class="admin_container">
+    <h2>
+       Transfer from production to development
+    </h2>
+    <p>
+        Be warned this will cause grabbing the database from the production and replacing the current one this will only work in development  
+    </p>
+    <button onclick="grabDB();">
+        Backup
+    </button>
+</div>
+<!-- end grabbing db -->

@@ -181,3 +181,95 @@ function ksDownloadRow(iId , sModel){
     
 }
 
+/**
+ * when we choose to backup the db to hd
+ */
+function backupDB(){
+    //put the loading screen on
+    loadingScreen();
+    
+    //call to ajax script
+    $.ajax({
+            type: "POST",
+            url: "/admin/backupdb/",
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if (res.items[0].status ==='success'){ 
+                    setSuccessToSuccess();
+                    //loading screen
+                    removeLoadingScreen();
+
+                    //display success failure screen
+                    displaySuccessFailure();
+                }
+                else{
+                    setSuccessToFailed();
+                    //loading screen
+                    removeLoadingScreen();
+
+                    //display success failure screen
+                    displaySuccessFailure();
+                    
+                    $('#error').text(res.items[0].msg);
+                }
+            },
+            error: function(res){
+                setSuccessToFailed();
+                //loading screen
+                removeLoadingScreen();
+                 
+                //display success failure screen
+                displaySuccessFailure();
+                
+                $("#error").text("Connection failure! Try again");
+            }
+    });
+}
+
+/**
+ * will change the database to development db
+ */
+function grabDB(){
+    //put the loading screen on
+    loadingScreen();
+    
+    //call to ajax script
+    $.ajax({
+            type: "POST",
+            url: "/admin/transferdb/",
+            dataType: "json",
+            async: false,
+            success: function(res) {
+                if (res.items[0].status ==='success'){ 
+                    setSuccessToSuccess();
+                    //loading screen
+                    removeLoadingScreen();
+
+                    //display success failure screen
+                    displaySuccessFailure();
+                }
+                else{
+                    setSuccessToFailed();
+                    //loading screen
+                    removeLoadingScreen();
+
+                    //display success failure screen
+                    displaySuccessFailure();
+                    
+                    $('#error').text(res.items[0].msg);
+                }
+            },
+            error: function(res){
+                setSuccessToFailed();
+                //loading screen
+                removeLoadingScreen();
+                 
+                //display success failure screen
+                displaySuccessFailure();
+                
+                $("#error").text("Connection failure! Try again");
+            }
+    });
+}
+
