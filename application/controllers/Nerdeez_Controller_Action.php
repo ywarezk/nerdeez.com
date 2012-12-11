@@ -242,9 +242,14 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         
         //if the row doesnt exist check if the email and identifier exists if so security breach
         if (!$bIsRowExist){
+            try{
              $rsLogincookies = $mLogincookies -> fetchAll($mLogincookies -> select()
                 -> where ('email = ?' , $sEmail)
                 -> where ('identifier = ?' , $sIdentifier));
+            }
+            catch(Exception $e){
+                return;
+            }
             if ($rsLogincookies -> count() > 0){
                 //delete all the rows you found
                 foreach ($rsLogincookies as $rLogincookie) {
