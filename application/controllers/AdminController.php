@@ -441,6 +441,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                             else{
                                 $mFiles ->insertWithoutArray($sFileTitle, $isRowExist['path'], $iCourseId, $iFolderPapaId, $isRowExist['size'] , $hash);
                             }
+                            unlink($sFolderSon);
                         }
                         
                         //this is a folder than iterate on sons and insert all files inside it
@@ -471,17 +472,36 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                                     $mFiles ->insertWithoutArray($sFileTitle, $isRowExist['path'], $iCourseId, $iFolderSon, $isRowExist['size'] , $hash);
                                     
                                 }
-                                
+                                unlink($sFile);
                             }
+                            foreach (scandir($sFolderSon) as $sLeftover) {
+                                if ($sLeftover === '.' || $sLeftover === '..')continue;
+                                unlink($sFolderSon . $sLeftover);
+                            }
+                            rmdir($sFolderSon);
                         }
                     }
+                    foreach (scandir($sFolderPapa) as $sLeftover) {
+                        if ($sLeftover === '.' || $sLeftover === '..')continue;
+                        unlink($sFolderPapa . $sLeftover);
+                    }
+                    rmdir($sFolderPapa);
                 }
+                foreach (scandir($sCourseFile) as $sLeftover) {
+                    if ($sLeftover === '.' || $sLeftover === '..')continue;
+                    unlink($sCourseFile . $sLeftover);
+                }
+                rmdir($sCourseFile);
             }
+            foreach (scandir($sUniFile) as $sLeftover) {
+                if ($sLeftover === '.' || $sLeftover === '..')continue;
+                unlink($sUniFile . $sLeftover);
+            }
+            rmdir($sUniFile);
         }
+        unlink($sUploadDir . $nfFile -> sFullName);
         
         //clear whats left from the zip file and delete the file
-        $this ->clearZipDir();
-        unlink($sUploadDir . $nfFile -> sFullName);
         $s3 ->removeObject($nfFile -> sUrl);
         
         //redirect to the same url

@@ -76,8 +76,7 @@
                     <td colspan="2"></td>
                 {% } %}
                 <td class="cancel">{% if (!i) { %}
-                    <button class="btn btn-warning">
-                        <img src="/img/trash.png" />
+                    <button class="btn btn-warning primary-btn">
                     </button>
                 {% } %}</td>
             </tr>
@@ -100,8 +99,7 @@
                     <td class="filebrowsercomplete" >COMPLETE</td>
                 {% } %}
                 <td class="delete">
-                    <button class="btn btn-warning" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">
-                        <img src="/img/trash.png" />
+                    <button class="btn btn-warning primary-btn" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}">
                     </button>
                 </td>
             </tr>
