@@ -449,18 +449,40 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
      *
      * @param string $str Path to file or directory
      */
-    private function recursiveDelete($str){
+    public function recursiveDelete($str){
         if(is_file($str)){
             return @unlink($str);
         }
         elseif(is_dir($str)){
-            $scan = glob(rtrim($str,'/').'/*');
-            foreach($scan as $index=>$path){
-                $this -> recursiveDelete($path);
+            //$scan = glob(rtrim($str,'/').'/*');
+            foreach (scandir($str) as $sLeftover) {
+                if ($sLeftover === '.' || $sLeftover === '..')continue;
+                $this -> recursiveDelete($this->add_ending_slash($str) . $sLeftover);
             }
             return @rmdir($str);
         }
     }
+    
+    /**
+     * add ending slash to path if necessary
+     * @param String $path
+     * @return String
+     */
+    private function add_ending_slash($path){
+
+        $slash_type = (strpos($path, '\\')===0) ? 'win' : 'unix'; 
+
+        $last_char = substr($path, strlen($path)-1, 1);
+
+        if ($last_char != '/' and $last_char != '\\') {
+            // no slash:
+            $path .= ($slash_type == 'win') ? '\\' : '/';
+        }
+
+        return $path;
+    }
+
+
     
     /**
      * gets md5 of file and checks if the file exist if exist return Zend_Db_Table_Row of the file table

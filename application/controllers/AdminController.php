@@ -376,14 +376,17 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         foreach ($aUniFiles as $sUniFile) {
             
             //if the file is not a dir here you can continue
-            if(!is_dir($sUniFile))continue;
+            if(!is_dir($sUniFile)){
+                unlink($sUniFile);
+                continue;
+            }
             
             //if there is a university with this title than grab it else create it
             $iUniId = 0;
             $sUniTitle = $ksfunctions ->grabFileNameFromPath($sUniFile);
             $rUni = $mUniversities ->fetchRow($mUniversities ->select() ->where('title = ?' , $sUniTitle));
             if ($rUni == NULL){
-                //$iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
+                $this ->recursiveDelete($sUniFile);
                 continue;
             }
             else{
@@ -395,7 +398,10 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             foreach ($aCourseFiles as $sCourseFile) {
                 
                 //if the file is not a dir here you can continue
-                if(!is_dir($sCourseFile))continue;
+                if(!is_dir($sCourseFile)){
+                    unlink($sCourseFile);
+                    continue;
+                }
                 
                 //if there is a course with this title than grab it else create it
                 $iCourseId = 0;
@@ -412,13 +418,19 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                 $aFolderPapas = glob($sCourseFile . '*' , GLOB_MARK);
                 foreach ($aFolderPapas as $sFolderPapa) {
                     //if the file is not a dir here you can continue
-                    if(!is_dir($sFolderPapa))continue;
+                    if(!is_dir($sFolderPapa)){
+                        unlink($sFolderPapa);
+                        continue;
+                    }
                     
                     //get the folder id if not existing than continue
                     $iFolderPapaId = 0;
                     $sFolderPapaTitle = $ksfunctions ->grabFileNameFromPath($sFolderPapa);
                     $rFolderPapa = $mFolders ->fetchRow($mFolders ->select() -> where ('title = ?' , $sFolderPapaTitle));
-                    if ($rFolderPapa == NULL)continue;
+                    if ($rFolderPapa == NULL){
+                        $this->recursiveDelete($sFolderPapa);
+                        continue;
+                    }
                     $iFolderPapaId = $rFolderPapa['id'];
                     
                     //iterate on all the files inside this folder
@@ -450,13 +462,20 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                             //find the folder son
                             $iFolderSon = 0;
                             $rFolderSon = $mFolders ->fetchRow($mFolders -> select() -> where('title = ?' , $sFileTitle));
-                            if ($rFolderSon == NULL) continue;
+                            if ($rFolderSon == NULL){ 
+                                $this->recursiveDelete($sFolderSon);
+            
+                                continue;
+                            }
                             $iFolderSon = $rFolderSon['id'];
                             
                             //iterate on all the files and insert them
                             $aFiles = glob($sFolderSon . '*' , GLOB_MARK);
                             foreach($aFiles as $sFile){
-                                if(is_dir($sFile))continue;
+                                if(is_dir($sFile)){
+                                    $this->recursiveDelete($sFile);
+                                    continue;
+                                }
                                 $sFileTitleSon = $ksfunctions ->grabFileNameFromPath($sFile);
                                 $sPathSon = 'nerdeez/' . rand( 0 , 99999) . '_' . $sFileTitleSon;
                                 $hash = md5_file($sFile);
@@ -474,32 +493,18 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                                 }
                                 unlink($sFile);
                             }
-                            foreach (scandir($sFolderSon) as $sLeftover) {
-                                if ($sLeftover === '.' || $sLeftover === '..')continue;
-                                unlink($sFolderSon . $sLeftover);
-                            }
-                            rmdir($sFolderSon);
+                            $this->recursiveDelete($sFolderSon);
                         }
+                        
                     }
-                    foreach (scandir($sFolderPapa) as $sLeftover) {
-                        if ($sLeftover === '.' || $sLeftover === '..')continue;
-                        unlink($sFolderPapa . $sLeftover);
-                    }
-                    rmdir($sFolderPapa);
+                    $this->recursiveDelete($sFolderPapa);
                 }
-                foreach (scandir($sCourseFile) as $sLeftover) {
-                    if ($sLeftover === '.' || $sLeftover === '..')continue;
-                    unlink($sCourseFile . $sLeftover);
-                }
-                rmdir($sCourseFile);
+                $this->recursiveDelete($sCourseFile);
             }
-            foreach (scandir($sUniFile) as $sLeftover) {
-                if ($sLeftover === '.' || $sLeftover === '..')continue;
-                unlink($sUniFile . $sLeftover);
-            }
-            rmdir($sUniFile);
+            $this->recursiveDelete($sUniFile);
         }
         unlink($sUploadDir . $nfFile -> sFullName);
+        $this->recursiveDelete($sUploadDir . 'zipcache');
         
         //clear whats left from the zip file and delete the file
         $s3 ->removeObject($nfFile -> sUrl);
