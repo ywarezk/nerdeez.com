@@ -2446,3 +2446,12 @@ textarea{
 .filebrowsertooltip_text span{
     color: white;
 }
+
+.filebrowser_foldertitle_arrow{
+    background-image: url("/img/icons.png");
+    background-position: -169px 3px;
+    background-repeat: no-repeat;
+    height: 16px;
+    margin-left: 5px;
+    width: 11px;
+}

@@ -226,14 +226,14 @@
                                 <?php echo $this -> rCourse['title']; ?>
                             </a>
                             <?php if ($this -> rFolder != NULL): ?>
-                                <img src="/img/arrow.gif" />
+                                <i class="filebrowser_foldertitle_arrow"></i>
                                 <span class="black_header">
                                     <a href="/course/course/id/<?php echo $this -> rCourse['id']; ?>/folder/<?php echo $rFolderPapa['id']; ?>">
                                         <?php echo $rFolderPapa['title']; ?>
                                     </a>
                                 </span>
                                 <?php if ($this -> rFolder['papa'] != -1): ?>
-                                <img src="/img/arrow.gif" />
+                                <i class="filebrowser_foldertitle_arrow"></i>
                                 <span class="pink_header">
                                     <a href="/course/course/id/<?php echo $this -> rCourse['id']; ?>/folder/<?php echo $this -> rFolder['id']; ?>">
                                         <?php echo $this -> rFolder['title']; ?>
