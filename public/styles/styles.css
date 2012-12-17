@@ -2218,12 +2218,12 @@ textarea{
 .filebrowsericon{
     background-image: url("/img/icons.png");
     background-repeat: no-repeat;
-    height: 48px;
-    width: 48px;
+    height: 37px;
+    width: 42px;
 }
 
 .filebrowsericon.folder{
-    background-position: -85px -75px;
+    background-position: -89px -80px;
 }
 
 
@@ -2247,7 +2247,7 @@ textarea{
 }
 
 .filebrowser_data_tr:hover .filebrowsericon.folder{
-    background-position: -165px -75px;
+    background-position: -169px -80px;;
 }
 
 .uploadfirststep_button * .files_positioner{
@@ -2312,7 +2312,12 @@ textarea{
 }
 
 .filebrowsertooltip_img{
-    margin: 0 auto; width:16px; height:16px;
+    background-image: url("/img/icons.png");
+    background-position: -245px 3px;
+    background-repeat: no-repeat;
+    height: 16px;
+    margin: 0 auto;
+    width: 16px;
 }
 
 #filebrowsertooltip_folderpapa{
@@ -2369,37 +2374,40 @@ textarea{
 }
 
 .filebrowsericon.pdf{
-    background-position: -5px -234px;
+    background-position: -9px -240px;
 }
 
 .filebrowser_data_tr:hover .filebrowsericon.pdf{
-    background-position: -5px -316px;
+    background-position: -9px -320px;
 }
 .filebrowsericon.zip{
-    background-position: -85px -234px;
+    background-position: -89px -240px;
 }
 .filebrowser_data_tr:hover .filebrowsericon.zip{
-    background-position: -85px -316px;
+    background-position: -89px -320px;
 }
 
 
 .filebrowsericon.rar{
-    background-position: -245px -234px;
+    background-position: -249px -240px;
 }
 .filebrowsericon.doc , .filebrowsericon.docx{
-    background-position: -165px -234px;
+    background-position: -169px -240px;
 }
 
 .filebrowser_data_tr:hover .filebrowsericon.doc,
 .filebrowser_data_tr:hover .filebrowsericon.docx{
-    background-position: -165px -316px;
+    background-position: -169px -320px;
 }
 
 .filebrowsericon.xls , .filebrowsericon.xlsx{
-    background-position: -405px -235px;
+    background-position: -409px -240px;
+}
+.filebrowser_data_tr:hover .filebrowsericon.xls ,.filebrowser_data_tr:hover .filebrowsericon.xlsx{
+    background-position: -409px -320px;
 }
 .filebrowsericon.gif , .filebrowsericon.bmp , .filebrowsericon.jpg , .filebrowsericon.png{
-    background-position: -325px -235px;
+    background-position: -329px -240px;
 }
 
 .filebrowsericon.gif:hover , 
@@ -2410,7 +2418,7 @@ textarea{
 .filebrowser_data_tr:hover .filebrowsericon.jpg ,
 .filebrowser_data_tr:hover .filebrowsericon.bmp ,
 .filebrowser_data_tr:hover .filebrowsericon.gif{
-    background-position: -325px -317px;
+    background-position: -329px -320px;
 }
 
 .filebrowserflag:hover{
@@ -2419,12 +2427,22 @@ textarea{
 
 .filebrowsericon.rar:hover,
 .filebrowser_data_tr:hover .filebrowsericon.rar{
-    background-position: -245px -316px;
+    background-position: -249px -320px;
 }
 
 .filebrowsericon.xls:hover, 
 .filebrowsericon.xlsx:hover, 
 .filebrowser_data_tr:hover .filebrowsericon.xlsx{
-    background-position: -405px -317px;
+    background-position: -409px -320px;
 }
 
+.filebrowsericon.pptx, .filebrowsericon.ppt{
+    background-position: -489px -240px;
+}
+.filebrowser_data_tr:hover .filebrowsericon.pptx, .filebrowser_data_tr:hover .filebrowsericon.ppt{
+    background-position: -489px -320px;
+}
+
+.filebrowsertooltip_text span{
+    color: white;
+}
