@@ -2019,6 +2019,15 @@ function loadSearchCourse(){
         $('#expendcourselist').toggleClass('active');
         $('#courselist').fadeToggle('normal');
     });
+    
+    $('#searchcourseform * input[type="text"]').dblclick(function(){
+        $('#courselist').fadeIn('normal' , function(){
+            $('#courselist').css('opacity' , '1.0');
+        });
+        iHighlightedCourse = 0;
+        $('#courselist').scrollTop(0);
+        $('#expendcourselist').addClass('active');
+    });
 }
 
 /**
