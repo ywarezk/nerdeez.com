@@ -1877,8 +1877,8 @@ border: 1px solid #CCCCCC;
 }
 
 .filebrowser-header-td{
+    color: white;
     font-size: 17px;
-    font-weight: bold;
 }
     
 .filebrowser_data_tr:hover{
