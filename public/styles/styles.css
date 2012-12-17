@@ -1507,9 +1507,9 @@ box-sizing: border-box;
 }
 
 .btn-warning{
-    background-image: url("/img/icons.png");
+    /*background-image: url("/img/icons.png");
     background-position: -85px 3px;
-    background-repeat: no-repeat;
+    background-repeat: no-repeat;*/
     height: 30px;
     padding: 0 !important;
     width: 30px;
@@ -2458,4 +2458,12 @@ textarea{
 
 #myFrame{
     border:none;
+}
+
+.buttongarbageicon{
+    background-image: url("/img/icons.png");
+    background-position: -87px 0;
+    background-repeat: no-repeat;
+    height: 21px;
+    width: 21px;
 }
