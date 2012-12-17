@@ -103,7 +103,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             
             //sanitize string
             if ($iType === Nerdeez_ParamTypes::STRING || $iType === Nerdeez_ParamTypes::JSONARRAYNUMBERS){
-                if ($this ->sanitize_Title($iValue, $iLength) == NULL){
+                if ($this ->sanitize_Title($iValue, $iLength) === NULL){
                     $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
                     return;
                 }
@@ -166,7 +166,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      * @return String null if title is invalid or sanitized title if valid
      */
     protected function sanitize_Title($title , $length){
-        if($title == null) return null;
+        if($title == null) return "";
         $title = str_replace('\\', '', $title);
         $link = $this->getMysqlConnection();
         $data = array('title' => mysql_real_escape_string($title , $link));

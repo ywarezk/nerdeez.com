@@ -17,7 +17,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
      * the main course page 
      */
     public function courseAction(){
-        //get the params
+        //get the pfarams
         $iId = 0;
         $aData=$this->getRequest()->getParams();
         $iId = $this -> _aData['id'];

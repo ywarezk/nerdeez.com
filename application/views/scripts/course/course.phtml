@@ -343,12 +343,204 @@
 
 <!-- begin of copyright report dialog -->
 <div id="flagdialog" class="flagdialog">
-    <div class="bgblack registerdialog-header" >
-        <h2>Report this content as inappropriate</h2>
+    <div class="bgblack flagdialog_header" >
+        <h2 style="font-weight: normal; color: white; margin: 3px auto 0px; width: 125px; font-size: 14px;">Report this content</h2>
         <a href="javascript:void(0)" onclick="$('#flagdialog').fadeOut('normal');$('#glassloading').fadeOut('fast');">
             X
         </a>
     </div>
+    
+    <div class="flagdialog_body">
+        <table style="width: 100%;">
+            <tr>
+                <td style="vertical-align: top;padding: 15px">
+                    <img src="/img/Cop.png" />
+                </td>
+                <td style="padding: 15px;">
+                    <div class="flagdialog_body_textcontent">
+                        <p>
+                            Please select the category that most closely reflects your concern about this content, so that we can review it and determine whether it violates our <a target="_blank" href="/index/communityguidelines/">Community Guidelines</a> or isn't appropriate for all users. Abusing this feature is also a violation of the <a target="_blank" href="/index/communityguidelines/">Community Guidelines</a>, so don't do it.
+                        </p>
+                    </div>
+                    <div class="flagdialog_body_controllers">
+                        <table style="width: 100%;">
+                            <tr style="background-color: white;">
+                                <td style="width: 150px" class="flagdialog_body_controllers_tdborder">
+                                    <button 
+                                        style="height:36px;position:relative;width:150px;" 
+                                        tabindex="2" 
+                                        type="button" 
+                                        id="reasonsbutton"
+                                        class="filebrowserbutton"
+                                        onclick="$('#reasonsbutton').toggleClass('active');$('#reasonlist').fadeToggle('normal');">
+                                        Select a Reason
+                                        <div class="arrowicon" style="float: right; margin-top: 2px; margin-left: 4px;"></div>
+                                    </button>
+                                    <div id="reasonlist">
+                                        <ul class="sf-menu">
+                                            <li class="yt-uix-button-menu-item" data-reason="P">
+                                                <span  >Sexual content</span>
+                                                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+                                                <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-include-time="true" data-subreason="1">
+                                                        <span  >Graphic sexual activity</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-include-time="true" data-subreason="2">
+                                                        <span  >Nudity</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="maybe-review" data-subreason="3">
+                                                        <span  >Suggestive, but without nudity</span>
+                                                    </li>
+
+                                                    <li class="yt-uix-button-menu-item leaf" data-show-textbox-with-label="Please also briefly describe the inappropriate content:" data-include-time="true" data-subreason="4">
+                                                        <span  >Other sexual content</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item" data-reason="G">
+                                                <span  >Violent or repulsive content</span>
+                                                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+                                                  <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="maybe-review" data-subreason="5">
+                                                        <span  >Adults fighting</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="6">
+                                                        <span  >Physical attack</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="7">
+                                                        <span  >Youth violence</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="8">
+                                                        <span  >Animal abuse</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="9">
+                                                        <span  >Promotes terrorism</span>
+                                                    </li>
+                                                  </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item" data-reason="R">
+                                                <span  >Hateful or abusive content</span>
+                                                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+
+                                                  <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="hate-speech" data-show-textbox-with-label="Please also provide any additional information which you think could help us verify the issue as quickly as possible:" data-show-hate-group="true" data-subreason="10">
+
+                                                        <span  >Promotes hatred or violence</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="11">
+                                                        <span  >Abusing vulnerable individuals</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="bullying" data-subreason="12">
+                                                        <span  >Bullying</span>
+                                                    </li>
+                                                  </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item" data-reason="X">
+                                                <span  >Harmful dangerous acts</span>
+                                                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+
+                                                  <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="13">
+                                                      <span  >
+                                                        Pharmaceutical or drug abuse
+                                                      </span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="14">
+                                                        <span  >Abuse of fire or explosives</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="15">
+                                                        <span  >Suicide or self injury</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="16">
+                                                        <span  >Other dangerous acts</span>
+                                                    </li>
+                                                  </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item leaf" data-reason="J" data-subreason="17">
+                                                <span  >Child abuse</span>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item" data-reason="Z">
+                                              <span  >Spam</span>
+                                              <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+
+                                              <ul class="flag-menu submenu yt-uix-button-menu">
+                                                <li class="yt-uix-button-menu-item leaf" data-subreason="18">
+                                                    <span  >Mass advertising</span>
+                                                </li>
+                                                <li class="yt-uix-button-menu-item leaf" data-subreason="19">
+                                                    <span  >Misleading text</span>
+                                                </li>
+                                                <li class="yt-uix-button-menu-item leaf" data-subreason="20">
+                                                    <span  >Misleading thumbnail</span>
+                                                </li>
+                                                <li class="yt-uix-button-menu-item leaf" data-subreason="21">
+                                                    <span  >Scams / fraud</span>
+                                                </li>
+                                              </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item">
+                                                <span  >Infringes my rights</span>
+                                                  <img class="flag-menu-arrow" src="/img/arrow-right.png">
+
+                                                  <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="dcma-policy" data-no-post="true" data-subreason="22">
+                                                        <span  >Infringes my copyright</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-no-post="true" data-result-message="privacy-center" data-subreason="23">
+                                                        <span  >Invades my privacy</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-no-post="true" data-result-message="legal-claim" data-subreason="24">
+                                                        <span  >Other legal claim</span>
+                                                    </li>
+                                                  </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td class="flagdialog_body_controllers_tdborder">
+                                    <div id="reasonmessage">
+                                        <i class="filebrowser_foldertitle_arrow"></i>
+                                        <span id="reasonspanmesseage">
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="background-color: white;">
+                                <td colspan="2" class="flagdialog_body_controllers_tdborder">
+                                    <div class="front-card">
+                                        <div class="placeholding-input searchcourse flex-table-form">
+                                            <textarea 
+                                                style="height: 100%;font-size: 17px;font-weight: normal;border-radius: 0;" 
+                                                dir="ltr" 
+                                                spellcheck="false" 
+                                                title="Inaprropriate freetext" 
+                                                name="message" 
+                                                id="reasonsfreetexttextarea" 
+                                                class="text-input flex-table-input" 
+                                                maxlength="300" ></textarea>
+                                            <span style="font-size: 16px;top: 5px;" class="placeholder">
+                                                Why was this inappropriate? (optional)
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #BDCCD4;">
+                                <td colspan="2" style="text-align: center;">
+                                    <div class="about_status" style="color: red;"></div>
+                                    <button class="filebrowserbutton" type="button" onclick="sendFlagReport();" value="Submit" style="width: 100px;margin-top:10px;">
+                                        Submit
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <!--
     <div class="kscenter" style="height: 120px;">
         <div class="kscenter-img" style="float: left;"> 
             <img width="142" height="105" src="/img/searchface.png">    
@@ -531,7 +723,7 @@
                 </td>
             </tr>
         </table>
-    </div>
+    </div>-->
 </div>
 
 <script> 

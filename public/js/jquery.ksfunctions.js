@@ -2484,8 +2484,16 @@ function bIsImage(sFile){
  * display the dialog for reporting flag
  */
 function showReportFlag(){
+    //center the dialog
+    var left = ($(document).width()/2) - ($('#flagdialog').width()/2);
+    var top = ($('html').height()/2) - ($('#flagdialog').height()/2);
+    $('#flagdialog').css('top', "" + top + "px");
+    $('#flagdialog').css('left', "" + left + "px");
+    
+    //show the dialog and put the shade
     $('#flagdialog').fadeIn('normal');
     $('#glassloading').slideToggle('normal');
+    
 }
 
 /**

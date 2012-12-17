@@ -1105,15 +1105,11 @@ box-sizing: border-box;
 }
 
 .flagdialog{
-    background-color: white;
-    border: 1px solid #CCCCCC;
-    border-radius: 5px 5px 5px 5px;
-    clear: both;
+    background-color: #BDCCD4;
+    border: 1px solid black;
     display: none;
-    left: 30%;
     position: fixed;
-    top: 10%;
-    width: 800px;
+    width: 700px;
     z-index: 3;
 }
 
@@ -2038,8 +2034,6 @@ select{
 
 #reasonlist{
     display: none;
-    margin-top: -16px;
-    margin-left: 160px;
     position: absolute;
 }
 
@@ -2116,6 +2110,7 @@ textarea{
     border: 3px solid #FFFFFF;
     border-radius: 30px 30px 30px 30px;
     box-shadow: 0 10px 5px #888888;
+    padding: 20px;
 }
 
 #searchcourseform{
@@ -2213,6 +2208,7 @@ textarea{
     font-size: 15px;
     height: 57px;
     width: 100%;
+    cursor: pointer;
 }
 
 .filebrowsericon{
@@ -2466,4 +2462,42 @@ textarea{
     background-repeat: no-repeat;
     height: 21px;
     width: 21px;
+}
+
+.flagdialog_body{
+    padding: 20px;
+}
+
+.flagdialog_header{
+    height: 23px;
+    padding: 5px;
+    position: static;
+    width: auto;
+}
+
+.flagdialog_header a{
+    color: white;
+    float: right;
+    position: relative;
+    right: 5px;
+    top: -18px;
+}
+
+.flagdialog_body_controllers_tdborder{
+    border: 2px solid #E77A99;
+    padding: 0;
+}
+
+.filebrowserbutton:hover{
+    color: #CCCCCC;
+}
+
+.flagdialog_body_controllers{
+    margin-top: 25px;
+}
+
+.flagdialog_body_textcontent{
+    font-family: Verdana;
+    font-size: 16px;
+    line-height: 1.4;
 }
