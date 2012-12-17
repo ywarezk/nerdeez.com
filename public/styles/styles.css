@@ -2455,3 +2455,7 @@ textarea{
     margin-left: 5px;
     width: 11px;
 }
+
+#myFrame{
+    border:none;
+}
