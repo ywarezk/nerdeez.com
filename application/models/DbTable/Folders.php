@@ -80,6 +80,20 @@ class Nerdeez_Folder_Row extends Nerdeez_Db_Table_Row_Files
     public function getJsDownloadEvent($iCourseId = 0){
         return 'downloadFolder(' . $this['id'] . ' , ' . $iCourseId . ');';
     }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     */
+    public function getFlagClass(){
+        return 'filebrowserflag disable';
+    }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     */
+    public function getFlagAction(){
+        return '';
+    }
 }
 
 /**
@@ -108,7 +122,9 @@ class Application_Model_DbTable_Folders extends Nerdeez_Db_Table{
      * will work only for the first time
      * @var Array 
      */
-    protected $_aAlterStatments = NULL;
+    protected $_aAlterStatments = array(
+        "ALTER TABLE `folders` ADD `courses_id` INT UNSIGNED NOT NULL DEFAULT '0'"
+    );
     
     /**
      * 
@@ -130,10 +146,11 @@ class Application_Model_DbTable_Folders extends Nerdeez_Db_Table{
      * @return int the primary key
      * 
      */
-    public function insertWithoutArray($sTitle , $iPapa = -1){
+    public function insertWithoutArray($sTitle , $iPapa = -1, $iCoursesId = 0){
         $aNewRow = array(
             'title'                 => $sTitle , 
             'papa'                  => $iPapa,
+            'courses_id'            => $iCoursesId,
         );
         return parent::insert($aNewRow);
     }

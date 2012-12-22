@@ -57,6 +57,20 @@ class Nerdeez_Files_Row extends Nerdeez_Db_Table_Row_Files
     public function getJsDownloadEvent($iCourseId = 0){
         return 'ksDownloadFile(' . $this['id'] . ');';
     }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     */
+    public function getFlagClass(){
+        return 'filebrowserflag';
+    }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     */
+    public function getFlagAction(){
+        return 'showReportFlag(' . $this['id'] . ');';
+    }
 }
 
 /**

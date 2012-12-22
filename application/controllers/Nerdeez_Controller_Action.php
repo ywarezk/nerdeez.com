@@ -45,6 +45,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'error' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 200) ,
         array('name' => 'status' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 200) ,
         array('name' => 'message' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 300) ,
+        array('name' => 'coursefolder' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 100) ,
         array('name' => 'serial' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 99999) ,
         array('name' => 'folder_papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,
         array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,

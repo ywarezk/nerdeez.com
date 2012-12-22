@@ -2202,7 +2202,10 @@ function loadCourse(){
         $('#uploaddialog_explain').text("1. Click upload to upload files to course");
     }
     
-    
+    $('#otherfolder_input').on('keyup' , function(ev){
+        //ksSetTextHelper($('#searchcourseform * input[type="text"]'));
+        ksSetTextHelper($('#otherfolder_input'));
+    });
 }
 
 /**
@@ -2220,45 +2223,53 @@ function handleSubmitFilesButton(){
     }
     else{
         bIsSecondSelectVisible = false;
-        $('.fileclassify_body_hwnumber').fadeOut('normal');
+        $('.fileclassify_body_hwnumber').css('display', 'none');
+    }
+    
+    //compare the selection to other, if its other pop up the folder textbox
+    if ('Other' === sClassifyCombo){
+        $('.fileclassify_body_otherfolder').css('display' , 'block');
+    }
+    else{
+        $('.fileclassify_body_otherfolder').css('display', 'none');
     }
     
     //if there is a progress bar than button should be disabled
     if($('.progress').length > 0){
-        diableFileBrowserSubmit()
+        disableFileBrowserSubmit()
         return;
     }
     
     //if there is no rows in the files table than should be diabled
     /*if ($('#filebrowser_upload_files').find('tr').length >=2){
-        diableFileBrowserSubmit()
+        disableFileBrowserSubmit()
         return;
     }*/
     
     //if there is no complete in the table than disable
     if ($('.filebrowsercomplete').length == 0){
-        diableFileBrowserSubmit()
+        disableFileBrowserSubmit()
         return;
     }
     
     //if the first select had a null value
     if ($('#fileclassify select[name="folder_papa"] option:selected').val() == 0){
-        diableFileBrowserSubmit()
+        disableFileBrowserSubmit()
         return;
     }
     
     //if the second is visible select check if the value iss not null
-    if (bIsSecondSelectVisible){
+    /*if (bIsSecondSelectVisible){
         if ($('.fileclassify_body_hwnumber select').val() == 0){
-            diableFileBrowserSubmit()
+            disableFileBrowserSubmit()
             return;
         }
-    }
+    }*/
     
     enableFileBrowserSubmit();
 }
 
-function diableFileBrowserSubmit(){
+function disableFileBrowserSubmit(){
     $('#submitfilebrowser').addClass('disable');
     $('#submitfilebrowser').removeClass('enable');
 }
@@ -2482,8 +2493,9 @@ function bIsImage(sFile){
 
 /**
  * display the dialog for reporting flag
+ * @param int iId the id of the file that we are reporting
  */
-function showReportFlag(){
+function showReportFlag(iId){
     //center the dialog
     var left = ($(document).width()/2) - ($('#flagdialog').width()/2);
     var top = ($('html').height()/2) - ($('#flagdialog').height()/2);
@@ -2493,6 +2505,9 @@ function showReportFlag(){
     //show the dialog and put the shade
     $('#flagdialog').fadeIn('normal');
     $('#glassloading').slideToggle('normal');
+    
+    //put the right values in the file hidden fields
+    $('#reasonshidden').val(iId);
     
 }
 

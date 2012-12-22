@@ -75,6 +75,17 @@ abstract class Nerdeez_Db_Table_Row_Files extends Zend_Db_Table_Row_Abstract{
     * @return String the js event string
     */
    abstract public function getJsDownloadEvent($iCourseId = 0);
+   
+   /**
+    * the flag to display disable or enable
+    * @return String the flag icon class to display
+    */
+   abstract public function getFlagClass();
+   
+   /**
+    * the js action to perform on flag click
+    */
+   abstract public function getFlagAction();
     
 }
 

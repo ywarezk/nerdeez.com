@@ -463,11 +463,14 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                             $iFolderSon = 0;
                             $rFolderSon = $mFolders ->fetchRow($mFolders -> select() -> where('title = ?' , $sFileTitle));
                             if ($rFolderSon == NULL){ 
-                                $this->recursiveDelete($sFolderSon);
-            
-                                continue;
+                                //$this->recursiveDelete($sFolderSon);
+                                //continue;
+                                //create a specific folder for this course
+                                $iFolderSon = $mFolders ->insertWithoutArray($sFileTitle, $iFolderPapaId, $iCourseId);
                             }
-                            $iFolderSon = $rFolderSon['id'];
+                            else{
+                                $iFolderSon = $rFolderSon['id'];
+                            }
                             
                             //iterate on all the files and insert them
                             $aFiles = glob($sFolderSon . '*' , GLOB_MARK);
@@ -489,7 +492,6 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                                 }
                                 else{
                                     $mFiles ->insertWithoutArray($sFileTitle, $isRowExist['path'], $iCourseId, $iFolderSon, $isRowExist['size'] , $hash);
-                                    
                                 }
                                 unlink($sFile);
                             }
