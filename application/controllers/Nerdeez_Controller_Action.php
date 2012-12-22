@@ -47,6 +47,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'message' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 300) ,
         array('name' => 'coursefolder' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 100) ,
         array('name' => 'serial' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 99999) ,
+        array('name' => 'page' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 99999) ,
         array('name' => 'folder_papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,
         array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,
         array('name' => 'papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -2 , 'max' => 100) ,
@@ -415,6 +416,18 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish-vertical.css');
             $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish.css');
         }
+    }
+    
+    /**
+     * init the paginator
+     * @param Zend_Db_Table_Select $select the selection from the database
+     * @param int $page the page of the paginator
+     */
+    protected function setPagination($select, $page = 1){
+        $adapter = new Zend_Paginator_Adapter_DbSelect($select);
+        $paginator = new Zend_Paginator($adapter);
+        $paginator->setCurrentPageNumber($page);
+        $this -> view -> paginator = $paginator;
     }
     
 }

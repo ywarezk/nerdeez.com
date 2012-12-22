@@ -93,7 +93,9 @@ $bIsDownload = FALSE;
                 //print the table rows
                 ?>
                 <?php
-                foreach ($this -> rsRows as $rRow){
+                //foreach ($this -> rsRows as $rRow){
+                if (count($this->paginator)){
+                    foreach ($this->paginator as $rRow){
                 ?>
                 <tr id="row_<?php echo $rRow['id']; ?>">
                     <td class="admin_table_cell">
@@ -168,6 +170,7 @@ $bIsDownload = FALSE;
                     ?>
                 </tr>
                 <?php
+                    }
                 }
                 ?>
             </table>
@@ -184,6 +187,9 @@ $bIsDownload = FALSE;
             <a href="javascript:void(0)" onclick="ksDeleteSelectedRows('<?php echo $this -> sModelName ?>');">
                 Delete selected Courses
             </a>
+            <?php echo $this->paginationControl($this->paginator,
+                                    'Sliding',
+                                    'partials/Nerdeez_Pagination_Control.phtml'); ?>
         </div>
         
         <?php 

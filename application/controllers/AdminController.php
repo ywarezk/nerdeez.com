@@ -47,10 +47,14 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> aCols = $aCols; 
         
         //get all the rows from the database
-        $rsRows = NULL;
+        /*$rsRows = NULL;
         $rsRows = $mUniversities -> fetchAll($mUniversities -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;
+        $this -> view -> rsRows = $rsRows;*/
         
+        //init the paginator
+        $select = $mUniversities -> select() -> order('title ASC');
+        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
+            
         //set the model name 
         $this -> view -> sModelName = 'Application_Model_DbTable_Universities';
         
@@ -85,9 +89,13 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> aCols = $aCols;
         
         //get all the rows from the database
-        $rsRows = NULL;
+        /*$rsRows = NULL;
         $rsRows = $mCourses -> fetchAll($mCourses -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;
+        $this -> view -> rsRows = $rsRows;*/
+        
+        //init the paginator
+        $select = $mCourses -> select() -> order('title ASC');
+        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
         
         //get the rowset of the papa
         $rsPapas = array();
@@ -119,9 +127,13 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> aCols = $aCols;
         
         //get all the rows from the database
-        $rsRows = NULL;
+        /*$rsRows = NULL;
         $rsRows = $mFolders -> fetchAll($mFolders -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;
+        $this -> view -> rsRows = $rsRows;*/
+        
+        //init the paginator
+        $select = $mFolders -> select() -> order('title ASC');
+        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
         
         //get the rowset of the papa
         $rsPapas = NULL;
@@ -151,9 +163,13 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> aCols = $aCols;
         
         //get all the rows from the database
-        $rsRows = NULL;
+        /*$rsRows = NULL;
         $rsRows = $mFiles -> fetchAll($mFiles -> select() -> order('id ASC'));
-        $this -> view -> rsRows = $rsRows;
+        $this -> view -> rsRows = $rsRows;*/
+        
+        //init the paginator
+        $select = $mFiles -> select() -> order('id ASC');
+        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
         
         //get the rowset of the papa
         $rsPapas = array();
