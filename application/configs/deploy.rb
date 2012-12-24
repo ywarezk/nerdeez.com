@@ -4,8 +4,8 @@ set :use_sudo, true
  
 # source control settings
 set :scm, :git
-set :deploy_via, :remote_cache
-set :repository, "ssh://git@github.com:ywarezk/nerdeez.com.git"
+set :deploy_via, :copy
+set :repository, "git@github.com:ywarezk/nerdeez.com.git"
  
 role :app, "nerdeez.com"
 role :web, "nerdeez.com"
