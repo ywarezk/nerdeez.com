@@ -17,6 +17,8 @@ set :user, "ywarezk2824"
 set :password, "KhruiNhe$%Vhpv"
 
 namespace :deploy do
+
+set :branch, "production"
  
 task :migrate do
 # overrides the standard Rails database migrations task
