@@ -538,6 +538,12 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         //disable the view
         $this->disableView();
         
+        //works only in production
+        if (!$this ->isProduction()){
+            $this->_redirector->gotoUrl($this->getReferer() . '/error/not+in+production/');
+            return;
+        }
+        
         //iterate on all the  files in s3
         $mFiles = new Application_Model_DbTable_Files();
         $s3 = new Nerdeez_Service_Amazon_S3();
