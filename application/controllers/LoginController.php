@@ -120,7 +120,7 @@ class LoginController extends Nerdeez_Controller_Action{
                 $sToken = $ksfunctions -> createSaltString2(200);
                 
                 //insert the new values to the database
-                $logincookies ->insert($sEmail, $sIdentifier, $sToken);
+                $logincookies ->insertWithoutArray($sEmail, $sIdentifier, $sToken);
                 
                 //set the cookies
                 $sUrl = $ksfunctions -> sGetUrl();
