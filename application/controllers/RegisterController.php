@@ -79,7 +79,7 @@ class RegisterController extends Nerdeez_Controller_Action{
         
         //create the row to pass to database
         $salt = $ksfunctions -> createSaltString();
-        $mUsers ->insert(
+        $mUsers ->insertWithoutArray(
                 $title , 
                 sha1(constant("Application_Model_KSFunctions::cSTATICSALT") . $password . $salt) , 
                 $serial , 
