@@ -4,7 +4,7 @@ set :use_sudo, true
  
 # source control settings
 set :scm, :git
-set :deploy_via, :copy
+set :deploy_via, :remote_cache
 set :repository, "git@github.com:ywarezk/nerdeez.com.git"
  
 role :app, "nerdeez.com"
@@ -30,13 +30,21 @@ task :stop, :roles => :app do
  
 end
  
+
+
 task :restart, :roles => :app do
 # no restart required for Apache/mod_php
 end
-
-task :after_update_code, :roles => :app do
-run "cd #{release_path} && juicer merge -i --force ./public/js/static.js" if rails_env == :production
-run "cd #{release_path} && juicer merge --force ./public/css/static.css" if rails_env == :production
-end
  
+desc "minify js and css"
+task :minify do
+    print "yariv!!!!!!!!!!!" 
+    run "cd #{release_path} && juicer merge -i --force ./public/js/static.js"
+    run "cd #{release_path} && juicer merge --force ./public/css/static.css"
 end
+
+end
+
+
+
+after 'deploy:update_code', 'deploy:minify'
