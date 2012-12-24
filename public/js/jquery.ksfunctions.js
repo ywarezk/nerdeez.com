@@ -422,10 +422,8 @@ function preload(){
 
     // list of stuff to preload
     preload = [
-        '/js/jquery-1.7.1.min.js',
-        '/styles/layout.css',
-        '/img/failed.png',
-        '/img/success.png', 
+        '/js/static.min.js',
+        '/styles/static.min.css',
     ];
     //$.preload(preload);
     isIE = navigator.appName.indexOf('Microsoft') === 0;

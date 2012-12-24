@@ -40,7 +40,7 @@ desc "minify js and css"
 task :minify do
     print "yariv!!!!!!!!!!!" 
     run "cd #{release_path} && juicer merge -i --force ./public/js/static.js"
-    run "cd #{release_path} && juicer merge --force ./public/styles/static.css"
+    run "cd #{release_path} && juicer merge -d .. --force ./public/styles/static.css"
 end
 
 end

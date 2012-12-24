@@ -570,9 +570,15 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
     public function backupdbAction(){
         $this ->disableView();
         
+<<<<<<< HEAD
+        //if this is production server do nothing
+        if (!$this->isProduction()){
+            $this->ajaxReturnFailed('This will work in production');
+=======
         //can backup to s3 only in production
         if (!$this->isProduction()){
             $this->ajaxReturnFailed('This will work only in development server');
+>>>>>>> master
             return;
         }
         

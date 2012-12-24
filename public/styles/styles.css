@@ -51,9 +51,7 @@ input, textarea, select {
 }
 
 .wrapper{
-    /*background: url("/img/bgwrapper.png") repeat scroll 0 0 transparent;*/
-    /*left: 181px;*/
-    /*width: 770px;*/
+    
     margin: 0 auto;
     min-width: 1000px;
 }
@@ -746,7 +744,7 @@ box-sizing: border-box;
 }
 
 .coursepicker-course-icon{
-	background-image:url(/img/tiny_uni.png);height: 16px ; width:16px;
+	
 }
 
 .filebrowser{
@@ -1186,7 +1184,7 @@ box-sizing: border-box;
 }
 
 #logout * i:hover{
-    background-image: url('/img/menu_buttons_logout_hover.png');
+    
 }
 
 .border{
@@ -1265,7 +1263,6 @@ box-sizing: border-box;
   /*width: 200px;*/
 }
 .progress-animated .bar {
-  background: url(/img/progressbar.gif) !important;
   filter: none;
 }
 .fileupload-loading {
@@ -1273,7 +1270,6 @@ box-sizing: border-box;
   left: 50%;
   width: 128px;
   height: 128px;
-  background: url(/img/loading.gif) center no-repeat;
   display: none;
 }
 .fileupload-processing .fileupload-loading {
@@ -1366,7 +1362,6 @@ box-sizing: border-box;
 }
 
 .inbar{
-    background: url("/img/7uo1osj.gif") repeat-x scroll 0 0 transparent;
     height: 15px;
     opacity: 0.25;
     overflow: hidden;
@@ -1444,7 +1439,6 @@ box-sizing: border-box;
     border: 1px inset;
 }
 
-.ui-progressbar .ui-progressbar-value { background-image: url(/img/pbar-ani.gif); }
 
 
 .ui-progressbar .ui-progressbar-value {
@@ -1698,12 +1692,10 @@ border: 1px solid #CCCCCC;
 }
 
 .redactor_btn_equation > span{
-    background-image: url('/img/WikEd_fix_math.png') !important;
     background-position: center center !important;
 }
 
 .redactor_btn_attachment > span{ 
-    background-image: url('/img/attachment_big.png') !important;
     background-position: center center !important;
 }
 
