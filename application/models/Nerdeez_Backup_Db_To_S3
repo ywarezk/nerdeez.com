@@ -18,7 +18,7 @@ s3bucket=nerdeez
 #
  
 # Loop through each database and dump it out to a file
-mysqldump -u${user} -p${pass} ${dbname} > "~/backup.sql"
+mysqldump -u${user} -p${pass} ${dbname} > ~/backup.sql
  
 # Put all the files on amazon s3
 s3cmd put ~/backup.sql s3://${s3bucket}/
