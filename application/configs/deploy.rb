@@ -43,7 +43,7 @@ task :minify do
     print "yariv!!!!!!!!!!!" 
     run "cd #{release_path} && juicer merge -i --force ./public/js/static.js"
     run "cd #{release_path} && juicer merge -d .. --force ./public/styles/static.css"
-    run "cd #{release_path} && sudo chmod +x ./application/models/Nerdeez_Backup_Db_To_S3"
+    run "cd #{release_path} && chmod +x ./application/models/Nerdeez_Backup_Db_To_S3"
 end
 
 end
