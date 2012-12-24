@@ -1,0 +1,27 @@
+#!/bin/bash
+ 
+#
+# Configuration variables
+#
+#  user - the mysql user account
+#  pass - the mysql account password
+#  vhost - the directory of all your vhosts
+#
+user=root
+pass=7422S8h2A0b3A6082
+dbname=nerdeez
+s3bucket=nerdeez
+
+ 
+#
+# -- End configuration
+#
+ 
+# Loop through each database and dump it out to a file
+mysqldump -u${user} -p${pass} ${dbname} > "~/backup.sql"
+ 
+# Put all the files on amazon s3
+s3cmd put ~/backup.sql s3://${s3bucket}/
+ 
+# Remove the folder we uploaded to s3
+rm -rf ~/backup.sql
