@@ -33,5 +33,10 @@ end
 task :restart, :roles => :app do
 # no restart required for Apache/mod_php
 end
+
+task :after_update_code, :roles => :app do
+run "cd #{release_path} && juicer merge -i --force ./public/js/static.js" if rails_env == :production
+run "cd #{release_path} && juicer merge --force ./public/css/static.css" if rails_env == :production
+end
  
 end
