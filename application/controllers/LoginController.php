@@ -137,7 +137,7 @@ class LoginController extends Nerdeez_Controller_Action{
         }
         else{
             //login failed add row in the ips table
-            $mIps ->insert(time(), $sIp, $email);
+            $mIps ->insertWithoutArray(time(), $sIp, $email);
         }
         $this->_redirector->gotoUrl('/index/index/error/' . urlencode('Invalid email or password'));
         return;
