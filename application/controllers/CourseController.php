@@ -17,15 +17,18 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
      * the main course page 
      */
     public function courseAction(){
-        //get the params
-        $iId = 0;
-        $aData=$this->getRequest()->getParams();
+        //get the pfarams
         $iId = $this -> _aData['id'];
         $iFolder = $this -> _aData['folder'];
         $sError = $this -> _aData['error'];
         $sStatus = $this -> _aData['status'];
         $this -> view -> sError = $sError;
         $this -> view -> sStatus = $sStatus;
+        
+        //if folder id is null set it to zero
+        if ($iFolder == NULL){
+            $iFolder = 0;
+        }
         
         //find the course row in the database if didnt find redirect to bad url
         $rCourse = NULL;
@@ -42,6 +45,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         $mFiles = new Application_Model_DbTable_Files();
         $rsFiles = $mFiles -> fetchAll($mFiles -> select() 
                 -> where ('courses_id = ?' , $iId)
+                -> where ('folders_id = ?' , $iFolder)
                 -> order ('title ASC'));
         $this -> view -> rsFiles = $rsFiles;
         
@@ -55,23 +59,42 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         }
         $this -> view -> rFolder = $rFolder;
         
+        //get the papa folder 
+        $rPapaFolder = NULL;
+        if ($rFolder != NULL && $rFolder['papa'] != -1){
+            $rPapaFolder = $mFolders -> fetchRow($mFolders -> select() -> where('id = ?', $rFolder['papa']));
+        }
+        $this -> view -> rFolderPapa = $rPapaFolder;
+        
         //get all the folders
         $rsFolders = NULL;
-        $rsFolders = $mFolders ->fetchAll($mFolders ->select() -> order('title ASC'));
+        $rsFolders = $mFolders ->fetchAll($mFolders ->select() 
+                -> where('courses_id = 0 OR courses_id = ?', $rCourse['id'])
+                -> order('title ASC'));
         $this -> view -> rsFolders = $rsFolders;
         
         //find the folders
         $rsFoldersShown = NULL;
         $selFolders = $mFolders ->select();
+        $selFolders = $selFolders -> where('courses_id = 0 OR courses_id = ?', $rCourse['id']);
         if ($rFolder != NULL){
-            $selFolders = $selFolders ->where('papa = ?' , $rFolder['id']);
+            $selFolders = $selFolders 
+                -> where('papa = ?' , $rFolder['id']);
         }
         else{
-            $selFolders = $selFolders ->where('papa = -1');
+            $selFolders = $selFolders -> where('papa = -1');
         }
         $selFolders = $selFolders ->order('title ASC');
         $rsFoldersShown = $mFolders -> fetchAll($selFolders);
         $this ->view -> rsFoldersShown = $rsFoldersShown;
+        
+        //get the id of the parent h.w folder
+        $iHwFolder = 0;
+        $rParentHWFolder = $mFolders ->fetchRow($mFolders -> select() 
+                -> where ('title = ?', 'H.W') 
+                -> where('papa = ?', -1));
+        $iHwFolder = $rParentHWFolder['id'];
+        $this -> view -> iHwFolder = $iHwFolder;
     }
     
     /**
@@ -80,13 +103,13 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
      */
     public function postfilesAction(){
         //disable view rendering
-        $this->_helper->layout()->disableLayout(); 
-        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        $this ->disableView();
         
         //get all the params
         $iFolderPapa = $this -> _aData['folder_papa'];
         $iHwNumber = $this -> _aData['hw_number'];
         $iId = $this -> _aData['id'];
+        $sNewFolder = $this -> _aData['coursefolder'];
         
         //get the folder papa row
         $rFolderPapa = NULL;
@@ -97,12 +120,27 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
             return;
         }
         
-        //get the folder id of the new files row
+        //deal with the hw number id
         $iFoldersId = $rFolderPapa['id'];
         if ($rFolderPapa['title'] === 'H.W'){
             $rFolder = $mFolders ->getRowWithId($iHwNumber);
             if ($rFolder !== NULL)
                 $iFoldersId = $rFolder['id'];
+        }
+        
+        //should i create a new folder in the others sections for this course
+        if ($sNewFolder !== ''){
+            $rFolderOther = $mFolders ->fetchRow($mFolders -> select() -> where('title = ?', 'Other'));
+            $iOtherId = $rFolderOther['id'];
+            $rFolderExist = $mFolders -> fetchRow ($mFolders -> select() 
+                    -> where('title = ?', $sNewFolder)
+                    -> where('papa = ?', $iOtherId));
+            if ($rFolderExist == NULL){
+                $iFoldersId = $mFolders ->insertWithoutArray($sNewFolder, $iOtherId, $iId);
+            }
+            else{
+                $iFoldersId = $rFolderExist['id'];
+            }
         }
         
         //create the s3 object
@@ -133,6 +171,10 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
             }
         }
         
+        //clear the session
+        Zend_Session::start(); 
+        unset($_SESSION['kstempfiles']);
+        
         //redirect the user to the place he uploaded the files
         $this->_redirector->gotoUrl('/course/course/id/' . $iId . '/folder/' . $iFoldersId);
         return;
@@ -147,8 +189,13 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         
         //grab the params ids , disposition , folders
         $aIds = $this -> _aData['ids'];
-        $sDisposition = $this -> _aData['disposition'];
+        $iCourse = $this -> _aData['id'];
         $aFolders = $this -> _aData['folders'];
+        $sDisposition = $this -> _aData['disposition'];
+        
+        //set the icourse to be default od zero
+        if ($iCourse == NULL)
+            $iCourse = 0;
         
         //if the user entered folders than deal with them
         $aFoldersIds = array();
@@ -184,6 +231,9 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         if(count($aFoldersIds) > 0){
             $selFilesSelect = $selFilesSelect -> orwhere('folders_id IN (?)' , $aFoldersIds);
         }
+        if ($iCourse != 0){
+            $selFilesSelect = $selFilesSelect -> where('courses_id = ?' , $iCourse);
+        }
         $rsFiles = $mFiles->fetchAll($selFilesSelect);
         if($rsFiles->count() == 0){
             $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
@@ -193,7 +243,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         //if there is only one file
         if ($rsFiles -> count() == 1){
             $rFile = $rsFiles -> getRow(0);
-            ($sDisposition != NULL) ? $this->download($rFile['path'] , $rFile['title'] , $sDisposition) : $this->download($rFile['path'] , $rFile['title']);
+            $this->download($rFile['path'] , $rFile['title'] , $sDisposition);
             return;
         }
         
@@ -262,6 +312,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
                         <h1>Copy right violation report</h1>
                         <h2>Reason: ' . $sTitle . '</h2>
                         <h3>Freetext: ' . $sMessage . '</h3>
+                        <h3> file id:' . $iId . '</h3>
                     </body>
                 </html>
             ';

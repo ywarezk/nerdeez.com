@@ -6,6 +6,74 @@
 require_once APPLICATION_PATH . '/models/DbTable/Nerdeez_Db_Table.php';
 
 /**
+ * the row will be displyed in the filebrowser
+ * thus must extend this class
+ */
+require_once APPLICATION_PATH . '/models/DbTable/Nerdeez_Db_Table_Row_Files.php';
+
+/**
+ * custom folder row class
+ */
+class Nerdeez_Files_Row extends Nerdeez_Db_Table_Row_Files
+{
+    /**
+     * @see parent::getSize($iCourseId = 0)
+     */
+    public function getSize($iCourseId = 0){
+        return $this['size'];
+    }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files::getClickJsEvent()
+     * @param type $iCourseId
+     * @return type
+     */
+    public function getClickJsEvent($iCourseId = 0){
+        return "ksPeek(" . $this['id']  . ", '" . $this['title'] . "');";
+    }
+    
+    /**
+     * @see parent::getCheckboxClass()
+     * @return string
+     */
+    public function getCheckboxClass(){
+        return 'ksFileBrowserCheckbox';
+    }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     * @return string
+     */
+    public function getImageClass(){
+        //determine the background position from the extension
+        $ext = strtolower(pathinfo($this['title'], PATHINFO_EXTENSION));
+        return $ext;
+    }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     * @param type $iCourseId
+     */
+    public function getJsDownloadEvent($iCourseId = 0){
+        return 'ksDownloadFile(' . $this['id'] . ');';
+    }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     */
+    public function getFlagClass(){
+        return 'filebrowserflag';
+    }
+    
+    /**
+     * @see Nerdeez_Db_Table_Row_Files
+     */
+    public function getFlagAction(){
+        return 'showReportFlag(' . $this['id'] . ');';
+    }
+}
+
+/**
  * The files table holds all the site knowledge files
  *
  * @author Yariv Katz
@@ -76,6 +144,12 @@ class Application_Model_DbTable_Files extends Nerdeez_Db_Table{
         );
         return parent::insert($aNewRow);
     }
+    
+    /**
+     * our custom files row
+     * @var String 
+     */
+    protected $_rowClass = 'Nerdeez_Files_Row';
     
 }
 

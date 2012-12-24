@@ -5,37 +5,16 @@
  * @param ZEND_DBTABLE_ROWSET $this -> rsFoldersShown the folders we are displaying
  * @param ZEND_DBTABLE_ROWSET $this -> rsFolders all the folders
  * @param ZEND_DBTABLE_ROWSET $this -> rsFiles the files we found 
- * @param ZEND_DBTABLE_ROWSET $this -> rsFiles the files we found 
+ * @param ZEND_DBTABLE_ROWSET $this -> rFolder the folder selected
  * @param String $this -> sError display the error message
+ * @param Zend_Db_Table_Row $this -> rFolderPapa the papa of the folder we are in
  * 
  */
 ?>
 
-<?php
-
-/**
- * gets the size in bytes and formats it
- * @param int $bytes the size in bytes
- * @param int $precision the accuracy
- * @return String the formated string
- */
-function formatSize($bytes, $precision = 2){
-    $units = array('B', 'KB', 'MB', 'GB', 'TB'); 
-
-    $bytes = max($bytes, 0); 
-    $pow = floor(($bytes ? log($bytes) : 0) / log(1024)); 
-    $pow = min($pow, count($units) - 1); 
-
-    // Uncomment one of the following alternatives
-    $bytes /= pow(1024, $pow);
-    // $bytes /= (1 << (10 * $pow)); 
-
-    return round($bytes, $precision) . ' ' . $units[$pow]; 
-}
-?>
 
 <div class="inview-wrapper">
-    
+    <input type="file" multiple="multiple" name="files[]" id="filebrowser_upload_input"/>
     <?php
     //create the status divs
     ?>
@@ -56,20 +35,10 @@ function formatSize($bytes, $precision = 2){
     </h1>
     
     <div style="margin-top: 20px;">
-    <?php 
-    //create the file browser
-    /*echo $this -> partial ('partials/fileBrowser.phtml' , array(
-        'rsFolders'         => $this -> rsFolders ,
-        'rFolder'           => $this -> rFolder ,
-        'rsFiles'           => $this -> rsFiles ,
-        'rCourse'           => $this -> rCourse ,
-    ));*/
-    ?>
-        
         <!-- Start of peeking dialog -->
         <div class="peekingdialog" id="peeking">
             <div class="bgblack registerdialog-header" >
-                <h2></h2>
+                <h2 style="font-weight: normal; position: relative; top: 3px;"></h2>
                 <a href="javascript:void(0)" onclick="$('#peeking').fadeOut('normal');$('#glassnoloading').fadeOut('fast');">
                     X
                 </a>
@@ -81,10 +50,7 @@ function formatSize($bytes, $precision = 2){
 
         <!-- begin filebrowser -->
         <div class="filebrowser middlebox">
-            <h2 style="color: rgb(226, 0, 69); margin-left: 30px;">
-                Course Files
-            </h2>
-
+            
             <!-- Begin file upload dialog -->
             <?php
             //create the serial number
@@ -93,92 +59,195 @@ function formatSize($bytes, $precision = 2){
             <div class="uploaddialog">
                 <form id="uploadpermform" method="post" action="/course/postfiles/" onSubmit="return checkFilesUpload();">
                     <div class="uploaddialog_uploadsection">
-                        <div class="kscenter">
-                            <div class="kscenter-img"> 
-                                <img width="142" height="105" src="/img/tip.png">    
+                        <div id="filebrowserdrop">
+                            <table class="uploadfirststep">
+                                <tr>
+                                    <td class="uploadfirststep_image">
+                                        <div style="width: 163px;">
+
+                                        </div>
+                                        <img src="/img/smiling.png" />
+                                    </td>
+                                    <td class="uploadfirststep_text dropzone" id="filebrowser_upload_dropzone">
+                                        <div id="uploaddialog_explain">1. Click upload, or drag n'drop files here, to upload them to course</div>
+                                    </td>
+                                    <td class="uploadfirststep_button" onclick="clickedUploadInCourse()">
+                                        <div id="filebrowser_upload">
+                                            <span style="position: relative; top: 20px; left: 40px;">Upload</span>
+                                        </div>
+                                        <?php
+                                        /*echo $this -> partial('partials/uploadbutton.phtml' , 
+                                                array('iSerial' => $serial , 
+                                                    'sId' => 'uploadFileBrowser' , 
+                                                    'iNumUpload' => 0 , 
+                                                    'iMaxSize' => 209715200 , 
+                                                    'sAcceptFileTypes' => '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 
+                                                    'sUrl' => '/course/upload' , 
+                                                    'sFilesId' => 'filebrowseruploadfiles' , 
+                                                    'sDropId' => 'filebrowserdrop')) ;*/
+                                        ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <div id="filebrowsertooltip_folderpapa" class="filebrowsertooltip" style="display:none !important;">
+                            <div class="filebrowsertooltip_text">
+                                <span>the following error has accoured</span>
                             </div>
-                            <div class="kscenter-text" id="uploaddialog_explain">
+                            <div class="filebrowsertooltip_img">
                             </div>
                         </div>
-                        <div>
-                            <?php
-                            echo $this -> partial('partials/uploadbutton.phtml' , array('iSerial' => $serial , 'sId' => 'uploadFileBrowser' , 'iNumUpload' => 0 , 'iMaxSize' => 209715200 , 'sAcceptFileTypes' => '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 'sUrl' => '/course/upload')) ;
-                            ?>
+                        
+                        <div id="filebrowsertooltip_folderson" style="display:none !important;" class="filebrowsertooltip">
+                            <div class="filebrowsertooltip_text">
+                            <span>the following error has accoured</span>
+                            </div>
+                            <div class="filebrowsertooltip_img">
+                            </div>
                         </div>
-                        <div id="fileclassify" style="display: none; margin-bottom: 20px;">
-                            <div class="fileclassify_body">
-                                <div class="fileclassify_body_explain">
-                                    <div class="kscenter-text">
-                                        Help us keep the files organized!
+                        
+                        <table class="uploadfirststep" id="fileclassify" style="display: none; margin-top: 57px;">
+                            <tr>
+                                <td class="uploadfirststep_image" style="width:105px;">
+                                    <div style="width: 163px;">
+                                        
                                     </div>
-                                </div>
-                                <table class="fileclassify_table">
-                                    <tr>
-                                        <td class="fileclassify_table_tdleft">
-                                            What type of file is this?
-                                        </td>
-                                        <td>
-                                            <div class="style-select">
-                                                <select name="folder_papa" onchange="showHWNumber();">
-                                                    <?php foreach($this -> rsFolders as $rFolder) :?>
-                                                        <?php if ($rFolder['papa'] == -1) :?>
-                                                            <?php 
-                                                            $sSelected = '';
-                                                            if($this -> rFolder != NULL 
-                                                                    && ($this -> rFolder['id'] == $rFolder['id'] || $this -> rFolder['papa'] == $rFolder['id'])) {
-                                                                $sSelected = ' selected="selected"';
-                                                                $rFolderPapa = $rFolder;
-                                                            }
-                                                            ?>
-                                                            <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> >
-                                                                <?php echo $rFolder['title']; ?>
-                                                            </option>
-                                                        <?php endif; ?>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <?php 
+                                    <img src="/img/questionmark.png" />
+                                </td>
+                                <td class="uploadfirststep_text" style="width: 250px !important;">
+                                    <div>2. What type of file is this?</div>
+                                </td>
+                                <td style="width:190px;">
+                                    <div class="style-select" style="width:170px !important;">
+                                        <select name="folder_papa" onchange="handleSubmitFilesButton();" style="width:198px !important;">
+                                            <option value="0">
+                                                ---------
+                                            </option>
+                                            <?php foreach($this -> rsFolders as $rFolder) :?>
+                                                <?php if ($rFolder['papa'] == -1) :?>
+                                                    <?php 
+                                                    $sSelected = '';
+                                                    if($this -> rFolder != NULL 
+                                                            && ($this -> rFolder['id'] == $rFolder['id'] || $this -> rFolder['papa'] == $rFolder['id'])) {
+                                                        $sSelected = ' selected="selected"';
+                                                        $rFolderPapa = $rFolder;
+                                                    }
+                                                    ?>
+                                                    <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> >
+                                                        <?php echo $rFolder['title']; ?>
+                                                    </option>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td style="">
+                                    <?php
+                                    //determine the display of the hw number combo
                                     $sDisplay = 'none';
                                     if ($this -> rFolder != NULL 
-                                            && ($this -> rFolder['title'] === 'H.W' || $this -> rFolder['papa'] != -1 )){
+                                            && (substr($this -> rFolder['title'], 0, 3) === 'H.W')
+                                            && ($this -> rFolderPapa == NULL || $this -> rFolderPapa['title']) === 'H.W'){
                                         $sDisplay = 'table-row';
                                     }
                                     ?>
-                                    <tr id="fileclassify_body_hwnumber" style="display: <?php echo $sDisplay; ?>">
-                                        <td class="fileclassify_table_tdleft">
-                                            This is H.W Number:
-                                        </td>
-                                        <td>
-                                            <div class="style-select">
-                                                <select name="hw_number">
-                                                    <?php foreach($this -> rsFolders as $rFolder): ?>
-                                                        <?php if ($rFolder['papa'] != -1) :?>
-                                                            <?php 
-                                                            $sSelected = '';
-                                                            if($this -> rFolder != NULL 
-                                                                    && $this -> rFolder['id'] == $rFolder['id']) {
-                                                                $sSelected = ' selected="selected"';
-                                                            }
-                                                            ?>
-                                                            <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> >
-                                                                <?php echo $rFolder['title']; ?>
-                                                            </option>
-                                                        <?php endif; ?>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                                    
+                                    <?php 
+                                    //determine the display of the other folder dialog
+                                    $sOtherFolderDisplay = 'none';
+                                    if ($this -> rFolder != NULL &&
+                                            $this -> rFolder['title'] === 'Other' &&
+                                            $this -> rFolderPapa == NULL){
+                                        $sOtherFolderDisplay = 'table-row';
+                                    }
+                                    ?>
+                                    <div style="display: <?php echo $sDisplay; ?>" class="fileclassify_body_hwnumber">
+                                        Number
+                                    </div>
+                                    <div style="display: <?php echo $sOtherFolderDisplay; ?>" class="fileclassify_body_otherfolder">
+                                        Folder
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="display: <?php echo $sDisplay; ?>;width:120px !important;" class="fileclassify_body_hwnumber style-select">
+                                        <select name="hw_number" onchange="handleSubmitFilesButton();" style="width:148px !important;">
+                                            <option value="0">
+                                                ---------
+                                            </option>
+                                            <?php foreach($this -> rsFolders as $rFolder): ?>
+                                                <?php if ($rFolder['papa'] == $this -> iHwFolder):?>
+                                                    <?php 
+                                                    $sSelected = '';
+                                                    if($this -> rFolder != NULL 
+                                                            && $this -> rFolder['id'] == $rFolder['id']) {
+                                                        $sSelected = ' selected="selected"';
+                                                    }
+                                                    ?>
+                                                    <option value="<?php echo $rFolder['id'] ?>" <?php echo $sSelected; ?> >
+                                                        <?php echo $rFolder['title']; ?>
+                                                    </option>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- the other folder section -->
+                                    <div style="display: <?php echo $sOtherFolderDisplay; ?>;width:120px !important;" class="fileclassify_body_otherfolder">
+                                        <div class="front-card">
+                                            <div class="placeholding-input searchcourse flex-table-form" style="height: 36px;">
+                                                <input 
+                                                    type="text" 
+                                                    maxlength="100" 
+                                                    class="text-input flex-table-input" 
+                                                    id="otherfolder_input" 
+                                                    name="coursefolder" 
+                                                    title="Folder"
+                                                    spellcheck="false"
+                                                    dir="ltr"
+                                                    style="width: 99%;height: 100%;font-size: 17px;font-weight: normal;border-radius: 3px 3px 3px 3px;box-shadow: none; " 
+                                                    autocomplete="off"
+                                                    />
+                                                <span class="placeholder" style="font-size: 16px;top: 5px;">(Optional)</span>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <!-- end of other folder section -->
+                                    
+                                </td>
+                                <td class="uploadfirststep_button">
+                                    <button class="filebrowserbutton disable" type="submit" value="Submit files" id="submitfilebrowser">
+                                        Submit
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <div id="filebrowser_upload_files" style="margin-top: 57px;display: none;">
+                            <div class="filebrowsertooltip" style="display:none !important;" id="filebrowsertooltip_filetable">
+                                <div class="filebrowsertooltip_text">
+                                    <span>the following error has accoured</span>
+                                </div>
+                                <div class="filebrowsertooltip_img">
+                                </div>
                             </div>
+                            <table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery">
+                                    <tr class="filesheader">
+                                        <td class="filebrowser-td">Filename</td>
+                                        <td class="filebrowser-td filebrowser-td-left">Size</td>
+                                        <td class="filebrowser-td filebrowser-td-left">Progress</td>
+                                        <td class="filebrowser-td filebrowser-td-left">Delete</td>
+                                    </tr>
+                            </tbody></table> 
                         </div>
-                        <div style="clear: both; height: 40px; width: 110px; margin: 0px auto;">
-                            <button class="submit btn primary-btn flex-table-btn js-submit" type="submit" value="Submit files" >
-                                Submit Files
-                            </button>
-                        </div>
+                        <script type="text/javascript">
+                            ksInitUpload('filebrowser_upload' , 
+                                <?php echo $serial; ?> , 
+                                    0 , 
+                                    209715200, 
+                                    '/(\\.|\\/)(gif|jpe?g|png|bmp|zip|rar|pdf|docx|doc|xls|xlsx|ppt|pptx)$/i' , 
+                                    '/course/upload/');
+                        </script>
                     </div>
                     <script type="text/javascript">loadCourse();</script>
                     <input type="hidden" name="serial" value="<?php echo $serial; ?>" />
@@ -193,17 +262,17 @@ function formatSize($bytes, $precision = 2){
                     <h3>
                         <span class="pink_header">
                             <a href="/course/course/id/<?php echo $this -> rCourse['id']; ?>">
-                                HOME
+                                <?php echo $this -> rCourse['title']; ?>
                             </a>
                             <?php if ($this -> rFolder != NULL): ?>
-                                <img src="/img/arrow.gif" />
+                                <i class="filebrowser_foldertitle_arrow"></i>
                                 <span class="black_header">
                                     <a href="/course/course/id/<?php echo $this -> rCourse['id']; ?>/folder/<?php echo $rFolderPapa['id']; ?>">
                                         <?php echo $rFolderPapa['title']; ?>
                                     </a>
                                 </span>
                                 <?php if ($this -> rFolder['papa'] != -1): ?>
-                                <img src="/img/arrow.gif" />
+                                <i class="filebrowser_foldertitle_arrow"></i>
                                 <span class="pink_header">
                                     <a href="/course/course/id/<?php echo $this -> rCourse['id']; ?>/folder/<?php echo $this -> rFolder['id']; ?>">
                                         <?php echo $this -> rFolder['title']; ?>
@@ -214,6 +283,18 @@ function formatSize($bytes, $precision = 2){
                         </span>
                     </h3>
                 </div>
+                <?php 
+                    //merge the folders and the files check flag exist
+                    $isFlag = FALSE;
+                    $aRows = array();
+                    foreach($this -> rsFoldersShown as $rFolder){
+                        $aRows[]=$rFolder;
+                    }
+                    foreach($this -> rsFiles as $rFile){
+                        $aRows[]=$rFile;
+                        $isFlag =TRUE;
+                    }
+                ?>
                 <table style="padding: 10px !important;border-collapse:separate;width:100%;">
                     <tr class="filebrowser-border-bottom filebrowser_table_title">
                         <td class="filebrowser-border-bottom filebrowser-td filebrowser-header-td">
@@ -221,85 +302,57 @@ function formatSize($bytes, $precision = 2){
                         <td class="filebrowser-border-bottom filebrowser-td filebrowser-header-td">
                         </td>
                         <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="width:100%;">
-                            <span class="pink_header">Title</span>
+                            Title
                         </td>
                         <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="text-align:center;">
-                            <span class="pink_header">Size</span>
+                            Size
                         </td>
-                        <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="">
-                            <span class="pink_header">Flag</span>
-                        </td>
+                        <?php if($isFlag): ?>
+                            <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="">
+                                Flag
+                            </td>
+                        <?php endif; ?>
                         <td class="filebrowser-td-left filebrowser-border-bottom filebrowser-td filebrowser-header-td" style="text-align:center">
-                            <span class="pink_header">Download</span>
+                            Download
                         </td>
                     </tr>
-                    <?php //first print the folders ?>
-                    <?php foreach($this -> rsFoldersShown as $rFolder) :?>
-                        <?php /* @var $rFolder Nerdeez_Folder_Row  */ ?>
-                        <tr class="filebrowser_data_tr">
+                    <?php //print the files and the folders ?>
+                    <?php foreach($aRows as $rFolderFileRow) :?>
+                        <?php /* @var $rFolder Nerdeez_Db_Table_Row_Files  */ ?>
+                        <tr class="filebrowser_data_tr" >
                             <td class="filebrowser_td_check">
-                                <input type="checkbox" val="<?php echo $rFolder['id']; ?>" class="ksFolderBrowserCheckbox" />
+                                <input type="checkbox" val="<?php echo $rFolderFileRow['id']; ?>" class="<?php echo $rFolderFileRow -> getCheckboxClass(); ?>" />
                             </td>
-                            <td class="filebrowser_td_right filebrowser_td_img" onclick="gotoFolder(<?php echo $rFolder['id']; ?> , <?php echo $this -> rCourse['id']; ?>);">
-                                <img src="/img/Folder.svg.png" />
+                            
+                            <td class="filebrowser_td_right filebrowser_td_img filebrowser_image_active" onclick="<?php echo $rFolderFileRow -> getClickJsEvent($this -> rCourse['id']); ?>">
+                                <div class="filebrowsericon <?php echo $rFolderFileRow -> getImageClass(); ?>">
+                                    
+                                </div>
                             </td>
-                            <td class="filebrowser_td_right filebrowser_td_title" onclick="gotoFolder(<?php echo $rFolder['id']; ?> , <?php echo $this -> rCourse['id']; ?>);">
-                                <p><?php echo $rFolder['title']; ?></p>
+                            <td class="filebrowser_td_right filebrowser_td_title filebrowser_image_active" 
+                                onclick="<?php echo $rFolderFileRow -> getClickJsEvent($this -> rCourse['id']); ?>">
+                                <p><?php echo $rFolderFileRow['title']; ?></p>
                             </td>
-                            <td class="filebrowser_td_right filebrowser_td_title" style="text-align: center;" onclick="gotoFolder(<?php echo $rFolder['id']; ?> , <?php echo $this -> rCourse['id']; ?>);">
-                                <div style="width:100px"><?php echo formatSize($rFolder ->getSize($this -> rCourse['id'])); ?></div>
+                            <td class="filebrowser_td_right filebrowser_td_title filebrowser_image_active" style="text-align: center;" onclick="<?php echo $rFolderFileRow -> getClickJsEvent($this -> rCourse['id']); ?>">
+                                <div style="width:100px"><?php echo $rFolderFileRow->getFormatedSize($this -> rCourse['id']); ?></div>
                             </td>
-                            <td class="filebrowser_td_right filebrowser_td_title" >
-                            </td>
+                            <?php if($isFlag): ?>
+                                <td class="filebrowser_td_right filebrowser_td_title" >
+                                    <!--<div class="filebrowserflag" onclick="showReportFlag();">
+                                    </div>-->
+                                    <div class="<?php echo $rFolderFileRow -> getFlagClass(); ?>" onclick="<?php echo $rFolderFileRow -> getFlagAction(); ?>">
+                                        
+                                    </div>
+                                </td>
+                            <?php endif; ?>
                             <td class="filebrowser_td_right filebrowser_td_download"> 
-                                <a href="javascript:void(0)" onclick="ksDownloadFile(<?php echo $rFolder['id'] ?> , 'Application_Model_DbTable_Folders');">
-                                    <img src="/img/download32.png" height="24" width="24"/>
+                                <a href="javascript:void(0)" onclick="<?php echo $rFolderFileRow -> getJsDownloadEvent($this -> rCourse['id']); ?>">
+                                    <i class="filebrowserdownloadimage">
+                                    </i>
                                 </a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
-
-                    <?php //now print the files ?>
-                    <?php foreach($this -> rsFiles as $rFile): ?>
-                        <?php if ($this -> rFolder != NULL && $rFile['folders_id'] == $this -> rFolder['id']): ?>
-                            <tr class="filebrowser_data_tr">
-                                <td class="filebrowser_td_check">
-                                    <input type="checkbox" val="<?php echo $rFile['id']; ?>" class="ksFileBrowserCheckbox" />
-                                </td>
-                                <td class="filebrowser_td_right filebrowser_td_img" onclick="ksPeek(<?php echo $rFile['id']; ?> , '<?php echo $rFile['title']; ?>')">
-                                    <?php 
-                                    //determine the background position from the extension
-                                    $ext = strtolower(pathinfo($rFile['title'], PATHINFO_EXTENSION));
-                                    switch ($ext) {
-                                        case 'jpg' || 'bmp' || 'gif' || 'png':
-                                            $backgroundposition = '-10px -8px;';
-                                            break;
-                                        default:
-                                            $backgroundposition = '0 0;';
-                                            break;
-                                    }
-                                    ?>
-                                    <div class="filebrowser-file-icon" style="background-position: <?php echo $backgroundposition; ?>"></div>
-                                </td>
-                                <td class="filebrowser_td_right filebrowser_td_title" onclick="ksPeek(<?php echo $rFile['id']; ?> , '<?php echo $rFile['title']; ?>')">
-                                    <p><?php echo $rFile['title']; ?></p>
-                                </td>
-                                <td class="filebrowser_td_right filebrowser_td_title" style="text-align: center;" onclick="gotoFolder(<?php echo $rFolder['id']; ?> , <?php echo $this -> rCourse['id']; ?>);">
-                                    <div style="width:100px"><?php echo formatSize($rFile['size']); ?></div>
-                                </td>
-                                <td class="filebrowser_td_right filebrowser_td_title" style="text-align: center;">
-                                    <a href="javascript:void(0)" onclick="showReportFlag();">
-                                        <img src="/img/flag.png" />
-                                    </a>
-                                </td>
-                                <td class="filebrowser_td_right filebrowser_td_download">
-                                    <a href="javascript:void(0)" onclick="ksDownloadFile(<?php echo $rFile['id'] ?>);">
-                                        <img src="/img/download32.png" height="24" width="24"/>
-                                    </a>
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                    <?php endforeach;?>
                 </table>
                 <!-- begin multiple downloads section -->
                 <div style="margin-left: 15px;height: 70px;">
@@ -312,7 +365,7 @@ function formatSize($bytes, $precision = 2){
                         </span>
                         <br/>
                         <span style="margin-left: 10px;top: 5px; position:relative;">
-                            <a onclick="ksDownloadChecked();" href="javascript:void(0)">
+                            <a onclick="ksDownloadChecked(<?php echo $this -> rCourse['id']; ?>);" href="javascript:void(0)">
                                 Download selected files
                             </a>
                         </span>
@@ -332,191 +385,199 @@ function formatSize($bytes, $precision = 2){
 
 <!-- begin of copyright report dialog -->
 <div id="flagdialog" class="flagdialog">
-    <div class="bgblack registerdialog-header" >
-        <h2>Report this content as inappropriate</h2>
+    <div class="bgblack flagdialog_header" >
+        <h2 style="font-weight: normal; color: white; margin: 3px auto 0px; width: 125px; font-size: 14px;">Report this content</h2>
         <a href="javascript:void(0)" onclick="$('#flagdialog').fadeOut('normal');$('#glassloading').fadeOut('fast');">
             X
         </a>
     </div>
-    <div class="kscenter" style="height: 120px;">
-        <div class="kscenter-img" style="float: left;"> 
-            <img width="142" height="105" src="/img/searchface.png">    
-        </div>
-        <div class="kscenter-text" style="width: 600px; float: left; margin-left: 50px;position: static;">
-            <p>
-                Please select the category that most closely reflects your concern about this content, so that we can review it and determine whether it violates our <a target="_blank" href="/index/communityguidelines/">Community Guidelines</a> or isn't appropriate for all users. Abusing this feature is also a violation of the <a target="_blank" href="/index/communityguidelines/">Community Guidelines</a>, so don't do it.
-            </p>
-        </div>
-    </div>
-    <div class="about_status" style="color: red;"></div>
-    <div style="width: 500px; margin: 0px auto 15px; position: relative;">
-        <button 
-            style="height:36px;left:-16px;position:relative;top:-1px;width:150px;" 
-            tabindex="2" 
-            type="button" 
-            id="reasonsbutton"
-            class="submit btn primary-btn js-submit btnradio"
-            onclick="$('#reasonsbutton').toggleClass('active');$('#reasonlist').fadeToggle('normal');">
-            <span class="button-text">
-                Select a Reason
-            </span>
-            <span class="button-icon-wrapper">
-                <img class="button-icon-image" style="left: 2px;position: relative;top: -3px;" src="/img/arrow-down.png" alt="">
-            </span>
-        </button>
-        <div id="reasonmessage">
-            <img class="flag-menu-arrow" src="/img/arrow-right.png" />
-            <span id="reasonspanmesseage">
-            </span>
-        </div>
-    </div>
-    <div id="reasonlist">
-        <ul class="sf-menu">
-            <li class="yt-uix-button-menu-item" data-reason="P">
-                <span  >Sexual content</span>
-                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
-                <ul class="flag-menu submenu yt-uix-button-menu">
-                    <li class="yt-uix-button-menu-item leaf" data-include-time="true" data-subreason="1">
-                        <span  >Graphic sexual activity</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-include-time="true" data-subreason="2">
-                        <span  >Nudity</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-result-message="maybe-review" data-subreason="3">
-                        <span  >Suggestive, but without nudity</span>
-                    </li>
-
-                    <li class="yt-uix-button-menu-item leaf" data-show-textbox-with-label="Please also briefly describe the inappropriate content:" data-include-time="true" data-subreason="4">
-                        <span  >Other sexual content</span>
-                    </li>
-                </ul>
-            </li>
-            <li class="yt-uix-button-menu-item" data-reason="G">
-                <span  >Violent or repulsive content</span>
-                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
-                  <ul class="flag-menu submenu yt-uix-button-menu">
-                    <li class="yt-uix-button-menu-item leaf" data-result-message="maybe-review" data-subreason="5">
-                        <span  >Adults fighting</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-subreason="6">
-                        <span  >Physical attack</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-subreason="7">
-                        <span  >Youth violence</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-subreason="8">
-                        <span  >Animal abuse</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-subreason="9">
-                        <span  >Promotes terrorism</span>
-                    </li>
-                  </ul>
-            </li>
-            <li class="yt-uix-button-menu-item" data-reason="R">
-                <span  >Hateful or abusive content</span>
-                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
-
-                  <ul class="flag-menu submenu yt-uix-button-menu">
-                    <li class="yt-uix-button-menu-item leaf" data-result-message="hate-speech" data-show-textbox-with-label="Please also provide any additional information which you think could help us verify the issue as quickly as possible:" data-show-hate-group="true" data-subreason="10">
-
-                        <span  >Promotes hatred or violence</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-subreason="11">
-                        <span  >Abusing vulnerable individuals</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-result-message="bullying" data-subreason="12">
-                        <span  >Bullying</span>
-                    </li>
-                  </ul>
-            </li>
-            <li class="yt-uix-button-menu-item" data-reason="X">
-                <span  >Harmful dangerous acts</span>
-                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
-
-                  <ul class="flag-menu submenu yt-uix-button-menu">
-                    <li class="yt-uix-button-menu-item leaf" data-subreason="13">
-                      <span  >
-                        Pharmaceutical or drug abuse
-                      </span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-subreason="14">
-                        <span  >Abuse of fire or explosives</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-subreason="15">
-                        <span  >Suicide or self injury</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-subreason="16">
-                        <span  >Other dangerous acts</span>
-                    </li>
-                  </ul>
-            </li>
-            <li class="yt-uix-button-menu-item leaf" data-reason="J" data-subreason="17">
-                <span  >Child abuse</span>
-            </li>
-            <li class="yt-uix-button-menu-item" data-reason="Z">
-              <span  >Spam</span>
-              <img class="flag-menu-arrow" src="/img/arrow-right.png" />
-
-              <ul class="flag-menu submenu yt-uix-button-menu">
-                <li class="yt-uix-button-menu-item leaf" data-subreason="18">
-                    <span  >Mass advertising</span>
-                </li>
-                <li class="yt-uix-button-menu-item leaf" data-subreason="19">
-                    <span  >Misleading text</span>
-                </li>
-                <li class="yt-uix-button-menu-item leaf" data-subreason="20">
-                    <span  >Misleading thumbnail</span>
-                </li>
-                <li class="yt-uix-button-menu-item leaf" data-subreason="21">
-                    <span  >Scams / fraud</span>
-                </li>
-              </ul>
-            </li>
-            <li class="yt-uix-button-menu-item">
-                <span  >Infringes my rights</span>
-                  <img class="flag-menu-arrow" src="/img/arrow-right.png">
-
-                  <ul class="flag-menu submenu yt-uix-button-menu">
-                    <li class="yt-uix-button-menu-item leaf" data-result-message="dcma-policy" data-no-post="true" data-subreason="22">
-                        <span  >Infringes my copyright</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-no-post="true" data-result-message="privacy-center" data-subreason="23">
-                        <span  >Invades my privacy</span>
-                    </li>
-                    <li class="yt-uix-button-menu-item leaf" data-no-post="true" data-result-message="legal-claim" data-subreason="24">
-                        <span  >Other legal claim</span>
-                    </li>
-                  </ul>
-            </li>
-        </ul>
-    </div>
-    <div id="reasonsfreetext">
-        <table style="width: 500px;">
+    
+    <div class="flagdialog_body">
+        <table style="width: 100%;">
             <tr>
-                <td>
-                    <div class="front-card">
-                        <div class="placeholding-input searchcourse flex-table-form">
-                            <textarea 
-                                style="width: 99%;height: 100%;font-size: 17px;font-weight: normal;border-radius: 3px 0 0 3px;box-shadow: none; " 
-                                dir="ltr" 
-                                spellcheck="false" 
-                                title="Inaprropriate freetext" 
-                                name="message" 
-                                id="reasonsfreetexttextarea" 
-                                class="text-input flex-table-input" 
-                                maxlength="300" ></textarea>
-                            <span style="font-size: 16px;top: 5px;" class="placeholder">
-                                Please specify why this content is inappropriate (optional)
-                            </span>
-                        </div>
-                    </div>
+                <td style="vertical-align: top;padding: 15px">
+                    <img src="/img/Cop.png" />
                 </td>
-            </tr>
-            <tr>
-                <td style="text-align: center; padding: 10px;">
-                    <button class="submit btn primary-btn js-submit" type="button" onclick="sendFlagReport();" value="Submit" >
-                        Submit
-                    </button>
+                <td style="padding: 15px;">
+                    <div class="flagdialog_body_textcontent">
+                        <p>
+                            Please select the category that most closely reflects your concern about this content, so that we can review it and determine whether it violates our <a target="_blank" href="/index/communityguidelines/">Community Guidelines</a> or isn't appropriate for all users. Abusing this feature is also a violation of the <a target="_blank" href="/index/communityguidelines/">Community Guidelines</a>, so don't do it.
+                        </p>
+                    </div>
+                    <div class="flagdialog_body_controllers">
+                        <table style="width: 100%;">
+                            <tr style="background-color: white;">
+                                <td style="width: 150px" class="flagdialog_body_controllers_tdborder">
+                                    <button 
+                                        style="height:36px;position:relative;width:150px;" 
+                                        tabindex="2" 
+                                        type="button" 
+                                        id="reasonsbutton"
+                                        class="filebrowserbutton"
+                                        onclick="$('#reasonsbutton').toggleClass('active');$('#reasonlist').fadeToggle('normal');">
+                                        Select a Reason
+                                        <div class="arrowicon" style="float: right; margin-top: 2px; margin-left: 4px;"></div>
+                                    </button>
+                                    <div id="reasonlist">
+                                        <ul class="sf-menu">
+                                            <li class="yt-uix-button-menu-item" data-reason="P">
+                                                <span  >Sexual content</span>
+                                                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+                                                <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-include-time="true" data-subreason="1">
+                                                        <span  >Graphic sexual activity</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-include-time="true" data-subreason="2">
+                                                        <span  >Nudity</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="maybe-review" data-subreason="3">
+                                                        <span  >Suggestive, but without nudity</span>
+                                                    </li>
+
+                                                    <li class="yt-uix-button-menu-item leaf" data-show-textbox-with-label="Please also briefly describe the inappropriate content:" data-include-time="true" data-subreason="4">
+                                                        <span  >Other sexual content</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item" data-reason="G">
+                                                <span  >Violent or repulsive content</span>
+                                                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+                                                  <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="maybe-review" data-subreason="5">
+                                                        <span  >Adults fighting</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="6">
+                                                        <span  >Physical attack</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="7">
+                                                        <span  >Youth violence</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="8">
+                                                        <span  >Animal abuse</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="9">
+                                                        <span  >Promotes terrorism</span>
+                                                    </li>
+                                                  </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item" data-reason="R">
+                                                <span  >Hateful or abusive content</span>
+                                                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+
+                                                  <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="hate-speech" data-show-textbox-with-label="Please also provide any additional information which you think could help us verify the issue as quickly as possible:" data-show-hate-group="true" data-subreason="10">
+
+                                                        <span  >Promotes hatred or violence</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="11">
+                                                        <span  >Abusing vulnerable individuals</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="bullying" data-subreason="12">
+                                                        <span  >Bullying</span>
+                                                    </li>
+                                                  </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item" data-reason="X">
+                                                <span  >Harmful dangerous acts</span>
+                                                <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+
+                                                  <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="13">
+                                                      <span  >
+                                                        Pharmaceutical or drug abuse
+                                                      </span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="14">
+                                                        <span  >Abuse of fire or explosives</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="15">
+                                                        <span  >Suicide or self injury</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-subreason="16">
+                                                        <span  >Other dangerous acts</span>
+                                                    </li>
+                                                  </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item leaf" data-reason="J" data-subreason="17">
+                                                <span  >Child abuse</span>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item" data-reason="Z">
+                                              <span  >Spam</span>
+                                              <img class="flag-menu-arrow" src="/img/arrow-right.png" />
+
+                                              <ul class="flag-menu submenu yt-uix-button-menu">
+                                                <li class="yt-uix-button-menu-item leaf" data-subreason="18">
+                                                    <span  >Mass advertising</span>
+                                                </li>
+                                                <li class="yt-uix-button-menu-item leaf" data-subreason="19">
+                                                    <span  >Misleading text</span>
+                                                </li>
+                                                <li class="yt-uix-button-menu-item leaf" data-subreason="20">
+                                                    <span  >Misleading thumbnail</span>
+                                                </li>
+                                                <li class="yt-uix-button-menu-item leaf" data-subreason="21">
+                                                    <span  >Scams / fraud</span>
+                                                </li>
+                                              </ul>
+                                            </li>
+                                            <li class="yt-uix-button-menu-item">
+                                                <span  >Infringes my rights</span>
+                                                  <img class="flag-menu-arrow" src="/img/arrow-right.png">
+
+                                                  <ul class="flag-menu submenu yt-uix-button-menu">
+                                                    <li class="yt-uix-button-menu-item leaf" data-result-message="dcma-policy" data-no-post="true" data-subreason="22">
+                                                        <span  >Infringes my copyright</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-no-post="true" data-result-message="privacy-center" data-subreason="23">
+                                                        <span  >Invades my privacy</span>
+                                                    </li>
+                                                    <li class="yt-uix-button-menu-item leaf" data-no-post="true" data-result-message="legal-claim" data-subreason="24">
+                                                        <span  >Other legal claim</span>
+                                                    </li>
+                                                  </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                                <td class="flagdialog_body_controllers_tdborder">
+                                    <div id="reasonmessage">
+                                        <i class="filebrowser_foldertitle_arrow"></i>
+                                        <span id="reasonspanmesseage">
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="background-color: white;">
+                                <td colspan="2" class="flagdialog_body_controllers_tdborder">
+                                    <div class="front-card">
+                                        <div class="placeholding-input searchcourse flex-table-form">
+                                            <textarea 
+                                                style="height: 100%;font-size: 17px;font-weight: normal;border-radius: 0;" 
+                                                dir="ltr" 
+                                                spellcheck="false" 
+                                                title="Inaprropriate freetext" 
+                                                name="message" 
+                                                id="reasonsfreetexttextarea" 
+                                                class="text-input flex-table-input" 
+                                                maxlength="300" ></textarea>
+                                            <span style="font-size: 16px;top: 5px;" class="placeholder">
+                                                Why was this inappropriate? (optional)
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="background-color: #BDCCD4;">
+                                <td colspan="2" style="text-align: center;">
+                                    <div class="about_status" style="color: red;"></div>
+                                    <input type="hidden" id="reasonshidden" name="fileid" value="" />
+                                    <button class="filebrowserbutton" type="button" onclick="sendFlagReport();" value="Submit" style="width: 100px;margin-top:10px;">
+                                        Submit
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </td>
             </tr>
         </table>

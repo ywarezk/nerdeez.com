@@ -55,7 +55,7 @@ input, textarea, select {
     /*left: 181px;*/
     /*width: 770px;*/
     margin: 0 auto;
-    min-width: 850px;
+    min-width: 1000px;
 }
 
 
@@ -101,6 +101,7 @@ input, textarea, select {
 .nav > li{
     float: left;
     position: relative;
+    padding-left: 15px;
 }
 
 /* the span inside the navigation */
@@ -121,7 +122,7 @@ input, textarea, select {
     font-weight: bold;
     height: 12px;
     line-height: 1;
-    padding: 10px 12px 9px;
+    /*padding: 10px 12px 9px;*/
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.75);
 }
 
@@ -719,6 +720,8 @@ box-sizing: border-box;
 
 .footer_anchor{
     color: #CCCCCC;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 .insearch{
@@ -748,10 +751,8 @@ box-sizing: border-box;
 
 .filebrowser{
 	margin: 0 auto; 
-    max-width: 90%;
 	border: 1px solid;
     border-radius: 10px 10px 10px 10px;
-    min-width: 70%;
 }
 
 .filebrowser-th{
@@ -1104,15 +1105,11 @@ box-sizing: border-box;
 }
 
 .flagdialog{
-    background-color: white;
-    border: 1px solid #CCCCCC;
-    border-radius: 5px 5px 5px 5px;
-    clear: both;
+    background-color: #BDCCD4;
+    border: 1px solid black;
     display: none;
-    left: 30%;
     position: fixed;
-    top: 10%;
-    width: 800px;
+    width: 700px;
     z-index: 3;
 }
 
@@ -1133,6 +1130,7 @@ box-sizing: border-box;
 .uploaddialog{
     /*border-bottom: 1px solid #CCCCCC;*/
     padding: 8px;
+    position: relative;
 }
 
 .regbutton{
@@ -1360,7 +1358,7 @@ box-sizing: border-box;
     background-color: #EEEEEE;
     border: 1px double #000000;
     clear: both;
-    height: 15px;
+    height: 18px;
     margin: 0.6em 0;
     padding: 2px;
     /*width: 100%;*/
@@ -1375,7 +1373,7 @@ box-sizing: border-box;
     width: 100%;
 }
 
-.dropzone{
+/*.dropzone{
     background-color: #E07796;
     display: none;
     height: 50px;
@@ -1387,7 +1385,7 @@ box-sizing: border-box;
 
 .dropzone.drag-enter{
     display: block !important;
-}
+}*/
 
 #overlay{
     position: absolute;        
@@ -1505,8 +1503,12 @@ box-sizing: border-box;
 }
 
 .btn-warning{
-    height: 30px; width: 30px;
+    /*background-image: url("/img/icons.png");
+    background-position: -85px 3px;
+    background-repeat: no-repeat;*/
+    height: 30px;
     padding: 0 !important;
+    width: 30px;
 }
 
 .filesheader{
@@ -1871,8 +1873,8 @@ border: 1px solid #CCCCCC;
 }
 
 .filebrowser-header-td{
+    color: white;
     font-size: 17px;
-    font-weight: bold;
 }
     
 .filebrowser_data_tr:hover{
@@ -1935,11 +1937,12 @@ img
 }
 
 #fileclassify{
-    border: 1px solid #CCCCCC;
+    /*border: 1px solid #CCCCCC;
     border-radius: 15px 15px 15px 15px;
     margin: 0 auto 20px;
     padding: 10px;
-    width: 600px;
+    width: 600px;*/
+    width: 100%;
 }
 
 .fileclassify_body_explain{
@@ -1951,6 +1954,7 @@ img
     height: 36px;
     overflow: hidden;
     width: 240px;
+    background-color: white;
 }
 
 .style-select select{
@@ -2030,8 +2034,6 @@ select{
 
 #reasonlist{
     display: none;
-    margin-top: -16px;
-    margin-left: 160px;
     position: absolute;
 }
 
@@ -2079,7 +2081,7 @@ textarea{
 }
 
 .nav-text{
-    position: relative;  font-size: 16px; top: 9px; font-family: Helvetica;
+    font-size: 16px; font-family: Helvetica;
 }
 
 .navitem a:hover * i.home{
@@ -2109,4 +2111,397 @@ textarea{
     border-radius: 30px 30px 30px 30px;
     box-shadow: 0 10px 5px #888888;
     padding: 20px;
+}
+
+#searchcourseform{
+    background-image: url('/img/squares.png') !important;
+}
+
+.navitem.active * span.nav-text{
+    color: #E20045 !important;
+}
+
+.navitem a:hover{
+    text-decoration: underline !important;
+}
+
+.navitem.navseparator span{
+    color: white !important;
+}
+
+.navitem.navseparator span:hover{
+    color: white !important;
+}
+
+.arrowicon{
+    background-image: url("/img/icons.png");
+    background-repeat: no-repeat;
+    height: 16px;
+    width: 16px;
+    background-position: -8px 5px;
+}
+
+.uploadfirststep{
+    background-color: #bdccd4;
+    width: 100%;
+    height: 57px;
+    margin-top: 25px;
+    position: relative;
+    font-size: 15px;
+    color: white;
+}
+
+.uploadfirststep_image{
+   position: relative;
+}
+
+.uploadfirststep_text{
+    width: 100%;
+}
+
+.uploadfirststep_button{
+    width: 127px;
+    cursor: pointer;
+}
+.uploadfirststep_button:hover{
+    color: #CCCCCC;
+}
+
+.uploadfirststep_image img{
+    left: 25px;
+    position: absolute;
+    top: -26px;
+}
+
+.uploadfirststep_button * .span7{
+    width: 0 !important;
+}
+
+.uploadfirststep_button * .hider{
+    width: 0 !important;
+}
+
+.uploadfirststep_button #uploadFileBrowser{
+    background-color: #E62A59 !important;
+    height: 57px !important;
+    width: 127px !important;
+}
+
+.uploadfirststep_button * .fileinput-button{
+    background: none repeat scroll 0 0 transparent;
+    color: white !important;
+    font-size: 15px;
+    left: 31px;
+    position: relative;
+    top: 20px;
+}
+
+#fileclassify * .uploadfirststep_image img{
+    left: 50px !important;
+    top: -9px !important;
+}
+
+.filebrowserbutton{
+    background-color: #E62A59;
+    border: medium none;
+    color: white;
+    font-size: 15px;
+    height: 57px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.filebrowsericon{
+    background-image: url("/img/icons.png");
+    background-repeat: no-repeat;
+    height: 37px;
+    width: 42px;
+}
+
+.filebrowsericon.folder{
+    background-position: -89px -80px;
+}
+
+
+.filebrowserdownloadimage{
+    background-image: url("/img/icons.png");
+    background-position: -10px -162px;
+    height: 38px;
+    width: 42px;
+}
+
+.filebrowserdownloadimage:hover{
+    background-position: -90px -162px;
+}
+
+.filebrowserflag{
+    background-image: url("/img/icons.png");
+    background-position: -242px -79px;
+    background-repeat: no-repeat;
+    height: 32px;
+    width: 38px;
+}
+
+.filebrowser_data_tr:hover .filebrowsericon.folder{
+    background-position: -169px -80px;;
+}
+
+.uploadfirststep_button * .files_positioner{
+    
+}
+
+.uploadfirststep_button * .files_positioner input[type="file"]{
+    left: -999px !important;top: -999px !important;position: absolute !important;
+}
+
+
+
+
+.files_positioner{
+    position: relative; left: -94px; opacity: 0; top: -64px;
+}
+
+.files_positioner input[type="file"]{
+    cursor: pointer; height: 60px;
+}
+
+#filebrowser_upload{
+    background-color: #E62A59;
+    display: block;
+    height: 57px;
+    width: 127px;
+}
+
+#filebrowser_upload:hover{
+    color: #CCCCCC;
+}
+
+#filebrowser_upload_input{
+    left: -9999px;
+    position: absolute;
+    top: -9999px;
+}
+
+.filebrowserbutton.disable{
+    background-color: #acacac;
+    
+}
+.filebrowserbutton.enable{
+    background-color: #E62A59;
+    
+}
+
+.filebrowsercomplete{
+    color: green; font-weight: bold; width: 100%;border-right: 1px solid #DDDDDD;
+}
+
+#submitfilebrowser:hover{
+    color: #CCCCCC;
+}
+
+.filebrowsertooltip{
+    display: inline; float: right; position: relative; top: -50px; right: 180px;
+}
+
+.filebrowsertooltip_text{
+    background-color: rgb(40, 40, 40); padding: 8px; font-size: 15px;
+}
+
+.filebrowsertooltip_img{
+    background-image: url("/img/icons.png");
+    background-position: -245px 3px;
+    background-repeat: no-repeat;
+    height: 16px;
+    margin: 0 auto;
+    width: 16px;
+}
+
+#filebrowsertooltip_folderpapa{
+    left: 350px !important; top: 100px !important;
+    position: absolute !important;
+    right: auto !important;
+}
+
+#filebrowsertooltip_folderson{
+    float: left !important; top: 100px !important; left: 610px !important;
+    position: absolute !important;
+    right: auto !important;
+}
+
+#admininsertfilesupload{
+    
+}
+
+.adminupload{
+    background-color: #E62A59;
+    cursor: pointer;
+    height: 30px;
+    margin: 0 auto;
+    text-align: center;
+    width: 100px;
+}
+
+
+
+.adminupload:hover{
+    color: #CCCCCC;
+}
+.adminupload span:hover{
+    color: #CCCCCC;
+}
+
+.adminupload span{
+    color: white;
+    font-size: 14px;
+    position: relative;
+    top: 6px;
+}
+
+.adminupload_input{
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+.dropzone.dragover{
+    background-color: #E62A59 !important;
+    opacity: 0.7;
+    
+}
+
+.filebrowsericon.pdf{
+    background-position: -9px -240px;
+}
+
+.filebrowser_data_tr:hover .filebrowsericon.pdf{
+    background-position: -9px -320px;
+}
+.filebrowsericon.zip{
+    background-position: -89px -240px;
+}
+.filebrowser_data_tr:hover .filebrowsericon.zip{
+    background-position: -89px -320px;
+}
+
+
+.filebrowsericon.rar{
+    background-position: -249px -240px;
+}
+.filebrowsericon.doc , .filebrowsericon.docx{
+    background-position: -169px -240px;
+}
+
+.filebrowser_data_tr:hover .filebrowsericon.doc,
+.filebrowser_data_tr:hover .filebrowsericon.docx{
+    background-position: -169px -320px;
+}
+
+.filebrowsericon.xls , .filebrowsericon.xlsx{
+    background-position: -409px -240px;
+}
+.filebrowser_data_tr:hover .filebrowsericon.xls ,.filebrowser_data_tr:hover .filebrowsericon.xlsx{
+    background-position: -409px -320px;
+}
+.filebrowsericon.gif , .filebrowsericon.bmp , .filebrowsericon.jpg , .filebrowsericon.png{
+    background-position: -329px -240px;
+}
+
+.filebrowsericon.gif:hover , 
+.filebrowsericon.bmp:hover , 
+.filebrowsericon.jpg:hover , 
+.filebrowsericon.png:hover ,
+.filebrowser_data_tr:hover .filebrowsericon.png ,
+.filebrowser_data_tr:hover .filebrowsericon.jpg ,
+.filebrowser_data_tr:hover .filebrowsericon.bmp ,
+.filebrowser_data_tr:hover .filebrowsericon.gif{
+    background-position: -329px -320px;
+}
+
+.filebrowserflag:hover{
+    background-position: -322px -79px;
+}
+
+.filebrowsericon.rar:hover,
+.filebrowser_data_tr:hover .filebrowsericon.rar{
+    background-position: -249px -320px;
+}
+
+.filebrowsericon.xls:hover, 
+.filebrowsericon.xlsx:hover, 
+.filebrowser_data_tr:hover .filebrowsericon.xlsx{
+    background-position: -409px -320px;
+}
+
+.filebrowsericon.pptx, .filebrowsericon.ppt{
+    background-position: -489px -240px;
+}
+.filebrowser_data_tr:hover .filebrowsericon.pptx, .filebrowser_data_tr:hover .filebrowsericon.ppt{
+    background-position: -489px -320px;
+}
+
+.filebrowsertooltip_text span{
+    color: white;
+}
+
+.filebrowser_foldertitle_arrow{
+    background-image: url("/img/icons.png");
+    background-position: -169px 3px;
+    background-repeat: no-repeat;
+    height: 16px;
+    margin-left: 5px;
+    width: 11px;
+}
+
+#myFrame{
+    border:none;
+}
+
+.buttongarbageicon{
+    background-image: url("/img/icons.png");
+    background-position: -87px 0;
+    background-repeat: no-repeat;
+    height: 21px;
+    width: 21px;
+}
+
+.flagdialog_body{
+    padding: 20px;
+}
+
+.flagdialog_header{
+    height: 23px;
+    padding: 5px;
+    position: static;
+    width: auto;
+}
+
+.flagdialog_header a{
+    color: white;
+    float: right;
+    position: relative;
+    right: 5px;
+    top: -18px;
+}
+
+.flagdialog_body_controllers_tdborder{
+    border: 2px solid #E77A99;
+    padding: 0;
+}
+
+.filebrowserbutton:hover{
+    color: #CCCCCC;
+}
+
+.flagdialog_body_controllers{
+    margin-top: 25px;
+}
+
+.flagdialog_body_textcontent{
+    font-family: Verdana;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.paginationControl{
+    text-align: center;
 }

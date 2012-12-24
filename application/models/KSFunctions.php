@@ -393,7 +393,12 @@ class Application_Model_KSFunctions {
      */
     public function grabFileNameFromPath($sPath){
         $aPath = explode('/', $sPath);
-        return $aPath[count($aPath) - 1];
+        if ($aPath[count($aPath) - 1] !== '' && $aPath[count($aPath) - 1] != NULL){
+            return $aPath[count($aPath) - 1];
+        }
+        else{
+            return $aPath[count($aPath) - 2];
+        }
     }
 }
 

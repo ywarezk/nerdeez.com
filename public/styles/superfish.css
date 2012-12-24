@@ -58,7 +58,7 @@ ul.sf-menu li li li.sfHover ul {
 /*** DEMO SKIN ***/
 .sf-menu {
     margin-bottom: 1em;
-    margin-left: -25px;
+    /*margin-left: -25px;*/
     position: relative;
     width: 220px;
     z-index: 1;

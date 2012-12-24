@@ -45,10 +45,15 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'error' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 200) ,
         array('name' => 'status' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 200) ,
         array('name' => 'message' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 300) ,
+        array('name' => 'coursefolder' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 100) ,
         array('name' => 'serial' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 99999) ,
-        array('name' => 'folder_papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 100) ,
-        array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 100) ,
-        array('name' => 'id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 0) ,
+        array('name' => 'page' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 99999) ,
+        array('name' => 'folder_papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,
+        array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,
+        array('name' => 'papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -2 , 'max' => 100) ,
+        array('name' => 'id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
+        array('name' => 'courses_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
+        array('name' => 'folders_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
         array('name' => 'folder' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 0) ,
         array('name' => 'search' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 300) ,
         array('name' => 'password' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
@@ -100,7 +105,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             
             //sanitize string
             if ($iType === Nerdeez_ParamTypes::STRING || $iType === Nerdeez_ParamTypes::JSONARRAYNUMBERS){
-                if ($this ->sanitize_Title($iValue, $iLength) == NULL){
+                if ($this ->sanitize_Title($iValue, $iLength) === NULL){
                     $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
                     return;
                 }
@@ -136,10 +141,12 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         
         //check the remember me cookies
         $this ->rememberMe();
-
+        
+        //set the layout
         $layout = new Zend_Layout();
         $layout->setLayoutPath(APPLICATION_PATH . '/layouts/scripts/guest.phtml');
         $layout -> menu = $this -> view -> render ('partials/menus/guest_menu.phtml');
+        
         
     }
     
@@ -161,7 +168,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      * @return String null if title is invalid or sanitized title if valid
      */
     protected function sanitize_Title($title , $length){
-        if($title == null) return null;
+        if($title == null) return "";
         $title = str_replace('\\', '', $title);
         $link = $this->getMysqlConnection();
         $data = array('title' => mysql_real_escape_string($title , $link));
@@ -238,9 +245,14 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         
         //if the row doesnt exist check if the email and identifier exists if so security breach
         if (!$bIsRowExist){
+            try{
              $rsLogincookies = $mLogincookies -> fetchAll($mLogincookies -> select()
                 -> where ('email = ?' , $sEmail)
                 -> where ('identifier = ?' , $sIdentifier));
+            }
+            catch(Exception $e){
+                return;
+            }
             if ($rsLogincookies -> count() > 0){
                 //delete all the rows you found
                 foreach ($rsLogincookies as $rLogincookie) {
@@ -334,7 +346,17 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      * when ajax was completed successfully pass it to the user
      */
     public function ajaxReturnSuccess(){
-        $userData=array(array('status'=>'success','data'=>$result));
+        $userData=array(array('status'=>'success','data'=>''));
+        $dojoData= new Zend_Dojo_Data('status',$userData);
+	echo $dojoData->toJson();
+    }
+    
+    /**
+     * when ajax was completed successfully pass it to the user
+     * @param String $sMsg the failed message to send
+     */
+    public function ajaxReturnFailed($sMsg = ''){
+        $userData=array(array('status'=>'failed','msg'=>$sMsg));
         $dojoData= new Zend_Dojo_Data('status',$userData);
 	echo $dojoData->toJson();
     }
@@ -355,6 +377,57 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      */
     public function getUploadDir(){
         return $this->getFromConfig('uploaddir');
+    }
+    
+    /**
+     * is this development or production server
+     * @return Bool TRUE if this is production server
+     */
+    protected function isProduction(){
+        //server is development
+        if ($_SERVER['SERVER_ADDR'] === $this->getFromConfig('developmentip')){
+            return FALSE;
+        }
+        else{
+            return TRUE;
+        }
+    }
+    
+    /**
+     * 
+     */
+    public function preDispatch() {
+        parent::preDispatch();
+        
+        //set all the js files and css files
+        $layout = new Zend_Layout();
+        if ($this -> isProduction()){
+            $layout -> getView() -> headScript() -> appendFile('/js/static.min.js');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/static.min.css');
+        }
+        else{
+            $layout -> getView() -> headScript() -> prependFile('/js/jquery.ksfunctions.js');
+            $layout -> getView() -> headScript() -> prependFile('/js/jquery.ez-pinned-footer.js');
+            $layout -> getView() -> headScript() -> prependFile('/js/superfish.js');
+            $layout -> getView() -> headScript() -> prependFile('/js/jquery.validate.min.js');
+            $layout -> getView() -> headScript() -> prependFile('/js/jquery-1.7.1.min.js');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/styles.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish-navbar.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish-vertical.css');
+            $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish.css');
+        }
+    }
+    
+    /**
+     * init the paginator
+     * @param Zend_Db_Table_Select $select the selection from the database
+     * @param int $page the page of the paginator
+     */
+    protected function setPagination($select, $page = 1){
+        $adapter = new Zend_Paginator_Adapter_DbSelect($select);
+        $paginator = new Zend_Paginator($adapter);
+        $paginator->setCurrentPageNumber($page);
+        $this -> view -> paginator = $paginator;
     }
     
 }

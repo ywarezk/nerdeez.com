@@ -47,10 +47,14 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> aCols = $aCols; 
         
         //get all the rows from the database
-        $rsRows = NULL;
+        /*$rsRows = NULL;
         $rsRows = $mUniversities -> fetchAll($mUniversities -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;
+        $this -> view -> rsRows = $rsRows;*/
         
+        //init the paginator
+        $select = $mUniversities -> select() -> order('title ASC');
+        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
+            
         //set the model name 
         $this -> view -> sModelName = 'Application_Model_DbTable_Universities';
         
@@ -85,9 +89,13 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> aCols = $aCols;
         
         //get all the rows from the database
-        $rsRows = NULL;
+        /*$rsRows = NULL;
         $rsRows = $mCourses -> fetchAll($mCourses -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;
+        $this -> view -> rsRows = $rsRows;*/
+        
+        //init the paginator
+        $select = $mCourses -> select() -> order('title ASC');
+        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
         
         //get the rowset of the papa
         $rsPapas = array();
@@ -119,9 +127,13 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> aCols = $aCols;
         
         //get all the rows from the database
-        $rsRows = NULL;
+        /*$rsRows = NULL;
         $rsRows = $mFolders -> fetchAll($mFolders -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;
+        $this -> view -> rsRows = $rsRows;*/
+        
+        //init the paginator
+        $select = $mFolders -> select() -> order('title ASC');
+        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
         
         //get the rowset of the papa
         $rsPapas = NULL;
@@ -151,9 +163,13 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this -> view -> aCols = $aCols;
         
         //get all the rows from the database
-        $rsRows = NULL;
+        /*$rsRows = NULL;
         $rsRows = $mFiles -> fetchAll($mFiles -> select() -> order('id ASC'));
-        $this -> view -> rsRows = $rsRows;
+        $this -> view -> rsRows = $rsRows;*/
+        
+        //init the paginator
+        $select = $mFiles -> select() -> order('id ASC');
+        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
         
         //get the rowset of the papa
         $rsPapas = array();
@@ -169,11 +185,10 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      * when we are using the insert table in our admin to insert a new row
      */
     public function insertrowAction(){
-        //start the session
-        Zend_Session::start();
+        $this->disableView();
         
         //grab the model text
-        $sModel = $aData['model'];
+        $sModel = $this->_aData['model'];
         
         //create the actual model
         $mModel = new $sModel();
@@ -187,6 +202,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         foreach ($aCols as $sCol) {
             if ($sCol === 'id')continue;
             if ($sCol === 'size')continue;
+            if ($sCol === 'md5_hash')continue;
             if ($sCol === 'path'){ // there is a file uploaded grab the path
                 $oSingleFile = $this->_aFiles[0];
                 /* @var $oSingleFile Nerdeez_Files  */
@@ -203,10 +219,15 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         }
         
         //insert the actual row
-        $mModel -> insert($aParams);
+        try{
+            $mModel -> insert($aParams);
+        }
+        catch (Exception $e){
+            echo $e ->getMessage();
+        }
         
         //redirect to the same url
-        $this->_redirector->gotoUrl($this->getReferer() . 'status/success/');
+        $this->_redirector->gotoUrl($this->getReferer() . '/status/success/');
     }
     
     /**
@@ -371,14 +392,18 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         foreach ($aUniFiles as $sUniFile) {
             
             //if the file is not a dir here you can continue
-            if(!is_dir($sUniFile))continue;
+            if(!is_dir($sUniFile)){
+                unlink($sUniFile);
+                continue;
+            }
             
             //if there is a university with this title than grab it else create it
             $iUniId = 0;
             $sUniTitle = $ksfunctions ->grabFileNameFromPath($sUniFile);
             $rUni = $mUniversities ->fetchRow($mUniversities ->select() ->where('title = ?' , $sUniTitle));
             if ($rUni == NULL){
-                $iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
+                $this ->recursiveDelete($sUniFile);
+                continue;
             }
             else{
                 $iUniId = $rUni['id'];
@@ -389,7 +414,10 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             foreach ($aCourseFiles as $sCourseFile) {
                 
                 //if the file is not a dir here you can continue
-                if(!is_dir($sUniFile))continue;
+                if(!is_dir($sCourseFile)){
+                    unlink($sCourseFile);
+                    continue;
+                }
                 
                 //if there is a course with this title than grab it else create it
                 $iCourseId = 0;
@@ -406,13 +434,19 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                 $aFolderPapas = glob($sCourseFile . '*' , GLOB_MARK);
                 foreach ($aFolderPapas as $sFolderPapa) {
                     //if the file is not a dir here you can continue
-                    if(!is_dir($sUniFile))continue;
+                    if(!is_dir($sFolderPapa)){
+                        unlink($sFolderPapa);
+                        continue;
+                    }
                     
                     //get the folder id if not existing than continue
                     $iFolderPapaId = 0;
                     $sFolderPapaTitle = $ksfunctions ->grabFileNameFromPath($sFolderPapa);
                     $rFolderPapa = $mFolders ->fetchRow($mFolders ->select() -> where ('title = ?' , $sFolderPapaTitle));
-                    if ($rFolderPapa == NULL)continue;
+                    if ($rFolderPapa == NULL){
+                        $this->recursiveDelete($sFolderPapa);
+                        continue;
+                    }
                     $iFolderPapaId = $rFolderPapa['id'];
                     
                     //iterate on all the files inside this folder
@@ -435,6 +469,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                             else{
                                 $mFiles ->insertWithoutArray($sFileTitle, $isRowExist['path'], $iCourseId, $iFolderPapaId, $isRowExist['size'] , $hash);
                             }
+                            unlink($sFolderSon);
                         }
                         
                         //this is a folder than iterate on sons and insert all files inside it
@@ -443,39 +478,53 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                             //find the folder son
                             $iFolderSon = 0;
                             $rFolderSon = $mFolders ->fetchRow($mFolders -> select() -> where('title = ?' , $sFileTitle));
-                            if ($rFolderSon == NULL) continue;
-                            $iFolderSon = $rFolderSon['id'];
+                            if ($rFolderSon == NULL){ 
+                                //$this->recursiveDelete($sFolderSon);
+                                //continue;
+                                //create a specific folder for this course
+                                $iFolderSon = $mFolders ->insertWithoutArray($sFileTitle, $iFolderPapaId, $iCourseId);
+                            }
+                            else{
+                                $iFolderSon = $rFolderSon['id'];
+                            }
                             
                             //iterate on all the files and insert them
-                            $aFiles = glob($sFolderPapa . '*' , GLOB_MARK);
+                            $aFiles = glob($sFolderSon . '*' , GLOB_MARK);
                             foreach($aFiles as $sFile){
-                                if(is_dir($sFile))continue;
+                                if(is_dir($sFile)){
+                                    $this->recursiveDelete($sFile);
+                                    continue;
+                                }
                                 $sFileTitleSon = $ksfunctions ->grabFileNameFromPath($sFile);
                                 $sPathSon = 'nerdeez/' . rand( 0 , 99999) . '_' . $sFileTitleSon;
                                 $hash = md5_file($sFile);
                                 $isRowExist = $this ->isFileExist($hash);
                                 if ($isRowExist === FALSE){
                                     $mFiles ->insertWithoutArray($sFileTitleSon, $sPathSon, $iCourseId, $iFolderSon, filesize($sFile) , $hash);
-                                    $s3->putObject( $sPath, 
+                                    $s3->putObject( $sPathSon, 
                                         file_get_contents($sFile),
                                         array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
                                         Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));
                                 }
                                 else{
                                     $mFiles ->insertWithoutArray($sFileTitle, $isRowExist['path'], $iCourseId, $iFolderSon, $isRowExist['size'] , $hash);
-                                    
                                 }
-                                
+                                unlink($sFile);
                             }
+                            $this->recursiveDelete($sFolderSon);
                         }
+                        
                     }
+                    $this->recursiveDelete($sFolderPapa);
                 }
+                $this->recursiveDelete($sCourseFile);
             }
+            $this->recursiveDelete($sUniFile);
         }
+        unlink($sUploadDir . $nfFile -> sFullName);
+        $this->recursiveDelete($sUploadDir . 'zipcache');
         
         //clear whats left from the zip file and delete the file
-        $this ->clearZipDir();
-        unlink($sUploadDir . $nfFile -> sFullName);
         $s3 ->removeObject($nfFile -> sUrl);
         
         //redirect to the same url
@@ -506,6 +555,81 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         //redirect to the same url
         $this->_redirector->gotoUrl($this->getReferer() . '/status/success/');
     }
+    
+    /**
+     * when the admin choose to preform our admin actions on the database
+     */
+    public function databaseAction(){
+        //set the layout to be the guest
+        Zend_Layout::getMvcInstance()->assign('nestedLayout', 'guest');
+    }
+    
+    /**
+     * the script to run to backup the database
+     */
+    public function backupdbAction(){
+        $this ->disableView();
+        $result = 0;
+        try{
+            require_once APPLICATION_PATH . '/models/Nerdeez_Script_Backup_Db.php';
+        }
+        catch(Exception $e){
+            $this->ajaxReturnFailed('Couldnt find the backup script');
+            return;
+        }
+        
+        switch ($result) {
+            case 1:
+                $this->ajaxReturnFailed('failed to execute shell command');
+                return;
+                break;
+            case 2:
+                $this->ajaxReturnFailed('the file is not in the hd');
+                return;
+                break;
+        }
+        
+        //return success
+        $this ->ajaxReturnSuccess();
+    }
+    
+    /**
+     * will work only in development and will transfer db from production to development
+     */
+    public function transferdbAction(){
+        $this->disableView();
+        
+        //if this is production server do nothing
+        if ($this->isProduction()){
+            $this->ajaxReturnFailed('This will work only in development server');
+            return;
+        }
+        
+        $result = 0;
+        try{
+            require_once APPLICATION_PATH . '/models/Nerdeez_Script_Transfer_Db.php';
+        }
+        catch(Exception $e){
+            $this->ajaxReturnFailed('Couldnt find the backup script');
+            return;
+        }
+        
+        switch ($result) {
+            case 1:
+                $this->ajaxReturnFailed('failed to execute shell command');
+                return;
+                break;
+            case 2:
+                $this->ajaxReturnFailed('the file is not in the hd');
+                return;
+                break;
+        }
+        
+        //return success
+        $this ->ajaxReturnSuccess();
+    }
+    
+    
     
 }
 
