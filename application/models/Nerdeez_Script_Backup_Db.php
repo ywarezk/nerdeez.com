@@ -6,7 +6,7 @@
  */
 $result = 0;
 $output = array();
-$result1 = exec('mysqldump -u root -p7422S8h2A0b3A6082 nerdeez > /upload/backup.sql', $output);
+$result1 = exec('mysqldump -u root -p7422S8h2A0b3A6082 nerdeez > ~/backup.sql', $output);
 if (count($output) != 0 || $result1 != ''){
     $result = 1;
 }

@@ -569,6 +569,13 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      */
     public function backupdbAction(){
         $this ->disableView();
+        
+        //if this is production server do nothing
+        if (!$this->isProduction()){
+            $this->ajaxReturnFailed('This will work in production');
+            return;
+        }
+        
         $result = 0;
         try{
             require_once APPLICATION_PATH . '/models/Nerdeez_Script_Backup_Db.php';
