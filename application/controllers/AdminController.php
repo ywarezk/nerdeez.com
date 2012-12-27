@@ -402,8 +402,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             $sUniTitle = $ksfunctions ->grabFileNameFromPath($sUniFile);
             $rUni = $mUniversities ->fetchRow($mUniversities ->select() ->where('title = ?' , $sUniTitle));
             if ($rUni == NULL){
-                $this ->recursiveDelete($sUniFile);
-                continue;
+                //$this ->recursiveDelete($sUniFile);
+                //continue;
+                $iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
             }
             else{
                 $iUniId = $rUni['id'];
@@ -444,10 +445,11 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                     $sFolderPapaTitle = $ksfunctions ->grabFileNameFromPath($sFolderPapa);
                     $rFolderPapa = $mFolders ->fetchRow($mFolders ->select() -> where ('title = ?' , $sFolderPapaTitle));
                     if ($rFolderPapa == NULL){
-                        $this->recursiveDelete($sFolderPapa);
-                        continue;
+                        $iFolderPapaId = $mFolders ->insertWithoutArray($sFolderPapaTitle, -1, $iCourseId);
                     }
-                    $iFolderPapaId = $rFolderPapa['id'];
+                    else{
+                        $iFolderPapaId = $rFolderPapa['id'];
+                    }
                     
                     //iterate on all the files inside this folder
                     $aFolderSons = glob($sFolderPapa . '*' , GLOB_MARK);
@@ -581,26 +583,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             $this->ajaxReturnFailed('This will work only in development server');
             return;
         }
-        
-        $result = 0;
-        try{
-            require_once APPLICATION_PATH . '/models/Nerdeez_Script_Backup_Db.php';
-        }
-        catch(Exception $e){
-            $this->ajaxReturnFailed('Couldnt find the backup script');
-            return;
-        }
-        
-        switch ($result) {
-            case 1:
-                $this->ajaxReturnFailed('failed to execute shell command');
-                return;
-                break;
-            case 2:
-                $this->ajaxReturnFailed('the file is not in the hd');
-                return;
-                break;
-        }
+ 
+        $output = array();
+        exec(APPLICATION_PATH . '/models/Nerdeez_Backup_Db_To_S3', $output);
         
         //return success
         $this ->ajaxReturnSuccess();

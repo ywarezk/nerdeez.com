@@ -18,10 +18,10 @@ s3bucket=nerdeez
 #
  
 # Loop through each database and dump it out to a file
-/usr/bin/mysqldump -u${user} -p${pass} ${dbname} > /home/ywarezk2824/backup.sql
+/bin/bash /usr/bin/mysqldump -u root -p7422S8h2A0b3A6082 nerdeez > /home/ywarezk2824/backup.sql
  
 # Put all the files on amazon s3
-/usr/bin/s3cmd put /home/ywarezk2824/backup.sql s3://${s3bucket}/
+/usr/bin/s3cmd put /home/ywarezk2824/backup.sql s3://nerdeez/
  
 # Remove the folder we uploaded to s3
 rm -rf /home/ywarezk2824/backup.sql
