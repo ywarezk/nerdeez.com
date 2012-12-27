@@ -97,6 +97,14 @@ abstract class Nerdeez_Db_Table extends Zend_Db_Table_Abstract{
         return $rsRows -> getRow(0);
     }
     
+    /**
+     * returns the reference map
+     * @return array
+     */
+    public function getReferenceMap() {
+        return $this->_referenceMap;
+    }
+    
     
     
     

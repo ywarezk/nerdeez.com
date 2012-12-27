@@ -37,33 +37,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      * a place for the admin to modify the universities table
      */
     public function universitiesAction(){
-        //set the title of the page
-        $this -> view -> sTitle = 'Universities';
-        
-        //get the columns of the table
-        $aCols = NULL;
-        $mUniversities = new Application_Model_DbTable_Universities();
-        $aCols = $mUniversities->info(Zend_Db_Table_Abstract::COLS);
-        $this -> view -> aCols = $aCols; 
-        
-        //get all the rows from the database
-        /*$rsRows = NULL;
-        $rsRows = $mUniversities -> fetchAll($mUniversities -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;*/
-        
-        //init the paginator
-        $select = $mUniversities -> select() -> order('title ASC');
-        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
-            
-        //set the model name 
-        $this -> view -> sModelName = 'Application_Model_DbTable_Universities';
-        
-        //get the rowset of the papa
-        $rsPapas = NULL;
-        $this -> view -> rsPapas = $rsPapas;
-        
-        //set the column which is papa
-        $this -> view -> sPapaCol = array();
+        $this ->initTablesView('Universities', 'Application_Model_DbTable_Universities');
     }
     
     /**
@@ -71,113 +45,21 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      * gonna add here an option for adding by csv  
      */
     public function coursesAction(){
-        //set the title of the page
-        $this -> view -> sTitle = 'Courses';
-        
-        //set the model name 
-        $this -> view -> sModelName = 'Application_Model_DbTable_Courses';
-        
-        //set the column which is papa
-        $this -> view -> sPapaCol = array(
-            'universities_id'
-         );
-        
-        //get the columns of the table
-        $aCols = NULL;
-        $mCourses = new Application_Model_DbTable_Courses();
-        $aCols = $mCourses->info(Zend_Db_Table_Abstract::COLS);
-        $this -> view -> aCols = $aCols;
-        
-        //get all the rows from the database
-        /*$rsRows = NULL;
-        $rsRows = $mCourses -> fetchAll($mCourses -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;*/
-        
-        //init the paginator
-        $select = $mCourses -> select() -> order('title ASC');
-        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
-        
-        //get the rowset of the papa
-        $rsPapas = array();
-        $mUniversities = new Application_Model_DbTable_Universities();
-        $rsPapas['universities_id'] = $mUniversities -> fetchAll($mUniversities 
-                -> select() 
-                -> order('id ASC'));
-        $this -> view -> rsPapas = $rsPapas;
-        
+        $this ->initTablesView('Courses', 'Application_Model_DbTable_Courses');
     }
     
     /**
      * if you want to edit the folders table go here
      */
     public function foldersAction(){
-        //set the title of the page
-        $this -> view -> sTitle = 'Folders';
-        
-        //set the model name 
-        $this -> view -> sModelName = 'Application_Model_DbTable_Folders';
-        
-        //set the column which is papa
-        $this -> view -> sPapaCol = array();
-        
-        //get the columns of the table
-        $aCols = NULL;
-        $mFolders = new Application_Model_DbTable_Folders();
-        $aCols = $mFolders->info(Zend_Db_Table_Abstract::COLS);
-        $this -> view -> aCols = $aCols;
-        
-        //get all the rows from the database
-        /*$rsRows = NULL;
-        $rsRows = $mFolders -> fetchAll($mFolders -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;*/
-        
-        //init the paginator
-        $select = $mFolders -> select() -> order('title ASC');
-        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
-        
-        //get the rowset of the papa
-        $rsPapas = NULL;
-        $this -> view -> rsPapas = $rsPapas;
+        $this ->initTablesView('Folders', 'Application_Model_DbTable_Folders');
     }
     
     /**
      * manually edit the files table
      */
     public function filesAction(){
-        //set the title of the page
-        $this -> view -> sTitle = 'Files';
-        
-        //set the model name 
-        $this -> view -> sModelName = 'Application_Model_DbTable_Files';
-        
-        //set the column which is papa
-        $this -> view -> sPapaCol = array(
-            'courses_id' ,
-            'folders_id' ,
-        );
-        
-        //get the columns of the table
-        $aCols = NULL;
-        $mFiles = new Application_Model_DbTable_Files();
-        $aCols = $mFiles->info(Zend_Db_Table_Abstract::COLS);
-        $this -> view -> aCols = $aCols;
-        
-        //get all the rows from the database
-        /*$rsRows = NULL;
-        $rsRows = $mFiles -> fetchAll($mFiles -> select() -> order('id ASC'));
-        $this -> view -> rsRows = $rsRows;*/
-        
-        //init the paginator
-        $select = $mFiles -> select() -> order('id ASC');
-        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
-        
-        //get the rowset of the papa
-        $rsPapas = array();
-        $mCourses = new Application_Model_DbTable_Courses();
-        $mFolders = new Application_Model_DbTable_Folders();
-        $rsPapas['courses_id'] = $mCourses -> fetchAll($mCourses -> select() -> order('id ASC'));
-        $rsPapas['folders_id'] = $mFolders -> fetchAll($mFolders -> select() -> order('id ASC'));
-        $this -> view -> rsPapas = $rsPapas;
+        $this ->initTablesView('Files', 'Application_Model_DbTable_Files');
     }
 
 
@@ -186,6 +68,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      */
     public function insertrowAction(){
         $this->disableView();
+        
+        //get the params
+        $aData=$this->getRequest()->getParams();
         
         //grab the model text
         $sModel = $this->_aData['model'];
@@ -402,8 +287,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             $sUniTitle = $ksfunctions ->grabFileNameFromPath($sUniFile);
             $rUni = $mUniversities ->fetchRow($mUniversities ->select() ->where('title = ?' , $sUniTitle));
             if ($rUni == NULL){
-                $this ->recursiveDelete($sUniFile);
-                continue;
+                //$this ->recursiveDelete($sUniFile);
+                //continue;
+                $iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
             }
             else{
                 $iUniId = $rUni['id'];
@@ -442,12 +328,15 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                     //get the folder id if not existing than continue
                     $iFolderPapaId = 0;
                     $sFolderPapaTitle = $ksfunctions ->grabFileNameFromPath($sFolderPapa);
-                    $rFolderPapa = $mFolders ->fetchRow($mFolders ->select() -> where ('title = ?' , $sFolderPapaTitle));
+                    $rFolderPapa = $mFolders ->fetchRow($mFolders ->select() 
+                            -> where ('title = ?' , $sFolderPapaTitle)
+                            -> where ('courses_id = 0 OR courses_id = ?', $iCourseId));
                     if ($rFolderPapa == NULL){
-                        $this->recursiveDelete($sFolderPapa);
-                        continue;
+                        $iFolderPapaId = $mFolders ->insertWithoutArray($sFolderPapaTitle, -1, $iCourseId);
                     }
-                    $iFolderPapaId = $rFolderPapa['id'];
+                    else{
+                        $iFolderPapaId = $rFolderPapa['id'];
+                    }
                     
                     //iterate on all the files inside this folder
                     $aFolderSons = glob($sFolderPapa . '*' , GLOB_MARK);
@@ -477,7 +366,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                             
                             //find the folder son
                             $iFolderSon = 0;
-                            $rFolderSon = $mFolders ->fetchRow($mFolders -> select() -> where('title = ?' , $sFileTitle));
+                            $rFolderSon = $mFolders ->fetchRow($mFolders -> select() 
+                                    -> where('title = ?' , $sFileTitle)
+                                    -> where ('courses_id = 0 OR courses_id = ?', $iCourseId));
                             if ($rFolderSon == NULL){ 
                                 //$this->recursiveDelete($sFolderSon);
                                 //continue;
@@ -538,6 +429,12 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         //disable the view
         $this->disableView();
         
+        //works only in production
+        if (!$this ->isProduction()){
+            $this->_redirector->gotoUrl($this->getReferer() . '/error/not+in+production/');
+            return;
+        }
+        
         //iterate on all the  files in s3
         $mFiles = new Application_Model_DbTable_Files();
         $s3 = new Nerdeez_Service_Amazon_S3();
@@ -575,26 +472,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             $this->ajaxReturnFailed('This will work only in development server');
             return;
         }
-        
-        $result = 0;
-        try{
-            require_once APPLICATION_PATH . '/models/Nerdeez_Script_Backup_Db.php';
-        }
-        catch(Exception $e){
-            $this->ajaxReturnFailed('Couldnt find the backup script');
-            return;
-        }
-        
-        switch ($result) {
-            case 1:
-                $this->ajaxReturnFailed('failed to execute shell command');
-                return;
-                break;
-            case 2:
-                $this->ajaxReturnFailed('the file is not in the hd');
-                return;
-                break;
-        }
+ 
+        $output = array();
+        exec(APPLICATION_PATH . '/models/Nerdeez_Backup_Db_To_S3', $output);
         
         //return success
         $this ->ajaxReturnSuccess();
@@ -624,7 +504,86 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this ->ajaxReturnSuccess();
     }
     
-    
+    /**
+     * all the actions that show a db representation will pass through here
+     * @param String $sTitle the title of the string
+     * @param String $sModel the string of the model
+     */
+    private function initTablesView($sTitle, $sModel){
+        //set the title of the page
+        $this -> view -> sTitle = $sTitle;
+        
+        //set the model name 
+        $this -> view -> sModelName = $sModel;
+        
+        //create the model
+        $mModel = new $sModel();
+        
+        //get the papa columns
+        $aPapaCol = array();
+        $rsPapas = array();
+        $aPapaModel = array();
+        if($mModel -> getReferenceMap() != NULL){
+            foreach($mModel -> getReferenceMap() as $aPapaValues){
+                $aPapaCol[]= $aPapaValues['columns'][0];
+                $mPapaModel = new $aPapaValues['refTableClass']();
+                $aPapaModel[$aPapaValues['columns'][0]] = $aPapaValues['refTableClass'];
+                $rsPapas[$aPapaValues['columns'][0]] = $mPapaModel -> fetchAll($mPapaModel 
+                    -> select() 
+                    -> order('id ASC'));
+            }
+        }
+        $this -> view -> aPapaCol = $aPapaCol;
+        $this -> view -> rsPapas = $rsPapas;
+        
+        //get the columns of the table
+        $aCols = NULL;
+        $aCols = $mModel->info(Zend_Db_Table_Abstract::COLS);
+        $this -> view -> aCols = $aCols;
+
+        //this will be the array to convert string to sign for filtering
+        $aStringToSign = array(
+            'exact'     => '=',
+            'in'        => 'IN',
+            'ge'        => '>=',
+            'le'        => '<=',
+            'g'         => '>',
+            'l'         => '<',
+        );
+        
+        //deal with filters
+        $select = $mModel -> select();
+        $aData=$this->getRequest()->getParams();
+        $aPapaColId = array();
+        foreach($aData as $key => $value){
+            //the key will start with column or order
+            $aKey = explode('__', $key);
+            $sFirstValue = $aKey[0];
+            $sSecondValue = $aKey[1];
+            if (strtolower($sFirstValue) == 'order'){
+                if(in_array($sSecondValue, $aCols) && 
+                        (strtoupper($value) == 'ASC' || strtoupper($value) == 'DESC')){
+                    $select = $select -> order($sSecondValue . ' ' . strtoupper($value));
+                }
+            }
+            elseif (in_array($sFirstValue, $aCols) && !in_array($sFirstValue, $aPapaCol)) {
+                $select = $select -> where($sFirstValue . ' ' . $aStringToSign[$sSecondValue] . ' ' . $value);
+            }
+            elseif(in_array($sFirstValue, $aPapaCol)){
+                $mPapaModel = new $aPapaModel[$sFirstValue]();
+                $rsPapas = $mPapaModel -> fetchAll($mPapaModel -> select() -> where ($sSecondValue . ' ' . $aStringToSign[$aKey[2]] . ' ' . "'" . $value . "'")); 
+                $aIds = array();
+                foreach ($rsPapas as $rPapa) {
+                    $aIds[]=$rPapa['id'];
+                }
+                $select = $select -> where($sFirstValue . ' IN(?)', $aIds);
+            }
+        }
+        
+        //init the paginator
+        isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
+    }
+
     
 }
 

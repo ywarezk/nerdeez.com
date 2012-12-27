@@ -267,7 +267,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
             $sPath = NULL;
             $iRandPrefix = rand(0, 99999);
             $aName = explode('nerdeez/', $rFile['path']);
-            $sPath = $sUploadDir . $rParent['title'] . '/' . $iRandPrefix . '_' . $aName[1];
+            $sPath = $sUploadDir . $rParent['title'] . '/' . $rFile['title'];
             file_put_contents($sPath, $s3->getObject($rFile['path']));
             $aFiles[]=$sPath;
         }

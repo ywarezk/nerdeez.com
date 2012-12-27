@@ -348,19 +348,20 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         $uploaddir=$this ->getUploadDir();
         $overwrite = false;		
         $thefilename= rand(0, 99999) . '_' . rand(0, 99999) . '_' . rand(0, 99999) . '.zip';
-        $destination = $uploaddir . $thefilename;
+        $destination = $uploaddir . 'Nerdeez.zip';
 
         //if we have good files...
         if(count($files)) {
             //create the archive
             $zip = new ZipArchive();
-            if($zip->open($destination,$overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
+            if($zip->open($destination,ZIPARCHIVE::CREATE) !== true) {
               return NULL;
             }
 
             //add the files
             foreach($files as $file) {  
-                $zip->addFile($file, $this->fromHebrewToEnglish($file)); 
+                $new_filename = substr($file,  8);
+                $zip->addFile($file, $new_filename); 
             }
 
             //close the zip -- done!
