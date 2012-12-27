@@ -8,7 +8,7 @@
  * @param Zend_Db_Table_Rowset $this -> rsRows the rows from the table
  * @param String $this -> sModelName the model name of this db table
  * @param Zend_Db_Table_Rowset $this -> rsPapas all the rows from the parent table
- * @param String $this -> sPapaCol the name of the column which is parent
+ * @param String $this -> aPapaCol the name of the column which is parent
  */
 ?>
 
@@ -109,7 +109,7 @@ $bIsDownload = FALSE;
                         if ($sCol === 'id'){
                             echo $rRow[$sCol];
                         }
-                        elseif (in_array ($sCol, $this -> sPapaCol)) {
+                        elseif (in_array ($sCol, $this -> aPapaCol)) {
                         ?>
                         <select name="<?php echo $sCol; ?>" class="admin_parentcombo <?php echo $sCol; ?>">
                             <?php
@@ -211,7 +211,7 @@ $bIsDownload = FALSE;
                             </td>
                             <td style="width: 100%; padding: 10px;">
                                 <?php
-                                if(in_array($sCol, $this -> sPapaCol)){
+                                if(in_array($sCol, $this -> aPapaCol)){
                                 ?>
                                     <select name="<?php echo $sCol; ?>" class="admin_parentcombo">
                                 <?php
