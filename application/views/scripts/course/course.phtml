@@ -391,11 +391,13 @@
 </div>
 
 <!-- begin of copyright report dialog -->
-<div id="flagdialog" class="flagdialog">
+<div id="flagdialog" class="flagdialog dialogbg">
     <div class="bgblack flagdialog_header" >
-        <h2 style="font-weight: normal; color: white; margin: 3px auto 0px; width: 125px; font-size: 14px;">Report this content</h2>
-        <a href="javascript:void(0)" onclick="$('#flagdialog').fadeOut('normal');$('#glassloading').fadeOut('fast');">
-            X
+        <h2 style="color: white; margin: 12px auto 0px; width: 221px; font-size: 26px; font-weight: normal;">Report this content</h2>
+        <a class="closedialog" href="javascript:void(0)" onclick="$('#flagdialog').fadeOut('normal');$('#glassloading').fadeOut('fast');">
+            <span>
+                X
+            </span>
         </a>
     </div>
     
@@ -574,7 +576,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr style="background-color: #BDCCD4;">
+                            <tr style="background-color: transparent;">
                                 <td colspan="2" style="text-align: center;">
                                     <div class="about_status" style="color: red;"></div>
                                     <input type="hidden" id="reasonshidden" name="fileid" value="" />
