@@ -287,9 +287,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             $sUniTitle = $ksfunctions ->grabFileNameFromPath($sUniFile);
             $rUni = $mUniversities ->fetchRow($mUniversities ->select() ->where('title = ?' , $sUniTitle));
             if ($rUni == NULL){
-                //$this ->recursiveDelete($sUniFile);
-                //continue;
-                $iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
+                $this ->recursiveDelete($sUniFile);
+                continue;
+                //$iUniId = $mUniversities ->insertWithoutArray($sUniTitle);
             }
             else{
                 $iUniId = $rUni['id'];
