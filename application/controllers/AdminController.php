@@ -513,20 +513,18 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         //set the model name 
         $this -> view -> sModelName = $sModel;
         
-        //set the column which is papa
-        /*$this -> view -> sPapaCol = array(
-            'universities_id'
-         );*/
         //create the model
         $mModel = new $sModel();
         
         //get the papa columns
         $aPapaCol = array();
         $rsPapas = array();
+        $aPapaModel = array();
         if($mModel -> getReferenceMap() != NULL){
             foreach($mModel -> getReferenceMap() as $aPapaValues){
                 $aPapaCol[]= $aPapaValues['columns'][0];
                 $mPapaModel = new $aPapaValues['refTableClass']();
+                $aPapaModel[$aPapaValues['columns'][0]] = $aPapaValues['refTableClass'];
                 $rsPapas[$aPapaValues['columns'][0]] = $mPapaModel -> fetchAll($mPapaModel 
                     -> select() 
                     -> order('id ASC'));
@@ -539,16 +537,48 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $aCols = NULL;
         $aCols = $mModel->info(Zend_Db_Table_Abstract::COLS);
         $this -> view -> aCols = $aCols;
+
+        //this will be the array to convert string to sign for filtering
+        $aStringToSign = array(
+            'exact'     => '=',
+            'in'        => 'IN',
+            'ge'        => '>=',
+            'le'        => '<=',
+            'g'         => '>',
+            'l'         => '<',
+        );
         
-        //get all the rows from the database
-        /*$rsRows = NULL;
-        $rsRows = $mCourses -> fetchAll($mCourses -> select() -> order('title ASC'));
-        $this -> view -> rsRows = $rsRows;*/
+        //deal with filters
+        $select = $mModel -> select();
+        $aData=$this->getRequest()->getParams();
+        $aPapaColId = array();
+        foreach($aData as $key => $value){
+            //the key will start with column or order
+            $aKey = explode('__', $key);
+            $sFirstValue = $aKey[0];
+            $sSecondValue = $aKey[1];
+            if (strtolower($sFirstValue) == 'order'){
+                if(in_array($sSecondValue, $aCols) && 
+                        (strtoupper($value) == 'ASC' || strtoupper($value) == 'DESC')){
+                    $select = $select -> order($sSecondValue . ' ' . strtoupper($value));
+                }
+            }
+            elseif (in_array($sFirstValue, $aCols) && !in_array($sFirstValue, $aPapaCol)) {
+                $select = $select -> where($sFirstValue . ' ' . $aStringToSign[$sSecondValue] . ' ' . $value);
+            }
+            elseif(in_array($sFirstValue, $aPapaCol)){
+                $mPapaModel = new $aPapaModel[$sFirstValue]();
+                $rsPapas = $mPapaModel -> fetchAll($mPapaModel -> select() -> where ($sSecondValue . ' ' . $aStringToSign[$aKey[2]] . ' ' . "'" . $value . "'")); 
+                $aIds = array();
+                foreach ($rsPapas as $rPapa) {
+                    $aIds[]=$rPapa['id'];
+                }
+                $select = $select -> where($sFirstValue . ' IN(?)', $aIds);
+            }
+        }
         
         //init the paginator
-        $select = $mModel -> select() -> order('id ASC');
         isset($this->_aData['page'])? $this->setPagination($select, $this -> _aData['page']) : $this->setPagination($select);
-        
     }
 
     
