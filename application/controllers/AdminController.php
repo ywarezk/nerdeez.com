@@ -443,7 +443,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                     //get the folder id if not existing than continue
                     $iFolderPapaId = 0;
                     $sFolderPapaTitle = $ksfunctions ->grabFileNameFromPath($sFolderPapa);
-                    $rFolderPapa = $mFolders ->fetchRow($mFolders ->select() -> where ('title = ?' , $sFolderPapaTitle));
+                    $rFolderPapa = $mFolders ->fetchRow($mFolders ->select() 
+                            -> where ('title = ?' , $sFolderPapaTitle)
+                            -> where ('courses_id = 0 OR courses_id = ?', $iCourseId));
                     if ($rFolderPapa == NULL){
                         $iFolderPapaId = $mFolders ->insertWithoutArray($sFolderPapaTitle, -1, $iCourseId);
                     }
@@ -479,7 +481,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
                             
                             //find the folder son
                             $iFolderSon = 0;
-                            $rFolderSon = $mFolders ->fetchRow($mFolders -> select() -> where('title = ?' , $sFileTitle));
+                            $rFolderSon = $mFolders ->fetchRow($mFolders -> select() 
+                                    -> where('title = ?' , $sFileTitle)
+                                    -> where ('courses_id = 0 OR courses_id = ?', $iCourseId));
                             if ($rFolderSon == NULL){ 
                                 //$this->recursiveDelete($sFolderSon);
                                 //continue;

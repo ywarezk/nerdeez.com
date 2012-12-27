@@ -21,7 +21,7 @@ s3bucket=nerdeez
 /bin/bash /usr/bin/mysqldump -u root -p7422S8h2A0b3A6082 nerdeez > /home/ywarezk2824/backup.sql
  
 # Put all the files on amazon s3
-/usr/bin/s3cmd put /home/ywarezk2824/backup.sql s3://nerdeez/
+/usr/bin/s3cmd -c /home/ywarezk2824/.s3cfg put /home/ywarezk2824/backup.sql s3://nerdeez/
  
 # Remove the folder we uploaded to s3
 rm -rf /home/ywarezk2824/backup.sql
