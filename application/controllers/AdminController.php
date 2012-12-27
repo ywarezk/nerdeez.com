@@ -69,6 +69,9 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
     public function insertrowAction(){
         $this->disableView();
         
+        //get the params
+        $aData=$this->getRequest()->getParams();
+        
         //grab the model text
         $sModel = $this->_aData['model'];
         
