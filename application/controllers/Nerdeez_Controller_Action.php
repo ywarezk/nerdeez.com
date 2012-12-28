@@ -404,11 +404,11 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         
         //set all the js files and css files
         $layout = new Zend_Layout();
-        if ($this -> isProduction()){
-            $layout -> getView() -> headScript() -> appendFile('/js/static.min.js');
-            $layout -> getView() -> headLink()->prependStylesheet('/styles/static.min.css');
-        }
-        else{
+//        if ($this -> isProduction()){
+//            $layout -> getView() -> headScript() -> appendFile('/js/static.min.js');
+//            $layout -> getView() -> headLink()->prependStylesheet('/styles/static.min.css');
+//        }
+//        else{
             $layout -> getView() -> headScript() -> prependFile('/js/jquery.ksfunctions.js');
             $layout -> getView() -> headScript() -> prependFile('/js/jquery.ez-pinned-footer.js');
             $layout -> getView() -> headScript() -> prependFile('/js/superfish.js');
@@ -418,7 +418,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish-navbar.css');
             $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish-vertical.css');
             $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish.css');
-        }
+//        }
     }
     
     /**
