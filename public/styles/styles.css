@@ -2532,3 +2532,42 @@ textarea{
     position: relative;
     top: 10px;
 }
+
+.loginregister{
+    height: 381px;
+    width: 436px;
+    border-radius: 15px 15px 15px 15px;
+    
+}
+
+.loginregister_header{
+    height: 41px;
+    background-color: transparent;
+}
+
+.loginregister_tab{
+    background-color: #BDCCD4;
+    border-radius: 10px 10px 0 0;
+    color: white;
+    float: left;
+    height: 100%;
+    width: 50%;
+    cursor: pointer;
+}
+
+.loginregister_tab.active{
+    background-color: #282828;
+}
+
+.loginregister_tab span{
+    position: relative;
+    top: 12px;
+}
+
+.dialogfont{
+    color: white; margin: 12px auto 0px; width: 221px; font-size: 20px; font-weight: normal;
+}
+
+.loginregister_body{
+    height: 100%;
+}
