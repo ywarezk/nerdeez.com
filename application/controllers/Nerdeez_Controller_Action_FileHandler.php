@@ -212,7 +212,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         parent::preDispatch();
         
         //set to include the fielupload js files
-//        if (!$this->isProduction()){
+        if (!$this->isProduction()){
             $layout = new Zend_Layout();
             $layout->getView()->headScript()->appendFile('/js/jquery-ui.min.js');
             $layout->getView()->headScript()->appendFile('/js/jquery.ui.widget.js');
@@ -229,7 +229,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
 
             //set to include the file upload css files
             $layout->getView()->headLink()->prependStylesheet('/styles/bootstrap.min.css');
-//        }
+        }
     }
     
     protected function downloadFile($path , $title = '' , $sContentDispositon = 'attachment'){
