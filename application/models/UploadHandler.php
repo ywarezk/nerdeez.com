@@ -318,6 +318,7 @@ class Application_Model_UploadHandler
             $append_file = !$this->options['discard_aborted_uploads'] &&
                 is_file($file_path) && $file->size > filesize($file_path);
             clearstatcache();
+            $file_size = filesize($uploaded_file);
             if ($uploaded_file && is_uploaded_file($uploaded_file)) {
                 // multipart/formdata uploads (POST method uploads)
                 if ($append_file) {
@@ -337,20 +338,15 @@ class Application_Model_UploadHandler
                         $file->url = $file_path_yariv;
                     }
                 } else {
-                    if (filesize($uploaded_file) < $file->size){
-                        move_uploaded_file($uploaded_file, $file_path);
-                    }
-                    else{
-                        $s3 = new Nerdeez_Service_Amazon_S3();
-                        $s3->createBucket("nerdeez");
-                        $s3->putObject( $file_path_yariv, 
-                                file_get_contents($file_path),
-                                array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
-                                Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));
-                        unlink($file_path);
-                        $file->url = $file_path_yariv;
-                    }
-                    
+                    move_uploaded_file($uploaded_file, $file_path);
+                    $s3 = new Nerdeez_Service_Amazon_S3();
+                    $s3->createBucket("nerdeez");
+                    $s3->putObject( $file_path_yariv, 
+                            file_get_contents($file_path),
+                            array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
+                            Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));
+                    unlink($file_path);
+                    $file->url = $file_path_yariv;
                 }
             } else {
                 // Non-multipart uploads (PUT method support)
@@ -361,7 +357,7 @@ class Application_Model_UploadHandler
                     $append_file ? FILE_APPEND : 0
                 );
             }
-            $file_size = filesize($uploaded_file);
+            
             if ($file_size === $file->size) {
             	if ($this->options['orient_image']) {
             		$this->orient_image($file_path);
