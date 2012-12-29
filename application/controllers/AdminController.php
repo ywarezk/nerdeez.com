@@ -233,10 +233,10 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         parent::preDispatch();
         
         //set to include the admin js script
-//        if (!$this->isProduction()){
+        if (!$this->isProduction()){
             $layout = new Zend_Layout();
             $layout->getView()->headScript()->appendFile('/js/admin.js');
-//        }
+        }
         
         //get status and error params
         $aData=$this->getRequest()->getParams();
