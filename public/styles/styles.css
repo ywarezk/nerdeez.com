@@ -1102,6 +1102,18 @@ box-sizing: border-box;
     z-index: 3;
 }
 
+.dialogbg{
+    background: #1e5799; /* Old browsers */
+background: -moz-linear-gradient(top,  #1e5799 0%, #bdccd4 0%, #ffffff 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1e5799), color-stop(0%,#bdccd4), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #1e5799 0%,#bdccd4 0%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #1e5799 0%,#bdccd4 0%,#ffffff 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #1e5799 0%,#bdccd4 0%,#ffffff 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #1e5799 0%,#bdccd4 0%,#ffffff 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+
+}
+
 .flagdialog{
     background-color: #BDCCD4;
     border: 1px solid black;
@@ -1109,6 +1121,7 @@ box-sizing: border-box;
     position: fixed;
     width: 700px;
     z-index: 3;
+    border-radius: 19px 19px 19px 19px;
 }
 
 .error{
@@ -2454,6 +2467,7 @@ textarea{
     background-repeat: no-repeat;
     height: 21px;
     width: 21px;
+    margin: 0 auto;
 }
 
 .flagdialog_body{
@@ -2461,18 +2475,19 @@ textarea{
 }
 
 .flagdialog_header{
-    height: 23px;
+    height: 41px;
     padding: 5px;
     position: static;
     width: auto;
+    border-radius: 15px 15px 0 0;
 }
 
 .flagdialog_header a{
     color: white;
     float: right;
     position: relative;
-    right: 5px;
-    top: -18px;
+    right: -26px;
+    top: -50px;
 }
 
 .flagdialog_body_controllers_tdborder{
@@ -2496,4 +2511,24 @@ textarea{
 
 .paginationControl{
     text-align: center;
+}
+
+.closedialog{
+    background-color: white;
+    border-radius: 80px 80px 80px 80px;
+    color: black !important;
+    font-size: 28px;
+    height: 38px;
+    text-align: center;
+    width: 38px;
+}
+
+.closedialog:hover{
+    background-color: #CCCCCC;
+    text-decoration: none !important;
+}
+
+.closedialog span{
+    position: relative;
+    top: 10px;
 }

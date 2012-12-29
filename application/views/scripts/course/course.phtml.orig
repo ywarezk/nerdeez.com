@@ -393,9 +393,17 @@
 <!-- begin of copyright report dialog -->
 <div id="flagdialog" class="flagdialog dialogbg">
     <div class="bgblack flagdialog_header" >
+<<<<<<< HEAD
         <h2 style="color: white; font-size: 26px; font-weight: normal; margin: 2px auto 0px; width: 221px;">Report this content</h2>
         <a href="javascript:void(0)" onclick="$('#flagdialog').fadeOut('normal');$('#glassloading').fadeOut('fast');">
             X
+=======
+        <h2 style="color: white; margin: 12px auto 0px; width: 221px; font-size: 26px; font-weight: normal;">Report this content</h2>
+        <a class="closedialog" href="javascript:void(0)" onclick="$('#flagdialog').fadeOut('normal');$('#glassloading').fadeOut('fast');">
+            <span>
+                X
+            </span>
+>>>>>>> branch 'production' of https://github.com/ywarezk/nerdeez.com.git
         </a>
     </div>
     
