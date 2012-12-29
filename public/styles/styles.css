@@ -2565,9 +2565,18 @@ textarea{
 }
 
 .dialogfont{
-    color: white; margin: 12px auto 0px; width: 221px; font-size: 20px; font-weight: normal;
+    color: white; margin: 12px auto 0px; width: 221px; font-size: 17px; font-weight: normal;
 }
 
 .loginregister_body{
-    height: 100%;
+    height: 337px;
+    border-radius: 0 0 15px 15px;
+}
+
+.dialogfontbody{
+    font-weight: 600; font-family: 'Trebuchet MS'; font-size: 12px;
+}
+
+#login{
+    display: none;
 }
