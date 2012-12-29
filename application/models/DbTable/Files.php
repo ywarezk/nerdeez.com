@@ -122,6 +122,11 @@ class Application_Model_DbTable_Files extends Nerdeez_Db_Table{
             'refTableClass'     => 'Application_Model_DbTable_Folders',
             'refColumns'        => array('id')
         ),
+        'Course' => array(
+            'columns'           => array('courses_id'),
+            'refTableClass'     => 'Application_Model_DbTable_Courses',
+            'refColumns'        => array('id')
+        ),
     );
     
     /**
