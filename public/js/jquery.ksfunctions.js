@@ -1137,10 +1137,16 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
         filesContainer: $('#' + sId + '_files .files'),
         fileInput: $('#' + sId + '_input'),
         dropZone: $('#' + sId +'_dropzone'),
+        maxChunkSize: 1000000,
+        multipart: true,
         formData: [
                     {
                         name: 'serial',
                         value: iSerial
+                    },
+                    {
+                        name: 'chunk',
+                        value: 1000000
                     }
         ]
     });
