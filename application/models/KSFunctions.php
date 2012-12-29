@@ -397,7 +397,12 @@ class Application_Model_KSFunctions {
             return $aPath[count($aPath) - 1];
         }
         else{
-            return $aPath[count($aPath) - 2];
+            if (count($aPath) >= 2){
+                return $aPath[count($aPath) - 2];
+            }
+            else{
+                return "";
+            }
         }
     }
 }
