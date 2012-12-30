@@ -389,11 +389,11 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
     protected function isProduction(){
         //server is development
         if ($_SERVER['SERVER_ADDR'] === $this->getFromConfig('developmentip')){
-            //return FALSE;
-            return TRUE;
+            return FALSE;
         }
         else{
-            return TRUE;
+            //return TRUE;
+            return FALSE;
         }
     }
     
