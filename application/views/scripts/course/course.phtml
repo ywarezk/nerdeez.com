@@ -69,7 +69,7 @@
                                         <img src="/img/smiling.png" />
                                     </td>
                                     <td class="uploadfirststep_text dropzone" id="filebrowser_upload_dropzone">
-                                        <div id="uploaddialog_explain">1. Click upload, or drag n'drop files here, to upload them to course</div>
+                                        <div id="uploaddialog_explain">1. Click upload or drag n'drop files here to add them</div>
                                     </td>
                                     <td class="uploadfirststep_button" onclick="clickedUploadInCourse()">
                                         <div id="filebrowser_upload">
@@ -393,9 +393,11 @@
 <!-- begin of copyright report dialog -->
 <div id="flagdialog" class="flagdialog dialogbg">
     <div class="bgblack flagdialog_header" >
-        <h2 style="color: white; font-size: 26px; font-weight: normal; margin: 2px auto 0px; width: 221px;">Report this content</h2>
-        <a href="javascript:void(0)" onclick="$('#flagdialog').fadeOut('normal');$('#glassloading').fadeOut('fast');">
+        <h2 style="color: white; margin: 2px auto 0px; position: relative; top: 10px; font-weight: normal; font-size: 18px; width: 171px;">Report This Content</h2>
+        <a href="javascript:void(0)" onclick="$('#flagdialog').fadeOut('normal');$('#glassloading').fadeOut('fast');" class="closedialog" style="position: relative; top: -42px; left: 23px;">
+            <span>
             X
+            </span>
         </a>
     </div>
     
@@ -578,7 +580,7 @@
                                 <td colspan="2" style="text-align: center;">
                                     <div class="about_status" style="color: red;"></div>
                                     <input type="hidden" id="reasonshidden" name="fileid" value="" />
-                                    <button class="filebrowserbutton" type="button" onclick="sendFlagReport();" value="Submit" style="width: 100px;margin-top:10px;">
+                                    <button class="filebrowserbutton" type="button" onclick="sendFlagReport();" value="Submit" style="margin-top: 10px; height: 38px; width: 100px; float: right;">
                                         Submit
                                     </button>
                                 </td>

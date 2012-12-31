@@ -1122,6 +1122,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', end
     width: 700px;
     z-index: 3;
     border-radius: 19px 19px 19px 19px;
+    box-shadow: 0 10px 5px #888888;
 }
 
 .error{
@@ -2143,7 +2144,7 @@ textarea{
     background-repeat: no-repeat;
     height: 16px;
     width: 16px;
-    background-position: -8px 5px;
+    background-position: -6px 5px;
 }
 
 .uploadfirststep{
@@ -2450,7 +2451,7 @@ textarea{
 
 .filebrowser_foldertitle_arrow{
     background-image: url("/img/icons.png");
-    background-position: -169px 3px;
+    background-position: -169px 4px;
     background-repeat: no-repeat;
     height: 16px;
     margin-left: 5px;
@@ -2505,7 +2506,7 @@ textarea{
 
 .flagdialog_body_textcontent{
     font-family: Verdana;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.4;
 }
 
@@ -2515,12 +2516,14 @@ textarea{
 
 .closedialog{
     background-color: white;
-    border-radius: 80px 80px 80px 80px;
+    border: 3px solid;
+    border-radius: 100px 100px 100px 100px;
     color: black !important;
-    font-size: 28px;
-    height: 38px;
+    font-size: 17px;
+    height: 29px;
     text-align: center;
-    width: 38px;
+    width: 29px;
+    font-weight: bold;
 }
 
 .closedialog:hover{
@@ -2530,5 +2533,5 @@ textarea{
 
 .closedialog span{
     position: relative;
-    top: 10px;
+    top: 6px;
 }
