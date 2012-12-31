@@ -1177,8 +1177,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', end
 }
 
 .register-error-placeholder{
-    position: relative;
-    top: 27px;
+    /*position: relative;
+    top: 27px;*/
+    color: red;
 }
 
 .uploadpermform-error-placeholder{

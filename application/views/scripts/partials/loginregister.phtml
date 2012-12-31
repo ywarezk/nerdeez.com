@@ -1,14 +1,19 @@
 <div id="loginregister" class="loginregister">
+    
     <div class="loginregister_header">
-        <a class="loginregister_tab active">
+        <a class="loginregister_tab active" onclick="showSignIn();">
             <span class="dialogfont " style="left: 79px;">Sign In</span>
         </a>
-        <a class="loginregister_tab">
+        <a class="loginregister_tab" onclick="showRegister();">
             <span class="dialogfont" style="left: 74px;">Register</span>
         </a>
     </div>
     <div class="loginregister_body dialogbg">
+        <!-- begin of login -->
         <div style="width: 330px; margin-right: auto; margin-bottom: 0px; margin-left: auto; height: 242px; position: relative; top: 67px;" id="login">
+            <form 
+            method="post" 
+            action="https://<?php $ksfunctions = new Application_Model_KSFunctions(); echo $ksfunctions -> sGetUrl(); ?>/login/login">
             <div style="height: 57px;">
                 <table style="width: 100%;">
                     <tr>
@@ -83,6 +88,108 @@
                     </button>
                 </div>
             </div>
+            </form>
         </div>
+        <!-- end of login -->
+        
+        <!-- begin of register -->
+        <div id="register" style="width: 330px; margin-right: auto; margin-bottom: 0px; margin-left: auto;position: relative; top: 37px;">
+            <form action="https://<?php $ksfunctions = new Application_Model_KSFunctions(); echo $ksfunctions ->sGetUrl();  ?>/register/signup" class="signin registerform" method="post">
+                <div style="height: 57px">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <span class="dialogfontbody">
+                                Email
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="front-card">
+                                    <div class="username" style="width: 100%">
+                                        <input 
+                                                type="text" 
+                                                autocomplete="on" 
+                                                title="Email" 
+                                                name="email" 
+                                                class="text-input email-input"
+                                                maxlength="100" 
+                                                style="width: 100%;" />
+                                        
+                                    </div>          
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="register-error-placeholder email"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="height: 57px;margin-top: 15px;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <span class="dialogfontbody">
+                                Password
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="front-card">
+                                    <div class="username" style="width: 100%">
+                                        <input type="password" maxlength="100" class="text-input email-input pass" name="password" title="Password" style="width: 100%;" />
+                                    </div>          
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="register-error-placeholder password"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="height: 57px;margin-top: 15px;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <span class="dialogfontbody">
+                                Retype Password
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="front-card">
+                                    <div class="username" style="width: 100%">
+                                        <input type="password" maxlength="100" class="text-input email-input" name="repassword" title="Password" style="width: 100%;" />
+                                    </div>          
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="register-error-placeholder repassword"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="text-align: center;margin-bottom:8px; margin-top: 10px;">
+                    By clicking Register, you agree to our <a href="/index/terms/" target="_blank">Terms</a>
+                </div>
+                <div style="margin-right: 12px; width: 98px; height: 44px; float: right; margin-top: 10px;">
+                    <button tabindex="0" type="submit" class="filebrowserbutton" style="height: 44px;">Register
+                    </button>
+                </div>
+            </form>
+        </div>
+        <script type="text/javascript">
+            loadRegistration('register');
+        </script>
+        <!-- end of register -->
     </div> 
 </div>
