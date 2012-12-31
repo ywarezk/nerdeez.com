@@ -253,17 +253,18 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         
         //get the zip file as a nerdeez file object
         /* @var $nfFile Nerdeez_Files */
-        $nfFile = $this->_aFiles[0];
+        //$nfFile = $this->_aFiles[0];
         
         //get the path to extract
         $sUploadDir = $this ->getUploadDir();
         
         //get the zip file to local file system
-        $s3 = new Nerdeez_Service_Amazon_S3();
-        file_put_contents($sUploadDir . $nfFile -> sFullName , $s3->getObject($nfFile -> sUrl));
+        //$s3 = new Nerdeez_Service_Amazon_S3();
+        //file_put_contents($sUploadDir . $nfFile -> sFullName , $s3->getObject($nfFile -> sUrl));
         
         //extract the zip file
-        $this->extractZip($sUploadDir . $nfFile -> sFullName);
+        //$this->extractZip($sUploadDir . $nfFile -> sFullName);
+        $this->extractZip($sUploadDir . 'Technion.zip');
         
         //grab the list of all the files extracted
         $aUniFiles = glob($sUploadDir . 'zipcache/' . '*', GLOB_MARK);

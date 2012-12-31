@@ -2534,7 +2534,8 @@ textarea{
 
 .closedialog span{
     position: relative;
-    top: 6px;
+<<<<<<< HEAD
+    top: 10px;
 }
 
 .loginregister{
@@ -2583,4 +2584,7 @@ textarea{
 
 #login{
     display: none;
+=======
+    top: 6px;
+>>>>>>> production
 }

@@ -51,8 +51,8 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'coursefolder' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 100) ,
         array('name' => 'serial' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 99999) ,
         array('name' => 'page' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 99999) ,
-        array('name' => 'folder_papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,
-        array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 100) ,
+        array('name' => 'folder_papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 99999) ,
+        array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 99999) ,
         array('name' => 'papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -2 , 'max' => 100) ,
         array('name' => 'id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
         array('name' => 'courses_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
@@ -90,7 +90,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             $iMin = isset ($aParam['min'])? $aParam['min'] : 0;
             $iMax = isset ($aParam['max'])? $aParam['max'] : 0;
             
-            //sanitize integer
+            //sanitize integer 
             if ($iType === Nerdeez_ParamTypes::INTEGER){
                 if (!is_numeric($iValue)){
                     $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Invalid params'));
@@ -392,7 +392,8 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             return FALSE;
         }
         else{
-            return TRUE;
+            //return TRUE;
+            return FALSE;
         }
     }
     
