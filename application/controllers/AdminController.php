@@ -61,6 +61,10 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
     public function filesAction(){
         $this ->initTablesView('Files', 'Application_Model_DbTable_Files');
     }
+    
+    public function usersAction(){
+        $this ->initTablesView('Users', 'Application_Model_DbTable_Users');
+    }
 
 
     /**
