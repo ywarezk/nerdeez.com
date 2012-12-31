@@ -268,7 +268,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         
         //extract the zip file
         //$this->extractZip($sUploadDir . $nfFile -> sFullName);
-        $this->extractZip($sUploadDir . 'Technion.zip');
+        //$this->extractZip($sUploadDir . 'Technion.zip');
         
         //grab the list of all the files extracted
         $aUniFiles = glob($sUploadDir . 'zipcache/' . '*', GLOB_MARK);
@@ -419,7 +419,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             }
             $this->recursiveDelete($sUniFile);
         }
-        unlink($sUploadDir . 'Technion.zip');
+        //unlink($sUploadDir . 'Technion.zip');
         $this->recursiveDelete($sUploadDir . 'zipcache');
         
         //clear whats left from the zip file and delete the file
