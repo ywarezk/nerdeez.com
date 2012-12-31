@@ -415,11 +415,11 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
             }
             $this->recursiveDelete($sUniFile);
         }
-        unlink($sUploadDir . $nfFile -> sFullName);
+        unlink($sUploadDir . 'Technion.zip');
         $this->recursiveDelete($sUploadDir . 'zipcache');
         
         //clear whats left from the zip file and delete the file
-        $s3 ->removeObject($nfFile -> sUrl);
+        //$s3 ->removeObject($nfFile -> sUrl);
         
         //redirect to the same url
         $this->_redirector->gotoUrl($this->getReferer() . '/status/success/');

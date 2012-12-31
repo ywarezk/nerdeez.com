@@ -2628,12 +2628,11 @@ function clickedUploadInCourse(){
  * @returns {null}
  */
 function showSignIn(){
+    $('#logintab').addClass('active');
+    $('#registertab').removeClass('active');
     if ($('#login').css('display') !== 'block'){
-        $('#logintab').addClass('active');
-        $('#registertab').removeClass('active');
-        $('#register').fadeOut('fast', function(){
-            $('#login').fadeIn('fast');
-        })
+        $('#register').css('display', 'none');
+        $('#login').css('display', 'block')
     }
 }
 
@@ -2642,12 +2641,11 @@ function showSignIn(){
  * @returns {null}
  */
 function showRegister(){
+    $('#registertab').addClass('active');
+    $('#logintab').removeClass('active');
     if ($('#register').css('display') !== 'block'){
-        $('#registertab').addClass('active');
-        $('#logintab').removeClass('active');
-        $('#login').fadeOut('fast', function(){
-            $('#register').fadeIn('fast');
-        })
+        $('#register').css('display', 'block');
+        $('#login').css('display', 'none')
     }
 }
 
@@ -2658,7 +2656,30 @@ function showRegister(){
 function showRegisterSignInDialog(){
     if ($('#loginregister').css('display') !== 'block'){
         //calculate height
-        var heighthtml = $('html').height();
-        
+        $('#glassloading').fadeIn('normal');
+        var heighthtml = $('html').height()/2;
+        var heightloginregister = $('#loginregister').height()/2;
+        var widthhtml = $('html').width()/2;
+        var widthloginregister = $('#loginregister').width()/2;
+        $('#loginregister').css("left", "" + (widthhtml - widthloginregister) + "px");
+        $('#loginregister').css("top", "" + (heighthtml - heightloginregister) + "px");
+        $('#loginregister').fadeIn('fast');
     }
+}
+
+/**
+ * when the user clicks the register in the menu
+ * @returns {null}
+ */
+function showRegisterMenu(){
+    showRegister();
+    showRegisterSignInDialog();
+}
+/**
+ * when the user clicks the login in the menu
+ * @returns {null}
+ */
+function showLoginMenu(){
+    showSignIn();
+    showRegisterSignInDialog();
 }

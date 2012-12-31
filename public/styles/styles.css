@@ -2542,6 +2542,8 @@ textarea{
     width: 436px;
     border-radius: 15px 15px 15px 15px;
     position: fixed;
+    display: none;
+    z-index: 3;
 }
 
 .loginregister_header{
@@ -2550,13 +2552,21 @@ textarea{
 }
 
 .loginregister_tab{
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
     background-color: #BDCCD4;
+    border-color: black black -moz-use-text-color;
+    border-image: none;
     border-radius: 10px 10px 0 0;
+    border-style: solid solid none;
+    border-width: 1px 1px medium;
     color: white;
+    cursor: pointer;
     float: left;
     height: 100%;
-    width: 50%;
-    cursor: pointer;
+    width: 216px;
 }
 
 .loginregister_tab.active{
@@ -2573,8 +2583,16 @@ textarea{
 }
 
 .loginregister_body{
-    height: 337px;
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-image: none;
     border-radius: 0 0 15px 15px;
+    border-style: none solid solid;
+    border-width: medium 1px 1px;
+    height: 337px;
+    clear: both;
 }
 
 .dialogfontbody{
