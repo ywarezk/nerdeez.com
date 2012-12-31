@@ -393,8 +393,8 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             return FALSE;
         }
         else{
-            //return TRUE;
-            return FALSE;
+            return TRUE;
+            //return FALSE;
         }
     }
     

@@ -2622,3 +2622,43 @@ function initCommonActions(){
 function clickedUploadInCourse(){
     $('#filebrowser_upload_input').click();
 }
+
+/**
+ * when the user clikcs the tab to show the login screen
+ * @returns {null}
+ */
+function showSignIn(){
+    if ($('#login').css('display') !== 'block'){
+        $('#logintab').addClass('active');
+        $('#registertab').removeClass('active');
+        $('#register').fadeOut('fast', function(){
+            $('#login').fadeIn('fast');
+        })
+    }
+}
+
+/**
+ * when the user clicks the register
+ * @returns {null}
+ */
+function showRegister(){
+    if ($('#register').css('display') !== 'block'){
+        $('#registertab').addClass('active');
+        $('#logintab').removeClass('active');
+        $('#login').fadeOut('fast', function(){
+            $('#register').fadeIn('fast');
+        })
+    }
+}
+
+/**
+ * when the user clicks in the menu to see the login registration
+ * @returns {null}
+ */
+function showRegisterSignInDialog(){
+    if ($('#loginregister').css('display') !== 'block'){
+        //calculate height
+        var heighthtml = $('html').height();
+        
+    }
+}

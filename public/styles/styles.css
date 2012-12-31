@@ -2541,7 +2541,7 @@ textarea{
     height: 381px;
     width: 436px;
     border-radius: 15px 15px 15px 15px;
-    
+    position: fixed;
 }
 
 .loginregister_header{
