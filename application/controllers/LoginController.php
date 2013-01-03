@@ -107,6 +107,7 @@ class LoginController extends Nerdeez_Controller_Action{
                 $auth = Zend_Auth::getInstance();
                 $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
                 $userid = $auth->getIdentity()->id;
+                
 
                 //get the email , identifier , token
                 $sEmail = $sIdentifier = $sToken = NULL;
@@ -118,7 +119,7 @@ class LoginController extends Nerdeez_Controller_Action{
                 $logincookies ->insertWithoutArray($sEmail, $sIdentifier, $sToken);
                 
                 //set the cookies
-                $sUrl = $ksfunctions -> sGetUrl();
+                $sUrl = $this -> sGetUrl();
                 $inTwoMonths = 60 * 60 * 24 * 60 + time();
                 setcookie('email', $sEmail, $inTwoMonths,"/", "." . $sUrl);
                 setcookie('identifier', $sIdentifier, $inTwoMonths,"/", "." . $sUrl);
@@ -127,7 +128,7 @@ class LoginController extends Nerdeez_Controller_Action{
             }
             
             //redirect the user to his profile
-            $this->_redirector->gotoUrl('/user/index/');
+            $this->_redirector->gotoUrl($this ->getReferer());
             return;
         }
         else{

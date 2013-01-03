@@ -214,12 +214,9 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      * @return type 
      */
     private function rememberMe(){
-        //get to the functions class
-        $ksfunctions = new Application_Model_KSFunctions();
-        
         //check if user has identity saved in the sessions
         $bIsIdentity = FALSE;
-        $bIsIdentity = $ksfunctions -> isRegistered();
+        $bIsIdentity = $this -> isRegistered();
         
         //if the user has identity than return
         if ($bIsIdentity)return;
@@ -241,7 +238,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $bIsRowExist = FALSE;
         $mLogincookies = new Application_Model_DbTable_Logincookies();
         try{
-            $rsLogincookies = $mLogincookies -> fetchAll($mLogincookies -> select()
+            $rLogin = $mLogincookies -> fetchRow($mLogincookies -> select()
                 -> where ('email = ?' , $sEmail)
                 -> where ('identifier = ?' , $sIdentifier)
                 -> where ('token = ?' , $sToken));
@@ -249,7 +246,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         catch(Exception $e){
             return;
         }
-        $bIsRowExist = $rsLogincookies -> count() > 0;
+        $bIsRowExist = $rLogin != NULL;
         
         //if the row doesnt exist check if the email and identifier exists if so security breach
         if (!$bIsRowExist){
@@ -263,10 +260,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             }
             if ($rsLogincookies -> count() > 0){
                 //delete all the rows you found
-                foreach ($rsLogincookies as $rLogincookie) {
-                    $where = $mLogincookies->getAdapter()->quoteInto('id = ?', $rLogincookie['id']);
-                    $mLogincookies->delete($where);
-                }
+                $mLogincookies -> deleteRowset($rsLogiמncookies);
                 
                 //redirect to main page with cookie theft suspicion
                 $this -> _redirector ->gotoUrl('/error/' . urlencode('suspected cookie theft please change your password!'));
@@ -275,11 +269,8 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             return;
         }
         
-        //found triplet grab the row
-        $rLogin = $rsLogincookies -> getRow(0);
-        
         //got a triplet match then need to change token and update db
-        $sNewtoken = $ksfunctions -> createSaltString2(200);
+        $sNewtoken = $this ->createSaltStringWithLength(200);
         $aLoginUpdate = array(
             'token'     => $sNewtoken
         );
@@ -287,29 +278,26 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $mLogincookies->update($aLoginUpdate, $where);
         
         //update the cookie with the new token
-        $sUrl = $ksfunctions ->sGetUrl();
+        $sUrl = $this ->sGetUrl();
         $inTwoMonths = 60 * 60 * 24 * 60 + time();
         setcookie('token', $sToken, $inTwoMonths,"/", "." . $sUrl);
         
         //grab the user row 
         $rUser = NULL;
         $mUsers = new Application_Model_DbTable_Users();
-        $selSelectUsers = $mUsers -> select() -> where ('email = ?' , $sEmail);
-        $rsUsers = $mUsers -> fetchAll($selSelectUsers);
-        if ($rsUsers -> count() != 1) return;
-        $rUser = $rsUsers -> getRow(0);
+        $rUsers = $mUsers -> fetchRow($mUsers -> select() -> where ('email = ?' , $sEmail));
+        if ($rUser == NULL) return;
+        
+        //get the columns from the model
+        $aCols = NULL;
+        $aCols = $mModel->info(Zend_Db_Table_Abstract::COLS);
         
         //from the user row create the users object
         $oUser = NULL;
         $oUser = new stdClass();
-        $oUser -> id = $rUser['id'];
-        $oUser -> title = $rUser['title'];
-        $oUser -> pass = $rUser['pass'];
-        $oUser -> role = $rUser['role'];
-        $oUser -> serial = $rUser['serial'];
-        $oUser -> email = $rUser['email'];
-        $oUser -> isActive = $rUser['isActive'];
-        $oUser -> salt = $rUser['salt'];
+        foreach ($aCols as $sCol) {
+            $oUser -> $sCol = $rUser[$sCol];
+        }
         
         //write the object to auth
         $auth = Zend_Auth::getInstance();
@@ -483,6 +471,30 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
     		($https && $_SERVER['SERVER_PORT'] === 443 ||
     		$_SERVER['SERVER_PORT'] === 80 ? '' : ':'.$_SERVER['SERVER_PORT']))).
     		substr($_SERVER['SCRIPT_NAME'],0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
+    }
+    
+    /**
+     * determine if the user is registered
+     * @return Boolean true if registered
+     */
+    public function isRegistered(){
+        $isIdentity = FALSE;
+        $auth = Zend_Auth::getInstance();
+        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
+        $isIdentity = $auth->hasIdentity();
+        return $isIdentity;
+    }
+    
+    /**
+     * creates a random salt string
+     * @return String
+     */
+    public function createSaltStringWithLength($length){
+        $dynamicSalt = '';
+        for ($i = 0; $i < $length; $i++) {
+            $dynamicSalt .= chr(rand(33, 126));
+        }
+        return $dynamicSalt;
     }
     
 }

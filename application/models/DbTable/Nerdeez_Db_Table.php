@@ -105,6 +105,18 @@ abstract class Nerdeez_Db_Table extends Zend_Db_Table_Abstract{
         return $this->_referenceMap;
     }
     
+    /**
+     * iterate on all the rowset and deletes all the rows
+     * @param Zend_Db_Table_Rowset $rsRows the rowset to delete
+     * @return void
+     */
+    protected function deleteRowset($rsRows){
+        if ($rsRows == NULL) return;
+        foreach ($rsRows as $rRow) {
+            $this->deleteRowWithId($rRow['id']);
+        }
+    }
+    
     
     
     
