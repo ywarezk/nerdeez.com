@@ -62,8 +62,18 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
         $this ->initTablesView('Files', 'Application_Model_DbTable_Files');
     }
     
+    /**
+     * manually view the users table
+     */
     public function usersAction(){
         $this ->initTablesView('Users', 'Application_Model_DbTable_Users');
+    }
+    
+    /**
+     * manually edit the ban ips
+     */
+    public function ipsAction(){
+        $this ->initTablesView("I.P's", 'Application_Model_DbTable_Banips');
     }
 
 
@@ -123,9 +133,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      * delete number of rows from a certain database
      */
     public function deleterowsAction(){
-        //disable view rendering
-        $this->_helper->layout()->disableLayout(); 
-        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        $this->disableView();
         
         //grab the params
         $sModel = $sIds = NULL;
@@ -168,9 +176,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      * updates the row in the table
      */
     public function updaterowAction(){
-        //disable view rendering
-        $this->_helper->layout()->disableLayout(); 
-        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        $this->disableView();
         
         //grab the model and id
         $sModel = $iId = NULL;

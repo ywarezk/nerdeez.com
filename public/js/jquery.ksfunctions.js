@@ -2043,7 +2043,64 @@ function loadSearchCourse(){
  * init js in registration form
  * @param String sId the id of the form
  */
-function loadRegistration(sId){
+function loadRegistration(){
+    //init the js validation
+    $('#register form').validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            password:{
+                required: true,
+                minlength: 5
+            },
+            repassword:{
+                required: true,
+                minlength: 5,
+                equalTo: '#register * .pass'
+            }
+        },
+        messages: {
+            email: {
+                required: 'Email is required',
+                email: 'Invalid email'
+            },
+            password: {
+                required: 'Password is required',
+                minlength: 'Must be more than 5 chars'
+            },
+            repassword: {
+                required: 'Retype password is required',
+                minlength: 'Must be more than 5 chars',
+                equalTo: 'must match the password field'
+            }
+        },
+        errorPlacement: function(error, element) {
+             if (element.attr("name") == "email"){
+                 $('.register-error-placeholder.email').html('');
+                 $('.register-error-placeholder.email').append(error);
+                 //error.insertAfter("#lastname");
+             } 
+             if (element.attr("name") == "password"){
+                 //error.insertAfter("#lastname");
+                 $('.register-error-placeholder.password').html('');
+                 $('.register-error-placeholder.password').append(error);
+             } 
+             if (element.attr("name") == "repassword"){
+                 //error.insertAfter("#lastname");
+                 $('.register-error-placeholder.repassword').html('');
+                 $('.register-error-placeholder.repassword').append(error);
+             } 
+             
+       }
+    });
+}
+
+/**
+ * @deprecated
+ */
+function loadRegistration1(sId){
     //atach events to all the text inputs
     $('#' + sId + ' * .registerform * input[name="email"]').on('keyup' , function(){
        ksSetTextHelper($('#' + sId + ' * .registerform * input[name="email"]')); 
@@ -2113,6 +2170,47 @@ function loadRegistration(sId){
  * @params String sId the id of the form
  */
 function loadLogin(sId){
+    //init the js validation
+    $('#login form').validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            password:{
+                required: true,
+                minlength: 5
+            }
+        },
+        messages: {
+            email: {
+                required: 'Email is required',
+                email: 'Invalid email'
+            },
+            password: {
+                required: 'Password is required',
+                minlength: 'Must be more than 5 chars'
+            }
+        },
+        errorPlacement: function(error, element) {
+             if (element.attr("name") == "email"){
+                 $('#login * .register-error-placeholder.email').html('');
+                 $('#login * .register-error-placeholder.email').append(error);
+                 //error.insertAfter("#lastname");
+             } 
+             if (element.attr("name") == "password"){
+                 //error.insertAfter("#lastname");
+                 $('#login * .register-error-placeholder.password').html('');
+                 $('#login * .register-error-placeholder.password').append(error);
+             } 
+       }
+    });
+    
+}
+/**
+ * @deprecated
+ */
+function loadLogin1(sId){
     //init js events
     $('#' + sId + ' * input[name="email"]').on('keyup' , function(){
         ksSetTextHelper($('#' + sId + ' * input[name="email"]'));

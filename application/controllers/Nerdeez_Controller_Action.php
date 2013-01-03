@@ -151,6 +151,10 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $layout->setLayoutPath(APPLICATION_PATH . '/layouts/scripts/guest.phtml');
         $layout -> menu = $this -> view -> render ('partials/menus/guest_menu.phtml');
         
+        //set the view error and status messages
+        $layout -> sError = $this -> _aData['error'];
+        $layout -> sStatus = $this -> _aData['status'];
+        
         
     }
     
@@ -433,6 +437,52 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $paginator = new Zend_Paginator($adapter);
         $paginator->setCurrentPageNumber($page);
         $this -> view -> paginator = $paginator;
+    }
+    
+    /**
+     * sends registration activation mail
+     * @param String $serial the serial number for the activation 
+     * @param int the row of the user
+     * @param String $email the email address to send to
+     */
+    public function sendActivationMail($serial , $users_id , $email){
+        //create the mail body
+        $body = '<HTML><BODY><CENTER>
+        <h1>Nerdeez Account activation</h1>
+        <p>
+        Please confirm your Nerdeez account by clicking this link:
+        </p>
+        <p>
+            <a href="http://'. $this ->sGetUrl() .'/register/activateaccount/id/'. $users_id . '/token/'. $serial .'">
+                activate account
+            </a>
+        </p>
+        <p>
+        Regards, Nerdeez Team
+        </p>
+        </CENTER></BODY>
+        </HTML>';		
+        
+        //mail title
+        $title = "Nerdeez account activation";
+        
+        //send the mail 
+        $this->reportByMail($email, $body, $title);
+    }
+    
+    /**
+     * returns the url of the site
+     * @return String the url of the site without http://www. 
+     */
+    public function sGetUrl(){
+        //$https = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+      	return
+    		/*($https ? 'https://' : 'http://').*/
+    		(!empty($_SERVER['REMOTE_USER']) ? $_SERVER['REMOTE_USER'].'@' : '').
+    		(isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ($_SERVER['SERVER_NAME'].
+    		($https && $_SERVER['SERVER_PORT'] === 443 ||
+    		$_SERVER['SERVER_PORT'] === 80 ? '' : ':'.$_SERVER['SERVER_PORT']))).
+    		substr($_SERVER['SCRIPT_NAME'],0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
     }
     
 }

@@ -28,10 +28,9 @@ class RegisterController extends Nerdeez_Controller_Action{
      */
     public function signupAction(){
         //disable layout and view
-        $this->_helper->layout()->disableLayout();
-        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        $this->disableView();
         
-        //get the params
+        //get the params :)
         $mail = $this -> _aData['email'];
         $password = $this -> _aData['password'];
         $repassword = $this -> _aData['repassword'];
@@ -43,43 +42,38 @@ class RegisterController extends Nerdeez_Controller_Action{
             return;
         }
         
-        //create random serial for the user
+        //create random serial for the user :)
         $serial = NULL;
         $serial = $ksfunctions -> createSerial();
         
-        //create the model
-        $mUsers = new Application_Model_DbTable_Users();
-        
         //check mail exists
-        $select = $mUsers -> select() ->where ("email = ?" , $mail);
-        $rows = $mUsers -> fetchAll($select);
-        if ($rows -> count() != 0){
+        $mUsers = new Application_Model_DbTable_Users();
+        $rUser = $mUsers -> fetchRow($mUsers -> select() ->where ("email = ?" , $mail));
+        if ($rUser != NULL){
             $this->_redirector->gotoUrl('/index/index/error/' . urlencode('User with this mail already exists!'));
             return;
         }
         
         //check if user has a row in users
-        $users_id = NULL;
+        /*$users_id = NULL;
         $users_id = $ksfunctions -> getUserId();
         
         //grab/create the title
         $title = $ksfunctions -> createUserName();
         if ($users_id != NULL){
-            $select = $mUsers -> select() -> where ('id = ?' , $users_id);
-            $rows = $mUsers -> fetchAll ($select);
-            if ($rows -> count() == 0){
+            $rows = $mUsers ->getRowWithId($users_id);
+            if ($rows == NULL){
                 $users_id = NULL;
             }
             else{
-                $row = $rows -> getRow(0);
-                $title = $row['title'];
+                $title = $rows['title'];
             }
-        }
-        
+        }*/
         
         //create the row to pass to database
+        $title = $ksfunctions -> createUserName();
         $salt = $ksfunctions -> createSaltString();
-        $mUsers ->insertWithoutArray(
+        $users_id = $mUsers ->insertWithoutArray(
                 $title , 
                 sha1(constant("Application_Model_KSFunctions::cSTATICSALT") . $password . $salt) , 
                 $serial , 
@@ -87,8 +81,8 @@ class RegisterController extends Nerdeez_Controller_Action{
                 $salt);
         
         //send activation mail
-        $ksfunctions -> sendActivationMail ($serial , $users_id , $mail);
-        $this->_redirector->gotoUrl('/index/index/message/' . urlencode('An account activation mail was sent. To complete the activation process you have to follow the link in the mail.'));
+        $this -> sendActivationMail ($serial , $users_id , $mail);
+        $this->_redirector->gotoUrl('/index/index/status/' . urlencode('An account activation mail was sent. To complete the activation process you have to follow the link in the mail.'));
     }
     
     /**
@@ -96,8 +90,7 @@ class RegisterController extends Nerdeez_Controller_Action{
      */
     public function activateaccountAction(){
         //disable layout and view
-        $this->_helper->layout()->disableLayout();
-        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        $this->disableView();
         
         //grab the params
         $serial = $this -> _aData['token'];
@@ -107,24 +100,23 @@ class RegisterController extends Nerdeez_Controller_Action{
         //find the row matching
         $row = NULL;
         $mUsers = new Application_Model_DbTable_Users();
-        $select = $mUsers -> select() 
+        $row = $mUsers ->fetchRow ($mUsers -> select() 
                 -> where ("id = ?" , $id)
-                -> where ("serial = ?" , $serial);
-        $rows = $mUsers -> fetchAll ($select);
-        if ($rows -> count () != 1){
+                -> where ("token = ?" , $serial));
+        if ($row == NULL){
             $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Bad id or serial!'));
             return;
         }
-        $row = $rows -> getRow(0);
         
         //found the row now update the row and change the activation status
         $newrow = array(
-            'isActive' => 1
+            'isActive'  => 1,
+            'role'      => 1
         );
         $mUsers -> update ($newrow , 'id = ' . $id);
         
         //redirect to user profile page
-        $this->_redirector->gotoUrl('/index/index/message/'. urlencode('MESSAGE: Account activated please login to continue') ); 
+        $this->_redirector->gotoUrl('/index/index/status/'. urlencode('MESSAGE: Account activated please login to continue') ); 
         return;
     }
     

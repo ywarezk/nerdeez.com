@@ -135,7 +135,13 @@
             <!-- end header -->
             
             <!-- begin hold the main content -->
-            <div id="body" class="wrapper">
+            <div id="body" class="wrapper"">
+                <div id="error" style="text-align: center;margin-top: 10px;font-size: 18px;">
+                    <?php echo $this -> layout() -> sError; ?>
+                </div>
+                <div id="status" style="text-align: center;margin-top: 10px;font-size: 18px;">
+                    <?php echo $this -> layout() -> sStatus; ?>
+                </div>
                 <?php echo $this->layout()->render(); ?>
             </div>
             

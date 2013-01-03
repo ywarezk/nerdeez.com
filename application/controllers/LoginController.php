@@ -28,11 +28,9 @@ class LoginController extends Nerdeez_Controller_Action{
      * when the user logs in
      */
     public function loginAction(){
-        //disabel layout and view
-        $this->_helper->layout()->disableLayout();
-        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);   
+         $this ->disableView();
         
-        //get all the params sanitized username password remember me
+        //get all the params sanitized username password remember me :)
         $email = $this->_aData['email']; 
         $password = $this -> _aData['password'];
         $rememberme = TRUE;
@@ -40,7 +38,7 @@ class LoginController extends Nerdeez_Controller_Action{
         $rememberme = $data['rememberme'] == '1';
         $ksfunctions = new Application_Model_KSFunctions();
         
-        //get the ip of the user
+        //get the ip of the user :)
         $sIP = NULL;
         $sIP = $ksfunctions -> getRealIpAddr();
         
@@ -69,13 +67,11 @@ class LoginController extends Nerdeez_Controller_Action{
         $salt = NULL;
         $isActive = FALSE;
         $mUsers = new Application_Model_DbTable_Users();
-        $select = $mUsers -> select() -> where ("email = ?" , $email);
-        $rows = $mUsers -> fetchAll($select);
-        if ($rows -> count() != 1){
+        $row = $mUsers -> fetchRow($mUsers -> select() -> where ("email = ?" , $email));
+        if ($row == NULL){
             $this->_redirector->gotoUrl('/index/index/error/' . urlencode('Invalid email or password'));
             return;
         }
-        $row = $rows -> getRow(0);
         $salt = $row['salt'];
         $isActive = $row['isActive'] == 1;
         
@@ -103,8 +99,7 @@ class LoginController extends Nerdeez_Controller_Action{
 
             //delete all the old rows
             foreach ($rsLogincookies as $rLogincookie) {
-                $where = $logincookies->getAdapter()->quoteInto('id = ?', $rLogincookie['id']);
-                $logincookies->delete($where);
+                $logincookies ->deleteRowWithId($rLogincookie['id']);
             }
             
             //create the cookies for remember me
@@ -139,7 +134,7 @@ class LoginController extends Nerdeez_Controller_Action{
             //login failed add row in the ips table
             $mIps ->insertWithoutArray(time(), $sIp, $email);
         }
-        $this->_redirector->gotoUrl('/index/index/error/' . urlencode('Invalid email or password'));
+        $this->_redirector->gotoUrl('/error/' . urlencode('Invalid email or password'));
         return;
     }
     

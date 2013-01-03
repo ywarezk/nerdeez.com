@@ -38,6 +38,15 @@ class Application_Model_DbTable_Users extends Nerdeez_Db_Table{
     protected $_name = 'users';
     
     /**
+     * a list of sql statments to try and execute 
+     * will work only for the first time
+     * @var Array 
+     */
+    protected $_aAlterStatments = array(
+        "ALTER TABLE `users` CHANGE `serial` `token` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL" ,
+    );
+    
+    /**
      * @see Nerdeez_Db_Table::insertWithoutArray
      * @param String $sTitle the title of the user default is usually random student number
      * @param String $sPass the password of the user
@@ -52,7 +61,7 @@ class Application_Model_DbTable_Users extends Nerdeez_Db_Table{
             'title'         => $sTitle , 
             'pass'          => $sPass , 
             'role'          => $iRole ,
-            'serial'        => $sSerial ,
+            'token'        => $sSerial ,
             'email'         => $sEmail , 
             'isActive'      => $iIsActive , 
             'salt'          => $sSalt ,

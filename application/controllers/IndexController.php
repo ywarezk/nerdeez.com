@@ -19,11 +19,6 @@ class IndexController extends Nerdeez_Controller_Action
      */
     public function indexAction()
     {
-        //pass error & message to view
-        $data=$this->getRequest()->getParams();
-        $this -> view -> sError = $this -> _aData['error'];
-        $this -> view -> sStatus = $this -> _aData['status'];
-        
         //get all the courses and pass them to the view
         $this -> view -> rsCourses = NULL;
         $mCourses = new Application_Model_DbTable_Courses();
