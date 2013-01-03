@@ -128,11 +128,80 @@
         <!-- will hold all the content -->
         <div id="container" class="wrapper">
             
-            <!-- will hold the header menu and such -->
+            <!-- begin of menu-->
             <div id="header">
-                <?php echo $this->layout() ->menu;  ?>
+                <div class ="" style="float: left;width: 100%">
+                    <div style="margin: 0px auto; position: relative;">
+                        <div style="float: left;margin-top: 12px;">
+                            <a href="/" title="Home" >
+                                <img src="/img/newlogoblack.png" />
+                            </a>
+                        </div> 
+
+                        <div style="float: right; position: relative; height: 55px; top: 40px;left: -25px;">
+                            <ul class="nav">
+                                <li id="home" class="navitem" style="">
+                                    <a href="/#!/" class="js-hover active_a">
+                                        <!--<span class="new-wrapper">
+                                            <i class="nav-new home" style="background-position: 0 6px;"></i>
+                                        </span>--> 
+                                        <span class="nav-text" style="">
+                                            Home
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="navitem navseparator">
+                                    <span style="position: relative; top: -2px;">
+                                        |
+                                    </span>
+                                </li>
+                                <?php 
+                                //will display the login and register only if the user is not logged in
+                                if (!$this -> layout() -> isRegistered):
+                                ?>
+                                    <li id="menu_register" class="navitem" style="">
+                                        <a href="javascript:void(0)" class="js-hover active_a" onclick="showRegisterMenu();">
+                                            <span class="nav-text" style="">
+                                                Register
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="navitem navseparator">
+                                        <span style="position: relative; top: -2px;">
+                                            |
+                                        </span>
+                                    </li>
+                                    <li id="menu_login" class="navitem" style="">
+                                        <a href="javascript:void(0)" class="js-hover active_a" onclick="showLoginMenu();">
+                                            <span class="nav-text" style="">
+                                                Login
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="navitem navseparator">
+                                        <span style="position: relative; top: -2px;">
+                                            |
+                                        </span>
+                                    </li>
+                                <?php 
+                                endif;
+                                ?>
+                                <li id="about" class="navitem">
+                                    <a href="/index/about" class="js-hover active_a">
+                                        <!--<span class="new-wrapper">
+                                            <i class="nav-new about" style="background-position: 0 -75px;"></i>
+                                        </span> -->
+                                        <span class="nav-text" style="left: -9px;">
+                                            About
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- end header -->
+            <!-- end of menu -->
             
             <!-- begin hold the main content -->
             <div id="body" class="wrapper"">

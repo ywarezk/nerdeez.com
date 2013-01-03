@@ -149,7 +149,9 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         //set the layout
         $layout = new Zend_Layout();
         $layout->setLayoutPath(APPLICATION_PATH . '/layouts/scripts/guest.phtml');
-        $layout -> menu = $this -> view -> render ('partials/menus/guest_menu.phtml');
+        $layout -> isRegistered = $this->isRegistered();
+        $layout -> user = $this -> getUserInfo();
+        //$layout -> menu = $this -> view -> render ('partials/menus/guest_menu.phtml');
         
         //set the view error and status messages
         $layout -> sError = $this -> _aData['error'];
@@ -495,6 +497,15 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
             $dynamicSalt .= chr(rand(33, 126));
         }
         return $dynamicSalt;
+    }
+    
+    /**
+     * gets the user info from the auth
+     */
+    protected function getUserInfo(){
+        $auth = Zend_Auth::getInstance();
+        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
+        return $auth ->getIdentity();
     }
     
 }

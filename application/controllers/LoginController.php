@@ -98,9 +98,7 @@ class LoginController extends Nerdeez_Controller_Action{
             }
 
             //delete all the old rows
-            foreach ($rsLogincookies as $rLogincookie) {
-                $logincookies ->deleteRowWithId($rLogincookie['id']);
-            }
+            $logincookies -> deleteRowset($rsLogincookies);
             
             //create the cookies for remember me
             if ($rememberme) {
