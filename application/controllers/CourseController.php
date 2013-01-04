@@ -323,6 +323,15 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         //send success
         $this ->ajaxReturnSuccess();
     }
+    
+    /**
+     * check if the user is authorized to download the files he wants
+     */
+    public function checkauthAction(){
+        $this->disableView();
+        
+        //get the params
+    }
 }
 
 ?>

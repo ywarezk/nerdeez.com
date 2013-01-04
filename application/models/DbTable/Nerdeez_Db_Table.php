@@ -110,7 +110,7 @@ abstract class Nerdeez_Db_Table extends Zend_Db_Table_Abstract{
      * @param Zend_Db_Table_Rowset $rsRows the rowset to delete
      * @return void
      */
-    protected function deleteRowset($rsRows){
+    public function deleteRowset($rsRows){
         if ($rsRows == NULL) return;
         foreach ($rsRows as $rRow) {
             $this->deleteRowWithId($rRow['id']);

@@ -98,7 +98,7 @@ class LoginController extends Nerdeez_Controller_Action{
             }
 
             //delete all the old rows
-            $logincookies -> deleteRowset($rsLogincookies);
+            $logincookies ->deleteRowset($rsLogincookies);
             
             //create the cookies for remember me
             if ($rememberme) {
@@ -125,7 +125,7 @@ class LoginController extends Nerdeez_Controller_Action{
                 
             }
             
-            //redirect the user to his profile
+            //redirect the user to same page
             $this->_redirector->gotoUrl($this ->getReferer());
             return;
         }

@@ -2569,9 +2569,30 @@ function ksDownloadFiles(aIds , aFolders , iCourseId){
     var sIds = JSON.stringify(aIds);
     var sFolders = JSON.stringify(aFolders);
     
+    //check if user is authorized to download the files
     //create an object to send to varify auth
     var obj=new Object();
     obj.ids = sIds;
+    obj.folders = sFolders;
+    
+    //send the reset information via ajax
+    $.ajax({
+            type: "POST",
+            url: "/course/checkauth/",
+            dataType: "json",
+            data: obj ,
+            async: false,
+            success: function(res) {
+                if (res.items[0].status !== 'success'){
+                    //display error dialog
+                    showErrorDialog();
+                    return;
+                }
+            },
+            error: function(res){
+                
+            }
+    });
 
     //user is authorized to download the files continue with download
     var iframe = document.createElement("iframe");
@@ -2780,4 +2801,12 @@ function showRegisterMenu(){
 function showLoginMenu(){
     showSignIn();
     showRegisterSignInDialog();
+}
+
+/**
+ * displays an error dialog
+ * @returns {null}
+ */
+function showErrorDialog(){
+    
 }
