@@ -165,8 +165,7 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      */
     public function updaterowAction(){
         //disable view rendering
-        $this->_helper->layout()->disableLayout(); 
-        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        $this ->disableView();
         
         //grab the model and id
         $sModel = $iId = NULL;
