@@ -853,12 +853,12 @@ function ksDownloadChecked(iCourseId){
     });
     
     //put the loading screen on
-    loadingScreen();
+    //loadingScreen();
     
     //download the files
     ksDownloadFiles(aIds , aFolders , iCourseId);
     
-    removeLoadingScreen();
+    //removeLoadingScreen();
 }
 
 
@@ -2535,12 +2535,12 @@ function ksDownloadFile(id){
     aIds[0] = id;
     
     //put the loading screen on
-    loadingScreen();
+    //loadingScreen();
     
     //download the files
     ksDownloadFiles(aIds , [] , 0);
     
-    removeLoadingScreen();
+    //removeLoadingScreen();
 }
 
 /**
@@ -2551,13 +2551,12 @@ function downloadFolder(iFolder , iCourse){
     var aIds = new Array();
     aIds[0] = iFolder;
     
-    //put the loading screen on
-    loadingScreen();
+    
     
     //download the files
     ksDownloadFiles([] , aIds , iCourse);
     
-    removeLoadingScreen();
+    
 }
 
 /**
@@ -2565,6 +2564,9 @@ function downloadFolder(iFolder , iCourse){
  * @param array aIds the list of ids to download
  */
 function ksDownloadFiles(aIds , aFolders , iCourseId){
+    //put the loading screen on
+    loadingScreen();
+    
     //convert the array to json string
     var sIds = JSON.stringify(aIds);
     var sFolders = JSON.stringify(aFolders);
@@ -2574,6 +2576,7 @@ function ksDownloadFiles(aIds , aFolders , iCourseId){
     var obj=new Object();
     obj.ids = sIds;
     obj.folders = sFolders;
+    obj.id = iCourseId;
     
     //send the reset information via ajax
     $.ajax({
@@ -2583,26 +2586,27 @@ function ksDownloadFiles(aIds , aFolders , iCourseId){
             data: obj ,
             async: false,
             success: function(res) {
+                removeLoadingScreen();
                 if (res.items[0].status !== 'success'){
                     //display error dialog
                     showLoginRegisterErrorDialog();
                     return;
                 }
+                else{
+                    //user is authorized to download the files continue with download
+                    var iframe = document.createElement("iframe");
+                    iframe.src = "/course/downloadfiles/ids/" + sIds + '/folders/' + sFolders + '/id/' + iCourseId + '/disposition/attachment/';
+                    iframe.onload = function() {
+                        // iframe has finished loading, download has started
+                    }
+                    iframe.style.display = "none";
+                    document.body.appendChild(iframe);
+                }
             },
             error: function(res){
-                
+                removeLoadingScreen();
             }
     });
-
-    //user is authorized to download the files continue with download
-    var iframe = document.createElement("iframe");
-    iframe.src = "/course/downloadfiles/ids/" + sIds + '/folders/' + sFolders + '/id/' + iCourseId + '/disposition/attachment/';
-    iframe.onload = function() {
-        // iframe has finished loading, download has started
-    }
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-    
 }
 
 /**
@@ -2808,7 +2812,7 @@ function showLoginMenu(){
  * @returns {null}
  */
 function showLoginRegisterErrorDialog(){
-    $('#glassloading').fadeIn('normal');
+    $('#glassloading').css('display', 'block');
     var heighthtml = $('html').height()/2;
     var heightdialog = $('#loginregistererrordialog').height()/2;
     var widthhtml = $('html').width()/2;

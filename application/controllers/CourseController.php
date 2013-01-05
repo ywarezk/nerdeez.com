@@ -187,6 +187,9 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         //disable view rendering
         $this->disableView();
         
+        //if the user is not auth to download than exit
+        if (!$this->isAuthDownload()) return;
+        
         //grab the params ids , disposition , folders
         $aIds = $this -> _aData['ids'];
         $iCourse = $this -> _aData['id'];
@@ -329,8 +332,35 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
      */
     public function checkauthAction(){
         $this->disableView();
+        if($this->isAuthDownload()){
+            $this->ajaxReturnSuccess();
+        }
+        else{
+            $this->ajaxReturnFailed();
+        }
+    }
+    
+    /**
+     * check if the user is authorized for the download
+     * @return Boolean True if authorized false otherwise
+     */
+    private function isAuthDownload(){
+        //if the user is registered than return true
+        if($this->isRegistered())return TRUE;
         
-        //get the params
+        //grab the params ids , disposition , folders
+        $aIds = $this -> _aData['ids'];
+        $iCourse = $this -> _aData['id'];
+        $aFolders = $this -> _aData['folders'];
+        
+        //if there is a folder in the array return false
+        if (count($aFolders) > 0) return FALSE;
+        
+        //if there is more than one file return false
+        if (count($aIds) > 1)return FALSE;
+        
+        //only one file than return true
+        return TRUE;
         
     }
 }
