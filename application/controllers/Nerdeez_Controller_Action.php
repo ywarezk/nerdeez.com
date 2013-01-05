@@ -401,19 +401,19 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         //set all the js files and css files
         $layout = new Zend_Layout();
         if ($this -> isProduction()){
-            $layout -> getView() -> headScript() -> appendFile('/js/static.min.js');
-            $layout -> getView() -> headLink()->prependStylesheet('/styles/static.min.css');
+            $layout -> getView() -> headScript() -> appendFile($this->view->baseUrl('js/static.min.js'));
+            $layout -> getView() -> headLink()->prependStylesheet($this->view->baseUrl('styles/static.min.css'));
         }
         else{
-            $layout -> getView() -> headScript() -> prependFile('/js/jquery.ksfunctions.js');
-            $layout -> getView() -> headScript() -> prependFile('/js/jquery.ez-pinned-footer.js');
-            $layout -> getView() -> headScript() -> prependFile('/js/superfish.js');
-            $layout -> getView() -> headScript() -> prependFile('/js/jquery.validate.min.js');
-            $layout -> getView() -> headScript() -> prependFile('/js/jquery-1.7.1.min.js');
-            $layout -> getView() -> headLink()->prependStylesheet('/styles/styles.css');
-            $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish-navbar.css');
-            $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish-vertical.css');
-            $layout -> getView() -> headLink()->prependStylesheet('/styles/superfish.css');
+            $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/jquery.ksfunctions.js'));
+            $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/jquery.ez-pinned-footer.js'));
+            $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/superfish.js'));
+            $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/jquery.validate.min.js'));
+            $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/jquery-1.7.1.min.js'));
+            $layout -> getView() -> headLink()->prependStylesheet($this->view->baseUrl('styles/styles.css'));
+            $layout -> getView() -> headLink()->prependStylesheet($this->view->baseUrl('styles/superfish-navbar.css'));
+            $layout -> getView() -> headLink()->prependStylesheet($this->view->baseUrl('styles/superfish-vertical.css'));
+            $layout -> getView() -> headLink()->prependStylesheet($this->view->baseUrl('styles/superfish.css'));
         }
     }
     
