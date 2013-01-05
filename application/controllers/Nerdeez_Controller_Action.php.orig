@@ -388,6 +388,10 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         }
         else{
             return TRUE;
+<<<<<<< HEAD
+            //return FALSE;
+=======
+>>>>>>> production
         }
     }
     

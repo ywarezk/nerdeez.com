@@ -176,8 +176,12 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
      * updates the row in the table
      */
     public function updaterowAction(){
+<<<<<<< HEAD
+        $this->disableView();
+=======
         //disable view rendering
         $this ->disableView();
+>>>>>>> production
         
         //grab the model and id
         $sModel = $iId = NULL;

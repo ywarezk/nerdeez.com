@@ -134,6 +134,18 @@ class Application_Model_DbTable_Folders extends Nerdeez_Db_Table{
     protected $_name = 'folders';
     
     /**
+     * the tables that we refrence in this table
+     * @var array
+     */
+    protected $_referenceMap    = array(
+        'Course' => array(
+            'columns'           => array('courses_id'),
+            'refTableClass'     => 'Application_Model_DbTable_Courses',
+            'refColumns'        => array('id')
+        ),
+    );
+    
+    /**
      * the dependant tables
      * @var array 
      */
