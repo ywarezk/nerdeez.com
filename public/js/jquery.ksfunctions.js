@@ -1137,6 +1137,8 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
         filesContainer: $('#' + sId + '_files .files'),
         fileInput: $('#' + sId + '_input'),
         dropZone: $('#' + sId +'_dropzone'),
+        maxChunkSize: 10000000,
+        multipart: true,
         formData: [
                     {
                         name: 'serial',
@@ -1168,12 +1170,12 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
     })
     .bind('fileuploadfailed', function (e, data) 
     {
-        alert('5');
+        //alert('5');
         
     })
     .bind('fileuploaddestroyed', function (e, data) 
     {
-        alert('6');
+        //alert('6');
         
     })
     .bind('fileuploaddone', function (e, data) {
@@ -1181,6 +1183,15 @@ function ksInitUpload(sId , iSerial , iNumDownloads , iMaxFileSize , sAcceptFile
     })
     .bind('fileuploadcompleted', function (e, data) {
         handleSubmitFilesButton();
+        if ($('audio').length > 0){
+            var audio = document.getElementsByTagName("audio")[0];
+            audio.play();
+
+            // or with an ID
+
+            //var audio = document.getElementById("mySoundClip");
+            //audio.play();
+        }
     })
     .bind('fileuploaddestroy', function (e, data) {
         if ($('#' + sId + '_files .files').find('tr').length == 2){

@@ -41,7 +41,7 @@ class Application_Model_UploadHandler
             'min_width' => 1,
             'min_height' => 1,
             // Set the following option to false to enable resumable uploads:
-            'discard_aborted_uploads' => true,
+            'discard_aborted_uploads' => false,
             // Set to true to rotate images based on EXIF meta data, if available:
             'orient_image' => false,
             'image_versions' => array(
@@ -84,7 +84,7 @@ class Application_Model_UploadHandler
     protected function set_file_delete_url($file) {
         //yariv
         $file->delete_url = $this->options['script_url']
-            .'?file='.rawurlencode($file->name) . '&serial=' . $_POST['serial'];
+            .'?file='.rawurlencode($file->name)/* . '&serial=' . $_POST['serial']*/;
         $file->delete_type = $this->options['delete_type'];
         if ($file->delete_type !== 'DELETE') {
             $file->delete_url .= '&_method=DELETE';
@@ -313,10 +313,12 @@ class Application_Model_UploadHandler
             $iRandPrefix = rand( 0 , 99999);
             
             //yariv
-            $file_path = /*$this->options['upload_dir'] . */"nerdeez/" . $iRandPrefix . '_' . $file->name;
+            $file_path_yariv = /*$this->options['upload_dir'] . */"nerdeez/" . $iRandPrefix . '_' . $file->name;
+            $file_path = $this->options['upload_dir'] . $file->name;
             $append_file = !$this->options['discard_aborted_uploads'] &&
                 is_file($file_path) && $file->size > filesize($file_path);
             clearstatcache();
+            $file_size = filesize($uploaded_file);
             if ($uploaded_file && is_uploaded_file($uploaded_file)) {
                 // multipart/formdata uploads (POST method uploads)
                 if ($append_file) {
@@ -325,30 +327,43 @@ class Application_Model_UploadHandler
                         fopen($uploaded_file, 'r'),
                         FILE_APPEND
                     );
+                    if (filesize($file_path) === $file->size){
+                        $s3 = new Nerdeez_Service_Amazon_S3();
+                        $s3->createBucket("nerdeez");
+                        $s3->putObject( $file_path_yariv, 
+                                file_get_contents($file_path),
+                                array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
+                                Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));
+                        unlink($file_path);
+                        $file->url = $file_path_yariv;
+                    }
                 } else {
-                    //move_uploaded_file($uploaded_file, $file_path);
+                    move_uploaded_file($uploaded_file, $file_path);
                     $s3 = new Nerdeez_Service_Amazon_S3();
                     $s3->createBucket("nerdeez");
-                    $s3->putObject( $file_path, 
-                            file_get_contents($uploaded_file),
+                    $s3->putObject( $file_path_yariv, 
+                            file_get_contents($file_path),
                             array(Nerdeez_Service_Amazon_S3::S3_ACL_HEADER =>
                             Nerdeez_Service_Amazon_S3::S3_ACL_PUBLIC_READ));
+                    unlink($file_path);
+                    $file->url = $file_path_yariv;
                 }
             } else {
                 // Non-multipart uploads (PUT method support)
+                //echo 'yariv!!! ' .  
                 file_put_contents(
                     $file_path,
                     fopen('php://input', 'r'),
                     $append_file ? FILE_APPEND : 0
                 );
             }
-            $file_size = filesize($uploaded_file);
+            
             if ($file_size === $file->size) {
             	if ($this->options['orient_image']) {
             		$this->orient_image($file_path);
             	}
                 //yariv
-                $file->url = $file_path;
+                $file->url = $file_path_yariv;
                 foreach($this->options['image_versions'] as $version => $options) {
                     if ($this->create_scaled_image($file->name, $options)) {
                         if ($this->options['upload_dir'] !== $options['upload_dir']) {
@@ -362,7 +377,7 @@ class Application_Model_UploadHandler
                 }
             } else if ($this->options['discard_aborted_uploads']) {
                 //unlink($file_path);
-                $s3 -> removeObject($file_path);
+                //$s3 -> removeObject($file_path);
                 $file->error = 'abort';
             }
             $file->size = $file_size;

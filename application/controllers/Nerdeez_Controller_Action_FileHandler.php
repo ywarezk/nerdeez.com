@@ -147,18 +147,22 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
 
                 //get the serial and validate it
                 Zend_Session::start(); 
-                $serial = $this -> _aData['serial'];
-                if(!isset ($_SESSION['kstempfiles'])){
-                    $_SESSION['kstempfiles'] = array();
-                }
-                if(!isset ($_SESSION['kstempfiles'][$serial])){
-                    $_SESSION['kstempfiles'][$serial] = array();
-                }
-                
-                //for all the files build a file object and put it in the session
-                foreach ($info as $oFile) {
-                    $nfFile = new Nerdeez_Files($oFile ->name, $oFile -> size, $oFile -> type, $oFile -> url , $oFile -> hashing);
-                    $_SESSION['kstempfiles'][$serial][] = $nfFile;
+                if (isset($this -> _aData['serial'])){
+                    $serial = $this -> _aData['serial'];
+                    if(!isset ($_SESSION['kstempfiles'])){
+                        $_SESSION['kstempfiles'] = array();
+                    }
+                    if(!isset ($_SESSION['kstempfiles'][$serial])){
+                        $_SESSION['kstempfiles'][$serial] = array();
+                    }
+
+                    //for all the files build a file object and put it in the session
+                    foreach ($info as $oFile) {
+                        if (isset($oFile -> url)){
+                            $nfFile = new Nerdeez_Files($oFile ->name, $oFile -> size, $oFile -> type, $oFile -> url , $oFile -> hashing);
+                            $_SESSION['kstempfiles'][$serial][] = $nfFile;
+                        }
+                    }
                 }
                 break;
             case 'DELETE':
@@ -208,7 +212,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         parent::preDispatch();
         
         //set to include the fielupload js files
-//        if (!$this->isProduction()){
+        if (!$this->isProduction()){
             $layout = new Zend_Layout();
             $layout->getView()->headScript()->appendFile('/js/jquery-ui.min.js');
             $layout->getView()->headScript()->appendFile('/js/jquery.ui.widget.js');
@@ -225,7 +229,7 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
 
             //set to include the file upload css files
             $layout->getView()->headLink()->prependStylesheet('/styles/bootstrap.min.css');
-//        }
+        }
     }
     
     protected function downloadFile($path , $title = '' , $sContentDispositon = 'attachment'){
