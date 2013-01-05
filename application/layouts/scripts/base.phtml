@@ -137,6 +137,26 @@
                                 <img src="/img/newlogoblack.png" />
                             </a>
                         </div> 
+                        
+                        <!-- begin hello user -->
+                        <?php
+                        if ($this -> layout() -> isRegistered):
+                        ?>
+                        <div style="color: white; position: relative; float: left; width: 183px; left: 100px; top: 33px;">
+                            <h3>
+                                Hi, <?php echo $this -> layout() -> user -> title; ?> <a 
+                                    href="javascript:void(0)" 
+                                    onclick="showChangeNameDialog();" 
+                                    onmouseout="tooltip.hide();" 
+                                    onmouseover="tooltip.show('Change your Nickname');">
+                                    <img src="/img/A_PencilDyn_Sm_N.png"/>
+                                </a>
+                            </h3>
+                        </div>
+                        <?php 
+                        endif;
+                        ?>
+                        <!-- end hello user -->
 
                         <div style="float: right; position: relative; height: 55px; top: 40px;left: -25px;">
                             <ul class="nav">
@@ -255,7 +275,45 @@
         </div>
         <!-- end report success failure -->
         
-        
+        <!-- begin change name dialog -->
+        <div id="changenamedialog" class="flagdialog dialogbg">
+            <div class="bgblack flagdialog_header" >
+                <h2 style="color: white; margin: 2px auto 0px; position: relative; top: 10px; font-weight: normal; font-size: 18px; width: 210px;">
+                    Change your nickname
+                </h2>
+                <a href="javascript:void(0)" onclick="$('#changenamedialog').fadeOut('normal');$('#glassloading').fadeOut('fast');" class="closedialog" style="position: relative; top: -42px; left: 23px;">
+                    <span>
+                    X
+                    </span>
+                </a>
+            </div>
+
+            <div class="flagdialog_body">
+                <p style="text-align: center;">
+                    Write your new nickname in the text box below (up to 20 letters).
+                </p>
+            </div>
+            <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
+                <div class="front-card">
+                    <div class="placeholding-input searchcourse flex-table-form">
+                        <input 
+                                        type="text" 
+                                        autocomplete="on" 
+                                        title="Email" 
+                                        name="email" 
+                                        class="text-input email-input"
+                                        style="width: 100%"
+                                        maxlength="20" />
+                    </div>
+                </div>
+            </div>
+            <div class="flagdialog_body_controllers">
+                <button class="filebrowserbutton" type="button" onclick="$('#loginregistererrordialog').fadeOut('normal');showRegisterMenu();" value="Submit" style="margin-top: 10px; height: 38px; width: 100px; float: right;">
+                    Submit
+                </button>
+            </div>
+        </div>      
+        <!-- begin change name dialog -->
         
         <!-- begin footer -->
         <div id="footer" class="bgblack">

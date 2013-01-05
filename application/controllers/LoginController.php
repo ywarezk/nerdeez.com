@@ -141,22 +141,24 @@ class LoginController extends Nerdeez_Controller_Action{
         $auth = Zend_Auth::getInstance();
         $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
         if ($auth->hasIdentity()) {
-            $sEmail = $auth->getIdentity()-> email;
-
             ## Delete Cookie Code
             $logincookies = new Application_Model_DbTable_Logincookies();
             //$logincookies->deleteDBCookie($userid);
-            $logincookies ->deleteRowWithId($sEmail);
+            //$logincookies ->deleteRowWithId($auth->getIdentity()->id);
+            $logincookies ->deleteRowset($logincookies ->fetchAll($logincookies -> select() 
+                    -> where('email = ?', $auth->getIdentity() -> email)));
 
         }
         $auth->clearIdentity();
 
         ## Clear Cookie
         $killtime = time() - 3600;
-        setcookie('userid', '', $killtime,"/", ".knowledge-share.com");
-        setcookie('ucode', '', $killtime,"/", ".knowledge-share.com");
+        $sUrl = $this -> sGetUrl();
+        setcookie('email', '', $killtime,"/", "." . $sUrl);
+        setcookie('identifier', '', $killtime,"/", "." . $sUrl);
+        setcookie('token', '', $killtime,"/", "." . $sUrl);
 
-        $this->_helper->redirector('index', 'index'); // back to home page
+        $this->_redirector->gotoUrl($this->getReferer());
     }
     
     /**

@@ -2821,3 +2821,17 @@ function showLoginRegisterErrorDialog(){
     $('#loginregistererrordialog').css('left', '' + (widthhtml - widthdialog) + 'px');
     $('#loginregistererrordialog').fadeIn('normal');
 }
+
+/**
+ * shows the dialog that lets the user change his name
+ */
+function showChangeNameDialog(){
+    $('#glassloading').css('display', 'block');
+    var heighthtml = $('html').height()/2;
+    var heightdialog = $('#changenamedialog').height()/2;
+    var widthhtml = $('html').width()/2;
+    var widthdialog = $('#changenamedialog').width()/2;
+    $('#changenamedialog').css('top', '' + (heighthtml - heightdialog) + 'px');
+    $('#changenamedialog').css('left', '' + (widthhtml - widthdialog) + 'px');
+    $('#changenamedialog').fadeIn('normal');
+}

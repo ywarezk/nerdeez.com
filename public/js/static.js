@@ -17,4 +17,5 @@
  * @depends jquery.fileupload-ui.js
  * @depends locale.js
  * @depends admin.js
+ * @depends tooltip.js
  */

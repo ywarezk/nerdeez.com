@@ -75,6 +75,13 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
     public function ipsAction(){
         $this ->initTablesView("I.P's", 'Application_Model_DbTable_Banips');
     }
+    
+    /**
+     * manually edit the login cookies table
+     */
+    public function logincookiesAction(){
+        $this ->initTablesView("Login Cookies", 'Application_Model_DbTable_Logincookies');
+    }
 
 
     /**

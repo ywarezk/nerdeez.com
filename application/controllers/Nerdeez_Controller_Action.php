@@ -405,6 +405,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         }
         else{
             $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/jquery.ksfunctions.js'));
+            $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/tooltip.js'));
             $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/jquery.ez-pinned-footer.js'));
             $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/superfish.js'));
             $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/jquery.validate.min.js'));
