@@ -214,21 +214,21 @@ abstract class Nerdeez_Controller_Action_FileHandler extends Nerdeez_Controller_
         //set to include the fielupload js files
         if (!$this->isProduction()){
             $layout = new Zend_Layout();
-            $layout->getView()->headScript()->appendFile('/js/jquery-ui.min.js');
-            $layout->getView()->headScript()->appendFile('/js/jquery.ui.widget.js');
-            $layout->getView()->headScript()->appendFile('/js/tmpl.min.js');
-            $layout->getView()->headScript()->appendFile('/js/load-image.min.js');
-            $layout->getView()->headScript()->appendFile('/js/canvas-to-blob.min.js');
-            $layout->getView()->headScript()->appendFile('/js/bootstrap.min.js');
-            $layout->getView()->headScript()->appendFile('/js/bootstrap-image-gallery.min.js');
-            $layout->getView()->headScript()->appendFile('/js/jquery.iframe-transport.js');
-            $layout->getView()->headScript()->appendFile('/js/jquery.fileupload.js');
-            $layout->getView()->headScript()->appendFile('/js/jquery.fileupload-fp.js');
-            $layout->getView()->headScript()->appendFile('/js/jquery.fileupload-ui.js');
-            $layout->getView()->headScript()->appendFile('/js/locale.js');
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/jquery-ui.min.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/jquery.ui.widget.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/tmpl.min.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/load-image.min.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/canvas-to-blob.min.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/bootstrap.min.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/bootstrap-image-gallery.min.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/jquery.iframe-transport.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/jquery.fileupload.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/jquery.fileupload-fp.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/jquery.fileupload-ui.js'));
+            $layout->getView()->headScript()->appendFile($this->view->baseUrl('js/locale.js'));
 
             //set to include the file upload css files
-            $layout->getView()->headLink()->prependStylesheet('/styles/bootstrap.min.css');
+            $layout->getView()->headLink()->prependStylesheet($this->view->baseUrl('styles/bootstrap.min.css'));
         }
     }
     
