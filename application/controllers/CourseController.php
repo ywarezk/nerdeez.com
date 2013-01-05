@@ -331,6 +331,7 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         $this->disableView();
         
         //get the params
+        
     }
 }
 

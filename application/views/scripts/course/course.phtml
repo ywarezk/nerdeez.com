@@ -601,3 +601,43 @@
     loadReasonsMenu();
 </script>
 <!-- end of copyright report dialog -->
+
+<!-- begin error dialog -->
+<div id="loginregistererrordialog" class="flagdialog dialogbg">
+    <div class="bgblack flagdialog_header" >
+        <h2 style="color: white; margin: 2px auto 0px; position: relative; top: 10px; font-weight: normal; font-size: 18px; width: 341px;">
+            Login to download multiple files or folders
+        </h2>
+        <a href="javascript:void(0)" onclick="$('#loginregistererrordialog').fadeOut('normal');$('#glassloading').fadeOut('fast');" class="closedialog" style="position: relative; top: -42px; left: 23px;">
+            <span>
+            X
+            </span>
+        </a>
+    </div>
+    
+    <div class="flagdialog_body">
+        <table style="width: 100%;">
+            <tr>
+                <td style="vertical-align: top;padding: 15px">
+                    <img src="/img/Cop.png" />
+                </td>
+                <td style="padding: 15px;">
+                    <div class="flagdialog_body_textcontent">
+                        <p>
+                            You have to be a registered user to dowload entire folder or multiple files. <br/> So your options are to register/login or download the files one by one.
+                        </p>
+                    </div>
+                    <div class="flagdialog_body_controllers">
+                        <button class="filebrowserbutton" type="button" onclick="$('#loginregistererrordialog').fadeOut('normal');showRegisterMenu();" value="Submit" style="margin-top: 10px; height: 38px; width: 100px; float: right;">
+                            Register
+                        </button>
+                        <button class="filebrowserbutton" type="button" onclick="$('#loginregistererrordialog').fadeOut('normal');showLoginMenu();" value="Submit" style="margin-right: 10px;margin-top: 10px; height: 38px; width: 100px; float: right;">
+                            Login
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>      
+<!-- end error dialog-->

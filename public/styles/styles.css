@@ -2538,7 +2538,7 @@ textarea{
 }
 
 .loginregister{
-    height: 381px;
+    height: 415px;
     width: 436px;
     border-radius: 15px 15px 15px 15px;
     position: fixed;
@@ -2601,4 +2601,8 @@ textarea{
 
 #login{
     display: none;
+}
+
+#loginregistererrordialog{
+    
 }

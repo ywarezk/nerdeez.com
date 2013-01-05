@@ -2585,7 +2585,7 @@ function ksDownloadFiles(aIds , aFolders , iCourseId){
             success: function(res) {
                 if (res.items[0].status !== 'success'){
                     //display error dialog
-                    showErrorDialog();
+                    showLoginRegisterErrorDialog();
                     return;
                 }
             },
@@ -2804,9 +2804,16 @@ function showLoginMenu(){
 }
 
 /**
- * displays an error dialog
+ * displays an error dialog for user that wants to download entire folder and is not registered
  * @returns {null}
  */
-function showErrorDialog(){
-    
+function showLoginRegisterErrorDialog(){
+    $('#glassloading').fadeIn('normal');
+    var heighthtml = $('html').height()/2;
+    var heightdialog = $('#loginregistererrordialog').height()/2;
+    var widthhtml = $('html').width()/2;
+    var widthdialog = $('#loginregistererrordialog').width()/2;
+    $('#loginregistererrordialog').css('top', '' + (heighthtml - heightdialog) + 'px');
+    $('#loginregistererrordialog').css('left', '' + (widthhtml - widthdialog) + 'px');
+    $('#loginregistererrordialog').fadeIn('normal');
 }
