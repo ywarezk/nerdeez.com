@@ -144,7 +144,7 @@
                         ?>
                         <div style="color: white; position: relative; float: left; width: 183px; left: 100px; top: 33px;">
                             <h3>
-                                Hi, <?php echo $this -> layout() -> user -> title; ?> <a 
+                                Hi, <span class="userdetails_nickname"><?php echo $this -> layout() -> user -> title; ?> </span><a 
                                     href="javascript:void(0)" 
                                     onclick="showChangeNameDialog();" 
                                     onmouseout="tooltip.hide();" 
@@ -276,7 +276,7 @@
         <!-- end report success failure -->
         
         <!-- begin change name dialog -->
-        <div id="changenamedialog" class="flagdialog dialogbg">
+        <div id="changenamedialog" class="flagdialog dialogbg" style="width: 534px;">
             <div class="bgblack flagdialog_header" >
                 <h2 style="color: white; margin: 2px auto 0px; position: relative; top: 10px; font-weight: normal; font-size: 18px; width: 210px;">
                     Change your nickname
@@ -294,23 +294,32 @@
                 </p>
             </div>
             <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
-                <div class="front-card">
-                    <div class="placeholding-input searchcourse flex-table-form">
-                        <input 
-                                        type="text" 
-                                        autocomplete="on" 
-                                        title="Email" 
-                                        name="email" 
-                                        class="text-input email-input"
-                                        style="width: 100%"
-                                        maxlength="20" />
-                    </div>
-                </div>
-            </div>
-            <div class="flagdialog_body_controllers">
-                <button class="filebrowserbutton" type="button" onclick="$('#loginregistererrordialog').fadeOut('normal');showRegisterMenu();" value="Submit" style="margin-top: 10px; height: 38px; width: 100px; float: right;">
-                    Submit
-                </button>
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <div class="front-card">
+                                <div class="placeholding-input searchcourse flex-table-form">
+                                    <input 
+                                                    type="text" 
+                                                    autocomplete="on" 
+                                                    title="Email" 
+                                                    name="email" 
+                                                    class="text-input email-input"
+                                                    style="width: 100%; position: relative !important;"
+                                                    id="changenickname_textbox"
+                                                    maxlength="20" />
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">
+                            <button class="filebrowserbutton" type="button" onclick="$('#loginregistererrordialog').fadeOut('normal');updateNickname();" value="Submit" style="margin-top: 10px; height: 38px; width: 100px; float: right;">
+                                Submit
+                            </button>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>      
         <!-- begin change name dialog -->

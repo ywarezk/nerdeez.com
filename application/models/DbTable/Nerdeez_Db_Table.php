@@ -117,6 +117,13 @@ abstract class Nerdeez_Db_Table extends Zend_Db_Table_Abstract{
         }
     }
     
+    /**
+     * returns the table columns
+     */
+    public function getModelColumns(){
+        return $this -> info(Zend_Db_Table_Abstract::COLS);
+    }
+    
     
     
     

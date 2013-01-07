@@ -2835,3 +2835,55 @@ function showChangeNameDialog(){
     $('#changenamedialog').css('left', '' + (widthhtml - widthdialog) + 'px');
     $('#changenamedialog').fadeIn('normal');
 }
+
+/**
+ * when the user wants to update his nickname
+ * @returns {null}
+ */
+function updateNickname(){
+    //put the loading screen on
+    loadingScreen();
+    
+    //create an object to send to varify auth
+    var obj=new Object();
+    obj.title = $.trim($('#changenickname_textbox').val());
+    
+    //send the reset information via ajax
+    $.ajax({
+            type: "POST",
+            url: "/user/updatenickname/",
+            dataType: "json",
+            data: obj ,
+            async: false,
+            success: function(res) {
+                if (res.items[0].status ==='success'){
+                    setSuccessToSuccess();
+                    //loading screen
+                    removeLoadingScreen();
+
+                    //display success failure screen
+                    displaySuccessFailure();
+                    
+                    $('.userdetails_nickname').text($.trim($('#changenickname_textbox').val()));
+                    $('#glassnoloading').fadeOut('normal');
+                    $('#changenamedialog').fadeOut('normal');
+                }
+                else{
+                    setSuccessToFailed();
+                    //loading screen
+                    removeLoadingScreen();
+
+                    //display success failure screen
+                    displaySuccessFailure();
+                }
+            },
+            error: function(res){
+                setSuccessToFailed();
+                //loading screen
+                removeLoadingScreen();
+                 
+                //display success failure screen
+                displaySuccessFailure();
+            }
+    });
+}

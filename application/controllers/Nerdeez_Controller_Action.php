@@ -508,6 +508,35 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         return $auth ->getIdentity();
     }
     
+    /**
+     * gets the user details from the db and update the user info
+     */
+    public function updateUserInfo(){
+         //get the model
+        $mUsers = new Application_Model_DbTable_Users();
+        
+        //get the columns
+        $aCols = $mUsers ->getModelColumns();
+        
+        //get the user info
+        $oCurrentUser = $this ->getUserInfo();
+        
+        //get the user row
+        $rUser = $mUsers ->getRowWithId($oCurrentUser -> id);
+        
+        //from the user row create the users object
+        $oUser = NULL;
+        $oUser = new stdClass();
+        foreach ($aCols as $sCol) {
+            $oUser -> $sCol = $rUser[$sCol];
+        }
+        
+        //write the object to auth
+        $auth = Zend_Auth::getInstance();
+        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
+        $auth->getStorage()->write($oUser);
+    }
+    
 }
 
 
