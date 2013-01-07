@@ -114,7 +114,7 @@ class RegisterController extends Nerdeez_Controller_Action{
         $mUsers -> update ($newrow , 'id = ' . $id);
         
         //redirect to user profile page
-        $this->_redirector->gotoUrl('/index/index/status/'. urlencode('MESSAGE: Account activated please login to continue') ); 
+        $this->_redirector->gotoUrl('/?is_activated=true'); 
         return;
     }
     

@@ -30,6 +30,13 @@ class IndexController extends Nerdeez_Controller_Action
         $rsUniversities = $mUniversities -> fetchAll($mUniversities -> select() 
                 -> order('title ASC'));
         $this -> view -> rsUniversities = $rsUniversities;
+        
+        //send the is activated if set
+        $bIsActivated = FALSE;
+        if(isset($this->_aData['is_activated']) && strtolower($this->_aData['is_activated']) === 'true'){
+            $bIsActivated = TRUE;
+        }
+        $this->view->bIsActivated = $bIsActivated;
     }
     
     /**
