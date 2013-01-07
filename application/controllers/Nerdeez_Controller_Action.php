@@ -438,27 +438,19 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      */
     public function sendActivationMail($serial , $users_id , $email){
         //create the mail body
-        $body = '<HTML><BODY><CENTER>
-        <h1>Nerdeez Account activation</h1>
-        <p>
-        Please confirm your Nerdeez account by clicking this link:
-        </p>
-        <p>
-            <a href="http://'. $this ->sGetUrl() .'/register/activateaccount/id/'. $users_id . '/token/'. $serial .'">
-                activate account
-            </a>
-        </p>
-        <p>
-        Regards, Nerdeez Team
-        </p>
-        </CENTER></BODY>
-        </HTML>';		
+        $sLink = 'http://'. $this ->sGetUrl() .'/register/activateaccount/id/'. $users_id . '/token/'. $serial;
+        
+        $sBody = NULL;
+        ob_start();
+        echo $this->view->partial('partials/Nerdeez_Mail_Template.phtml', array('sLink'  =>  $sLink));
+        $sBody = ob_get_contents();
+        ob_end_clean();
         
         //mail title
         $title = "Nerdeez account activation";
         
         //send the mail 
-        $this->reportByMail($email, $body, $title);
+        $this->reportByMail($email, $sBody, $title);
     }
     
     /**

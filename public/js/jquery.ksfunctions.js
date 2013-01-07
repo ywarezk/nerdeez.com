@@ -424,6 +424,8 @@ function preload(){
     preload = [
         '/js/static.min.js',
         '/styles/static.min.css',
+        '/img/icons.png',
+        '/img/Success.png',
     ];
     //$.preload(preload);
     isIE = navigator.appName.indexOf('Microsoft') === 0;
