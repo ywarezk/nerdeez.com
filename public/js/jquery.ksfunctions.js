@@ -2778,6 +2778,7 @@ function showSignIn(){
     $('#registertab').removeClass('active');
     if ($('#login').css('display') !== 'block'){
         $('#register').css('display', 'none');
+        $('#register_success').css('display', 'none');
         $('#login').css('display', 'block')
     }
 }

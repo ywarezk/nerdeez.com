@@ -107,7 +107,17 @@ cause the home button to look active
     loadSearchCourse();
     
     </script>
-    <script type="text/javascript">
     
-    </script>
+    <?php 
+    //if the user activated his account show the login screen
+    if($this -> bIsActivated):
+    ?>
+        <script type="text/javascript">
+            $('#login_success_activate').css('display', 'block');
+            showLoginMenu();
+        </script>
+    <?php
+    endif;
+    ?>
+    
 </div>
