@@ -1126,7 +1126,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', end
 }
 
 .error{
-    color: red;
+    color: #E20145;
     font-size: 12px;
     font-weight: bold;
     position: relative;
@@ -2299,7 +2299,7 @@ textarea{
 }
 
 .filebrowsercomplete{
-    color: green; font-weight: bold; width: 100%;border-right: 1px solid #DDDDDD;
+    color: #19B5A7; font-weight: bold; width: 100%;border-right: 1px solid #DDDDDD;
 }
 
 #submitfilebrowser:hover{
