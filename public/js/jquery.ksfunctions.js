@@ -2205,7 +2205,7 @@ var isEventSupported = (function() {
 function loadCourse(){
     //init the text on the upload explain based on browser drag drop
     if (isEventSupported('dragstart') && isEventSupported('drop')) {
-        $('#uploaddialog_explain').text("1. Click upload, or drag n'drop files here, to upload them to course");
+        $('#uploaddialog_explain').text("1. Click upload or drag n'drop files here to add them");
     }
     else{
         $('#uploaddialog_explain').text("1. Click upload to upload files to course");
