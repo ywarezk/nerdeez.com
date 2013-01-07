@@ -18,4 +18,5 @@
  * @depends locale.js
  * @depends admin.js
  * @depends tooltip.js
+ * @depends spin.min.js
  */

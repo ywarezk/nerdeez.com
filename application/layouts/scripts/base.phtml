@@ -16,10 +16,6 @@
             echo $this->headMeta(); 
         ?> 
         <?php 
-            /*$this->headLink()->prependStylesheet('/styles/styles.css');
-            $this->headLink()->prependStylesheet('/styles/superfish-navbar.css');
-            $this->headLink()->prependStylesheet('/styles/superfish-vertical.css');
-            $this->headLink()->prependStylesheet('/styles/superfish.css');*/
             $this->headLink(array('rel' => 'SHORTCUT ICON',
                                   'href' => '/img/favicon.ico'), 
                                   'PREPEND');
@@ -30,12 +26,6 @@
         ?> 
         <?php 
             //attach common javascriopt files
-            //$this->headScript()->prependFile('/js/tooltip.js');
-            /*$this->headScript()->prependFile('/js/jquery.ksfunctions.js');
-            $this->headScript()->prependFile('/js/jquery.ez-pinned-footer.js');
-            $this->headScript()->prependFile('/js/superfish.js');
-            $this->headScript()->prependFile('/js/jquery.validate.min.js');
-            $this->headScript()->prependFile('/js/jquery-1.7.1.min.js');*/
             echo $this->headScript(); 
         ?> 
       
@@ -52,9 +42,6 @@
               var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
             })();
 
-        </script>
-        <script type="text/javascript">
-            
         </script>
     </head> 
     <body>
@@ -260,10 +247,9 @@
          <!-- end glass to prevent background clicks -->
         
         <!-- begin loading screen -->
-        <div class="glass_loaddialog border-radius border-style">
-            <h2>Loading ...</h2>
-            <div align="center">
-                <img src="/img/loading_1.gif" width="100" height="100"/>
+        <div class="glass" style="z-index: 100;" id="loadingball">
+            <div class="loading" 
+                 style="left: 50%;position: relative;top: 50%;">
             </div>
         </div>
         <!-- end loading screen  -->

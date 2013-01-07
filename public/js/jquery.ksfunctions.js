@@ -2073,7 +2073,7 @@ function loadRegistration(){
             repassword: {
                 required: 'Retype password is required',
                 minlength: 'Must be more than 5 chars',
-                equalTo: 'must match the password field'
+                equalTo: 'Must match the password field'
             }
         },
         errorPlacement: function(error, element) {
@@ -2740,6 +2740,27 @@ function initCommonActions(){
     
     iMargin = (iHeightDocument / 3) - (iHeightSearchcourse / 2) - $('#footer').height();
     $('.front-searchcourse').css('margin-top' , "" + iMargin + "px");
+    
+    //set the loading ball
+    var opts = {
+        lines: 17, // The number of lines to draw
+        length: 40, // The length of each line
+        width: 12, // The line thickness
+        radius: 50, // The radius of the inner circle
+        corners: 1, // Corner roundness (0..1)
+        rotate: 0, // The rotation offset
+        color: '#000', // #rgb or #rrggbb
+        speed: 1, // Rounds per second
+        trail: 60, // Afterglow percentage
+        shadow: false, // Whether to render a shadow
+        hwaccel: false, // Whether to use hardware acceleration
+        className: 'spinner', // The CSS class to assign to the spinner
+        zIndex: 2e9, // The z-index (defaults to 2000000000)
+        top: 'auto', // Top position relative to parent in px
+        left: 'auto' // Left position relative to parent in px
+      };
+    var spinner = new Spinner(opts).spin();
+    $('.loading').append(spinner.el);
 }
 
 function clickedUploadInCourse(){
@@ -2884,6 +2905,50 @@ function updateNickname(){
                  
                 //display success failure screen
                 displaySuccessFailure();
+            }
+    });
+}
+
+
+/**
+ * when the user submits the registration form
+ * @returns {null}
+ */
+function submitRegistration(){
+    // show the loading of the registration dialog
+    $('#loadingball').css('display', 'block');
+    
+    //create an object to send to varify auth
+    var obj=new Object();
+    obj.email = $.trim($('#register_input_email').val());
+    obj.password = $.trim($('#register_input_password').val());
+    obj.repassword = $.trim($('#register_input_repassword').val());
+    
+    //send the reset information via ajax
+    $.ajax({
+            type: "POST",
+            url: "/register/signup/",
+            dataType: "json",
+            data: obj ,
+            async: false,
+            success: function(res) {
+                if (res.items[0].status ==='success'){
+                    $('#register_email_feedback').text(res.items[0].email);
+                    $('#register').fadeOut('normal', function(){
+                        $('#register_success').fadeIn('normal');
+                    });
+                }
+                else{
+                    $('#register_error').text(res.items[0].generalerrors);
+                    $('.register-error-placeholder.repassword').text(res.items[0].repassworderrors);
+                    $('.register-error-placeholder.password').text(res.items[0].passworderrors);
+                    $('.register-error-placeholder.email').text(res.items[0].emailerrors);
+                }
+                $('#loadingball').fadeOut('normal');
+            },
+            error: function(res){
+                $('#register_error').text('Connection failure: Try again');
+                $('#loadingball').fadeOut('normal');
             }
     });
 }

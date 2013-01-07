@@ -38,7 +38,19 @@ class RegisterController extends Nerdeez_Controller_Action{
         
         //check password match
         if($password != $repassword ){
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('repassword must match the password!'));
+            $this->ajaxReturnFailed(array('repassworderrors' => "Password and Retype password don't match"));
+            return;
+        }
+        
+        //check password length
+        if (strlen($password)< 5){
+            $this->ajaxReturnFailed(array('passworderrors' => "Password must be longer than 5 chars"));
+            return;
+        }
+        
+        //check email is valid
+        if (!$this->isValidEmail($mail)){
+            $this->ajaxReturnFailed(array('emailerrors' => "Invalid email address"));
             return;
         }
         
@@ -50,25 +62,9 @@ class RegisterController extends Nerdeez_Controller_Action{
         $mUsers = new Application_Model_DbTable_Users();
         $rUser = $mUsers -> fetchRow($mUsers -> select() ->where ("email = ?" , $mail));
         if ($rUser != NULL){
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('User with this mail already exists!'));
+            $this->ajaxReturnFailed(array('emailerrors' => "Email address already exists"));
             return;
         }
-        
-        //check if user has a row in users
-        /*$users_id = NULL;
-        $users_id = $ksfunctions -> getUserId();
-        
-        //grab/create the title
-        $title = $ksfunctions -> createUserName();
-        if ($users_id != NULL){
-            $rows = $mUsers ->getRowWithId($users_id);
-            if ($rows == NULL){
-                $users_id = NULL;
-            }
-            else{
-                $title = $rows['title'];
-            }
-        }*/
         
         //create the row to pass to database
         $title = $ksfunctions -> createUserName();
@@ -82,7 +78,9 @@ class RegisterController extends Nerdeez_Controller_Action{
         
         //send activation mail
         $this -> sendActivationMail ($serial , $users_id , $mail);
-        $this->_redirector->gotoUrl('/index/index/status/' . urlencode('An account activation mail was sent. To complete the activation process you have to follow the link in the mail.'));
+        
+        //report success
+        $this->ajaxReturnSuccess(array('email' => $mail));
     }
     
     /**

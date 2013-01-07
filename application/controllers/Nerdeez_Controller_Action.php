@@ -343,8 +343,8 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
     /**
      * when ajax was completed successfully pass it to the user
      */
-    public function ajaxReturnSuccess(){
-        $userData=array(array('status'=>'success','data'=>''));
+    public function ajaxReturnSuccess($aExtraData = array()){
+        $userData=array(array_merge(array('status'=>'success','data'=>''), $aExtraData));
         $dojoData= new Zend_Dojo_Data('status',$userData);
 	echo $dojoData->toJson();
     }
@@ -353,8 +353,8 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      * when ajax was completed successfully pass it to the user
      * @param String $sMsg the failed message to send
      */
-    public function ajaxReturnFailed($sMsg = '', $sType= ''){
-        $userData=array(array('status'=>'failed','msg'=>$sMsg, 'type'=>$sType));
+    public function ajaxReturnFailed($aExtraData = array()){
+        $userData=array(array_merge(array('status'=>'failed','msg'=>$sMsg, 'type'=>$sType), $aExtraData));
         $dojoData= new Zend_Dojo_Data('status',$userData);
 	echo $dojoData->toJson();
     }
@@ -405,6 +405,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         }
         else{
             $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/jquery.ksfunctions.js'));
+            $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/spin.min.js'));
             $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/tooltip.js'));
             $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/jquery.ez-pinned-footer.js'));
             $layout -> getView() -> headScript() -> prependFile($this->view->baseUrl('js/superfish.js'));
@@ -535,6 +536,15 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $auth = Zend_Auth::getInstance();
         $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
         $auth->getStorage()->write($oUser);
+    }
+    
+    /**
+     * 
+     * @param String $email the email string to check
+     * @return Boolean
+     */
+    public function isValidEmail($email){
+        return preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^", $email);
     }
     
 }

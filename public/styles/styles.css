@@ -1180,7 +1180,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', end
 .register-error-placeholder{
     /*position: relative;
     top: 27px;*/
-    color: red;
+    color: #E62A59;
+    font-weight: bold;
 }
 
 .uploadpermform-error-placeholder{
@@ -2556,7 +2557,7 @@ textarea{
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
-    background-color: #BDCCD4;
+    background-color: #282828;
     border-color: black black -moz-use-text-color;
     border-image: none;
     border-radius: 10px 10px 0 0;
@@ -2570,7 +2571,7 @@ textarea{
 }
 
 .loginregister_tab.active{
-    background-color: #282828;
+    background-color: #BDCCD4;
 }
 
 .loginregister_tab span{
@@ -2604,5 +2605,28 @@ textarea{
 }
 
 #loginregistererrordialog{
+    
+}
+
+.nerdeez_dialog{
+    padding: 0 !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+}
+
+#register_success{
+    display: none;
+    margin: 0 auto;
+    position: relative;
+    top: 100px;
+    width: 90%;
+    left: 17px;
+}
+
+.dialog_success{
+    
+}
+
+.register_loading{
     
 }
