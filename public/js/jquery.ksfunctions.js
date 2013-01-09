@@ -160,8 +160,9 @@ function checkCookie()
 }
 
 function loadingScreen(){
-    $("#glassloading").css("display" , "block");
-    $(".glass_loaddialog").css("display" , "block");
+    $('#loadingball').css('display', 'block');
+    /*$("#glassloading").css("display" , "block");
+    $(".glass_loaddialog").css("display" , "block");*/
     //$(".glass").css("z-index" , "4");
 }
 
@@ -170,8 +171,9 @@ function removeLoadingScreen(){
     $(".glass").css("z-index" , "2");
     $(".glass").css("display" , "none");*/
     
-    $("#glassloading").css("display" , "none");
-    $(".glass_loaddialog").css("display" , "none");
+    /*$("#glassloading").css("display" , "none");
+    $(".glass_loaddialog").css("display" , "none");*/
+    $('#loadingball').css('display', 'none');
 }
 
 function displaySuccessFailure(){
@@ -2857,6 +2859,9 @@ function showChangeNameDialog(){
     $('#changenamedialog').css('top', '' + (heighthtml - heightdialog) + 'px');
     $('#changenamedialog').css('left', '' + (widthhtml - widthdialog) + 'px');
     $('#changenamedialog').fadeIn('normal');
+    $('#change_nickname_dialog_success').css('display', 'none');
+    $('#change_nickname_dialog_error').css('display', 'none');
+    $('#change_nickname_dialog_body').css('display', 'block');
 }
 
 /**
@@ -2880,33 +2885,30 @@ function updateNickname(){
             async: false,
             success: function(res) {
                 if (res.items[0].status ==='success'){
-                    setSuccessToSuccess();
+                    //setSuccessToSuccess();
                     //loading screen
                     removeLoadingScreen();
 
                     //display success failure screen
-                    displaySuccessFailure();
+                    //displaySuccessFailure();
                     
                     $('.userdetails_nickname').text($.trim($('#changenickname_textbox').val()));
-                    $('#glassnoloading').fadeOut('normal');
-                    $('#changenamedialog').fadeOut('normal');
+                    //$('#glassloading').fadeOut('normal');
+                    //$('#changenamedialog').fadeOut('normal');
+                    $('#change_nickname_dialog_body').fadeOut('normal', function(){
+                       $('#change_nickname_dialog_success').fadeIn('normal'); 
+                    });
                 }
                 else{
-                    setSuccessToFailed();
-                    //loading screen
                     removeLoadingScreen();
-
-                    //display success failure screen
-                    displaySuccessFailure();
+                    $('#change_nickname_dialog_error * p').text(res.items[0].msg);
+                    $('#change_nickname_dialog_error').fadeIn('normal');
                 }
             },
             error: function(res){
-                setSuccessToFailed();
-                //loading screen
                 removeLoadingScreen();
-                 
-                //display success failure screen
-                displaySuccessFailure();
+                $('#change_nickname_dialog_error * p').text('Connection failure! Failed to connect to server.');
+                $('#change_nickname_dialog_error').fadeIn('normal');
             }
     });
 }

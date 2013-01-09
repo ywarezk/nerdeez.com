@@ -254,7 +254,7 @@
         <!-- end report success failure -->
         
         <!-- begin change name dialog -->
-        <div id="changenamedialog" class="flagdialog dialogbg" style="width: 534px;">
+        <div id="changenamedialog" class="flagdialog dialogbg" style="width: 534px;height: 232px;">
             <div class="bgblack flagdialog_header" >
                 <h2 style="color: white; margin: 2px auto 0px; position: relative; top: 10px; font-weight: normal; font-size: 18px; width: 210px;">
                     Change your nickname
@@ -265,39 +265,64 @@
                     </span>
                 </a>
             </div>
-
-            <div class="flagdialog_body">
-                <p style="text-align: center;">
-                    Write your new nickname in the text box below (up to 20 letters).
-                </p>
-            </div>
-            <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
-                <table style="width: 100%;">
+            <div id="change_nickname_dialog_error">
+                <table style="width: 100%">
                     <tr>
                         <td>
-                            <div class="front-card">
-                                <div class="placeholding-input searchcourse flex-table-form">
-                                    <input 
-                                                    type="text" 
-                                                    autocomplete="on" 
-                                                    title="Email" 
-                                                    name="email" 
-                                                    class="text-input email-input"
-                                                    style="width: 100%; position: relative !important;"
-                                                    id="changenickname_textbox"
-                                                    maxlength="20" />
-                                </div>
-                            </div>
+                            <img src="/img/X.png" width="64" />
                         </td>
-                    </tr>
-                    <tr>
-                        <td style="text-align: right">
-                            <button class="filebrowserbutton" type="button" onclick="$('#loginregistererrordialog').fadeOut('normal');updateNickname();" value="Submit" style="margin-top: 10px; height: 38px; width: 100px; float: right;">
-                                Submit
-                            </button>
+                        <td>
+                            <p></p>
                         </td>
                     </tr>
                 </table>
+            </div>
+            <div id="change_nickname_dialog_success">
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <img src="/img/Success1.png" width="64" />
+                        </td>
+                        <td>
+                            <p>Successfully changed your nickname</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="change_nickname_dialog_body">
+                <div class="flagdialog_body">
+                    <p style="text-align: center;">
+                        Write your new nickname in the text box below (up to 20 letters).
+                    </p>
+                </div>
+                <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td>
+                                <div class="front-card">
+                                    <div class="placeholding-input searchcourse flex-table-form">
+                                        <input 
+                                                        type="text" 
+                                                        autocomplete="on" 
+                                                        title="Email" 
+                                                        name="email" 
+                                                        class="text-input email-input"
+                                                        style="width: 100%; position: relative !important;"
+                                                        id="changenickname_textbox"
+                                                        maxlength="20" />
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right">
+                                <button class="filebrowserbutton" type="button" onclick="$('#loginregistererrordialog').fadeOut('normal');updateNickname();" value="Submit" style="margin-top: 10px; height: 38px; width: 100px; float: right;">
+                                    Submit
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>      
         <!-- begin change name dialog -->

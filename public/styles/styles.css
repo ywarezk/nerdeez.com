@@ -2628,3 +2628,23 @@ textarea{
 .register_loading{
     
 }
+
+#change_nickname_dialog_error{
+    color: #E62A59;
+    display: none;
+    height: 22px;
+    margin: 0 auto;
+    position: relative;
+    top: -1px;
+    width: 363px;
+}
+
+#change_nickname_dialog_success{
+    color: green;
+    display: none;
+    margin: 0 auto;
+    position: relative;
+    top: 46px;
+    width: 316px;
+}
+

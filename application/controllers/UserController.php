@@ -17,6 +17,14 @@ class UserController extends Nerdeez_Controller_Action{
      * when the user wants to update his nickname
      */
     public function updatenicknameAction(){
+        //disable the view
+        $this->disableView();
+        
+        //check if the nickname exceeds 20 chars
+        if(strlen($this->_aData['title']) > 20){
+            $this->ajaxReturnFailed(array('msg' => 'Title is longer than 20 characters'));
+            return;
+        }
         $this->update();
     }
     

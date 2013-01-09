@@ -390,7 +390,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      * @param String $sMsg the failed message to send
      */
     public function ajaxReturnFailed($aExtraData = array()){
-        $userData=array(array_merge(array('status'=>'failed','msg'=>$sMsg, 'type'=>$sType), $aExtraData));
+        $userData=array(array_merge(array('status'=>'failed'), $aExtraData));
         $dojoData= new Zend_Dojo_Data('status',$userData);
 	echo $dojoData->toJson();
     }
