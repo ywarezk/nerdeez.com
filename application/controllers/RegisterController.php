@@ -36,22 +36,26 @@ class RegisterController extends Nerdeez_Controller_Action{
         $repassword = $this -> _aData['repassword'];
         $ksfunctions = new Application_Model_KSFunctions();
         
+        //the url for redirect and additional params
+        $sUrlRedirect = $this->getReferer();
+        $aData = array();
+        
         //check password match
         if($password != $repassword ){
-            $this->ajaxReturnFailed(array('repassworderrors' => "Password and Retype password don't match"));
-            return;
+            $aData['register_status'] = Nerdeez_Errors::PASSWORD_MISMATCH;
+            $this->_redirector->gotoUrl($sUrlRedirect . '?' . http_build_query($aData));
         }
         
         //check password length
         if (strlen($password)< 5){
-            $this->ajaxReturnFailed(array('passworderrors' => "Password must be longer than 5 chars"));
-            return;
+            $aData['register_status'] = Nerdeez_Errors::PASSWORD_LENGTH;
+            $this->_redirector->gotoUrl($sUrlRedirect . '?' . http_build_query($aData));
         }
         
         //check email is valid
         if (!$this->isValidEmail($mail)){
-            $this->ajaxReturnFailed(array('emailerrors' => "Invalid email address"));
-            return;
+            $aData['register_status'] = Nerdeez_Errors::EMAIL_INVALID;
+            $this->_redirector->gotoUrl($sUrlRedirect . '?' . http_build_query($aData));
         }
         
         //create random serial for the user :)
@@ -62,8 +66,8 @@ class RegisterController extends Nerdeez_Controller_Action{
         $mUsers = new Application_Model_DbTable_Users();
         $rUser = $mUsers -> fetchRow($mUsers -> select() ->where ("email = ?" , $mail));
         if ($rUser != NULL){
-            $this->ajaxReturnFailed(array('emailerrors' => "Email address already exists"));
-            return;
+            $aData['register_status'] = Nerdeez_Errors::EMAIL_EXISTS;
+            $this->_redirector->gotoUrl($sUrlRedirect . '?' . http_build_query($aData));
         }
         
         //create the row to pass to database
@@ -80,7 +84,9 @@ class RegisterController extends Nerdeez_Controller_Action{
         $this -> sendActivationMail ($serial , $users_id , $mail);
         
         //report success
-        $this->ajaxReturnSuccess(array('email' => $mail));
+        $aData['register_status'] = Nerdeez_Errors::SUCCESS;
+        $aData['email'] = $mail;
+        $this->_redirector->gotoUrl($sUrlRedirect . '?' . http_build_query($aData));
     }
     
     /**
@@ -95,6 +101,11 @@ class RegisterController extends Nerdeez_Controller_Action{
         $id = $this -> _aData['id'];
         $ksfunctions = new Application_Model_KSFunctions();
         
+        //the url for redirect and additional params
+        $sUrlRedirect = '/';
+        $sErrorRedirect = 'http://' . $this->sGetUrl();
+        $aData = array();
+        
         //find the row matching
         $row = NULL;
         $mUsers = new Application_Model_DbTable_Users();
@@ -102,7 +113,8 @@ class RegisterController extends Nerdeez_Controller_Action{
                 -> where ("id = ?" , $id)
                 -> where ("token = ?" , $serial));
         if ($row == NULL){
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('ERROR: Bad id or serial!'));
+            $aData = array('title'=> 'Activation error', 'message' => 'Bad activation data was sent');
+            $this->_redirector->gotoSimple('error', 'error', NULL, $aData);
             return;
         }
         
@@ -114,7 +126,8 @@ class RegisterController extends Nerdeez_Controller_Action{
         $mUsers -> update ($newrow , 'id = ' . $id);
         
         //redirect to user profile page
-        $this->_redirector->gotoUrl('/?is_activated=true'); 
+        $aData = array('login_status'=> Nerdeez_Errors::LOGIN_ACTIVATED);
+        $this->_redirector->gotoUrl('/?' . http_build_query($aData));
         return;
     }
     

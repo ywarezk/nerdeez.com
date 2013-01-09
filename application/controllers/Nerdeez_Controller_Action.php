@@ -15,6 +15,27 @@ class Nerdeez_ParamTypes{
     const JSONARRAYNUMBERS = 2;
 }
 
+class Nerdeez_Errors{
+    const SUCCESS = 0;
+    const PASSWORD_MISMATCH = 1;
+    const PASSWORD_LENGTH = 2;
+    const EMAIL_INVALID= 3;
+    const EMAIL_EXISTS= 4;
+    const LOGIN_ACTIVATED= 5;
+    const LOGIN_FAILED= 6;
+    const LOGIN_FAILED_ACTIVATE= 7;
+    public $MESSAGES = array(
+        Nerdeez_Errors::SUCCESS => 'Success',
+        Nerdeez_Errors::PASSWORD_MISMATCH => "Retype password don't match",
+        Nerdeez_Errors::PASSWORD_LENGTH => "Password length must be more than 5 letters",
+        Nerdeez_Errors::EMAIL_INVALID => 'Invalid email format',
+        Nerdeez_Errors::EMAIL_EXISTS => 'Email address already exists',
+        Nerdeez_Errors::LOGIN_ACTIVATED => 'Your account was successfully activated, You can now login.',
+        Nerdeez_Errors::LOGIN_FAILED => 'Invalid email or password.',
+        Nerdeez_Errors::LOGIN_FAILED_ACTIVATE => 'You have to activate your account before login.',
+    );
+}
+
 /**
  * all of nerdeez controllers will extend this class
  *
@@ -55,6 +76,8 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 99999) ,
         array('name' => 'papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -2 , 'max' => 99999) ,
         array('name' => 'id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
+        array('name' => 'register_status' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 50) ,
+        array('name' => 'login_status' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 50) ,
         array('name' => 'courses_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
         array('name' => 'universities_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
         array('name' => 'folders_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
@@ -152,13 +175,10 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $layout->setLayoutPath(APPLICATION_PATH . '/layouts/scripts/guest.phtml');
         $layout -> isRegistered = $this->isRegistered();
         $layout -> user = $this -> getUserInfo();
+        $layout -> register_status = $this->_aData['register_status'];
+        $layout -> login_status = $this->_aData['login_status'];
+        $layout -> email = $this->_aData['email'];
         //$layout -> menu = $this -> view -> render ('partials/menus/guest_menu.phtml');
-        
-        //set the view error and status messages
-        $layout -> sError = $this -> _aData['error'];
-        $layout -> sStatus = $this -> _aData['status'];
-        
-        
     }
     
     /**
@@ -166,6 +186,21 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
      * @return String the referer
      */
     protected function getReferer(){
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        $referer = $request->getHeader('referer'); 
+        //return $referer;
+        
+        $sRedirectUrl = NULL;
+        $aUrl = parse_url($referer);
+        $sRedirectUrl = $aUrl['scheme'] . '://' . $aUrl['host'] . $aUrl['path'];
+        return $sRedirectUrl;
+    }
+    
+    /**
+     * gets the referer for this page
+     * @return String the referer
+     */
+    protected function getRefererWithGetParams(){
         $request = Zend_Controller_Front::getInstance()->getRequest();
         $referer = $request->getHeader('referer'); 
         return $referer;

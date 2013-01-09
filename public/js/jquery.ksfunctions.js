@@ -2080,19 +2080,19 @@ function loadRegistration(){
         },
         errorPlacement: function(error, element) {
              if (element.attr("name") == "email"){
-                 $('.register-error-placeholder.email').html('');
-                 $('.register-error-placeholder.email').append(error);
+                 $('#register_email_error').html('');
+                 $('#register_email_error').append(error);
                  //error.insertAfter("#lastname");
              } 
              if (element.attr("name") == "password"){
                  //error.insertAfter("#lastname");
-                 $('.register-error-placeholder.password').html('');
-                 $('.register-error-placeholder.password').append(error);
+                 $('#register_password_error').html('');
+                 $('#register_password_error').append(error);
              } 
              if (element.attr("name") == "repassword"){
                  //error.insertAfter("#lastname");
-                 $('.register-error-placeholder.repassword').html('');
-                 $('.register-error-placeholder.repassword').append(error);
+                 $('#register_repassword_error').html('');
+                 $('#register_repassword_error').append(error);
              } 
              
        }
@@ -2196,14 +2196,14 @@ function loadLogin(sId){
         },
         errorPlacement: function(error, element) {
              if (element.attr("name") == "email"){
-                 $('#login * .register-error-placeholder.email').html('');
-                 $('#login * .register-error-placeholder.email').append(error);
+                 $('#login_email_error').html('');
+                 $('#login_email_error').append(error);
                  //error.insertAfter("#lastname");
              } 
              if (element.attr("name") == "password"){
                  //error.insertAfter("#lastname");
-                 $('#login * .register-error-placeholder.password').html('');
-                 $('#login * .register-error-placeholder.password').append(error);
+                 $('#login_password_error').html('');
+                 $('#login_password_error').append(error);
              } 
        }
     });
@@ -2776,11 +2776,9 @@ function clickedUploadInCourse(){
 function showSignIn(){
     $('#logintab').addClass('active');
     $('#registertab').removeClass('active');
-    if ($('#login').css('display') !== 'block'){
-        $('#register').css('display', 'none');
-        $('#register_success').css('display', 'none');
-        $('#login').css('display', 'block')
-    }
+    $('#register').css('display', 'none');
+    $('#register_success').css('display', 'none');
+    $('#login').css('display', 'block')
 }
 
 /**
@@ -2790,10 +2788,11 @@ function showSignIn(){
 function showRegister(){
     $('#registertab').addClass('active');
     $('#logintab').removeClass('active');
-    if ($('#register').css('display') !== 'block'){
-        $('#register').css('display', 'block');
-        $('#login').css('display', 'none')
-    }
+    $('#login').css('display', 'none')
+    $('#login_success_activate').css('display', 'none')
+    $('#register_success').css('display', 'none')
+    $('#login_failed').css('display', 'none')
+    $('#register').css('display', 'block');
 }
 
 /**

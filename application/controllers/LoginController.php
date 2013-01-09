@@ -59,7 +59,8 @@ class LoginController extends Nerdeez_Controller_Action{
         
         //if three atemtps then brute force assumed 
         if ($iIpCounter > 3){
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('This account is banned for 10 minutes'));
+            //$this->_redirector->gotoUrl('/index/index/error/' . urlencode('This account is banned for 10 minutes'));
+            $this->_redirector->gotoSimple('error', 'error', NULL, array('title'=>'IP Banned', 'message' => 'Your IP is banned for the next 10 minutes'));
             return;
         }
         
@@ -69,7 +70,7 @@ class LoginController extends Nerdeez_Controller_Action{
         $mUsers = new Application_Model_DbTable_Users();
         $row = $mUsers -> fetchRow($mUsers -> select() -> where ("email = ?" , $email));
         if ($row == NULL){
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('Invalid email or password'));
+            $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('login_status' => Nerdeez_Errors::LOGIN_FAILED)));
             return;
         }
         $salt = $row['salt'];
@@ -77,7 +78,7 @@ class LoginController extends Nerdeez_Controller_Action{
         
         //if the user is not active than kick him out
         if (!$isActive){
-            $this->_redirector->gotoUrl('/index/index/error/' . urlencode('You have to activate your account before login'));
+            $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('login_status' => Nerdeez_Errors::LOGIN_FAILED_ACTIVATE)));
             return;
         }
         
@@ -126,14 +127,14 @@ class LoginController extends Nerdeez_Controller_Action{
             }
             
             //redirect the user to same page
-            $this->_redirector->gotoUrl($this ->getReferer());
+            $this->_redirector->gotoUrl($this->getReferer());
             return;
         }
         else{
             //login failed add row in the ips table
-            $mIps ->insertWithoutArray(time(), $sIp, $email);
+            $mIps ->insertWithoutArray(time(), $ksfunctions -> getRealIpAddr(), $email);
         }
-        $this->_redirector->gotoUrl('/error/' . urlencode('Invalid email or password'));
+        $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('login_status' => Nerdeez_Errors::LOGIN_FAILED)));
         return;
     }
     

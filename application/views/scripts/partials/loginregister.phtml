@@ -1,3 +1,11 @@
+<?php
+/**
+ * builds the form for registration and login
+ * @param int $this -> register_status the regitration code for user report
+ * @param int $this -> login_status the regitration code for user report
+ */
+?>
+
 <div id="loginregister" class="loginregister">
     <div style="width: 100%; text-align: right;">
         <a style="position: relative; clear: both; display: inline-block; top: 17px; left: 17px;" class="closedialog" onclick="$('#loginregister').fadeOut('normal');$('#glassloading').fadeOut('fast');" href="javascript:void(0)">
@@ -18,20 +26,51 @@
         
         <!-- Begin Successfull activation -->
         <div id="login_success_activate" style="margin: 0px auto; position: absolute; width: 90%; top: 75px; left: 22px;display: none;">
-            <table>
+            <table style="margin: 0px auto; color: green;">
                 <tr>
                     <td>
                         <img src="/img/Success1.png" width="64" />
                     </td>
                     <td>
                         <p style="margin-left: 8px;">
-                            Your account was successfully activated, You can now login.
+                            <?php 
+                            /**
+                             * @var array $temp
+                             */
+                            $cNErrors = new Nerdeez_Errors();
+                            $aMessages = $cNErrors ->MESSAGES;
+                            echo $aMessages[Nerdeez_Errors::LOGIN_ACTIVATED];
+                            ?>
                         </p>
                     </td>
                 </tr>
             </table>
         </div>
         <!-- End Successfull activation -->
+        
+        <!-- Begin login error -->
+        <div id="login_failed" style="margin: 0px auto; position: absolute; width: 90%; top: 81px; left: 22px;display: none;">
+            <table style="margin: 0 auto; color: #E62A59;">
+                <tr>
+                    <td>
+                        <img src="/img/X.png" width="64" />
+                    </td>
+                    <td>
+                        <p style="margin-left: 8px;">
+                            <?php 
+                            /**
+                             * @var array $temp
+                             */
+                            $cNErrors = new Nerdeez_Errors();
+                            $aMessages = $cNErrors ->MESSAGES;
+                            echo $aMessages[$this -> login_status];
+                            ?>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!-- End login error-->
         
         <!-- begin of login -->
         <div style="width: 330px; margin-right: auto; margin-bottom: 0px; margin-left: auto; height: 242px; position: relative; top: 67px;" id="login">
@@ -65,7 +104,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div class="register-error-placeholder email"></div>
+                            <div class="register-error-placeholder email" id="login_email_error"></div>
                         </td>
                     </tr>
                 </table>
@@ -96,7 +135,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <div class="register-error-placeholder password"></div>
+                            <div class="register-error-placeholder password" id="login_password_error"></div>
                         </td>
                     </tr>
                     <tr style="height: 20px;">
@@ -158,7 +197,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <div class="register-error-placeholder email"></div>
+                                <div class="register-error-placeholder email" id="register_email_error"></div>
                             </td>
                         </tr>
                     </table>
@@ -188,7 +227,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <div class="register-error-placeholder password"></div>
+                                <div class="register-error-placeholder password" id="register_password_error"></div>
                             </td>
                         </tr>
                     </table>
@@ -218,7 +257,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <div class="register-error-placeholder repassword"></div>
+                                <div class="register-error-placeholder repassword" id="register_repassword_error"></div>
                             </td>
                         </tr>
                     </table>
@@ -231,9 +270,8 @@
                 <div style="width: 98px; height: 44px; float: right; margin-top: 10px;">
                     <button 
                         tabindex="0" 
-                        type="button" 
+                        type="submit" 
                         class="filebrowserbutton" 
-                        onclick="submitRegistration();"
                         style="height: 44px;">Register
                     </button>
                 </div>
@@ -241,7 +279,7 @@
         </div>
         
         <!-- Begin Success message -->
-        <div class="dialog_success" id="register_success">
+        <div class="dialog_success" id="register_success" >
             <table>
                 <tr>
                     <td>
@@ -264,3 +302,83 @@
         <!-- end of register -->
     </div> 
 </div>
+
+<?php
+//determine if dialogs should be displayed on page load
+if (isset($this -> login_status)):
+?>
+    <script type="text/javascript">
+        showLoginMenu();
+    </script>
+<?php elseif(isset($this -> register_status)): ?>
+    <script type="text/javascript">
+        showRegisterMenu();
+    </script>
+<?php endif; ?>
+
+<?php 
+if (isset($this -> login_status) && $this -> login_status == Nerdeez_Errors::LOGIN_ACTIVATED):
+?>
+    <script type="text/javascript">
+        $('#login_success_activate').css('display', 'block');
+    </script>
+<?php
+endif;
+?>
+<?php 
+if (isset($this -> login_status) && $this -> login_status != Nerdeez_Errors::LOGIN_ACTIVATED):
+?>
+    <script type="text/javascript">
+        $('#login_failed').css('display', 'block');
+    </script>
+<?php
+endif;
+?>
+<?php 
+if (isset($this -> register_status) && $this -> register_status == Nerdeez_Errors::SUCCESS):
+?>
+    <script type="text/javascript">
+        $('#register_email_feedback').text('<?php echo $this -> email; ?>');
+        $('#register_success').css('display', 'block');
+        $('#register').css('display', 'none');
+    </script>
+<?php
+endif;
+?>
+<?php 
+if (isset($this -> register_status) && $this -> register_status == Nerdeez_Errors::EMAIL_EXISTS):
+?>
+    <script type="text/javascript">
+        $('#register_email_error').text('<?php echo $cNErrors -> MESSAGES[Nerdeez_Errors::EMAIL_EXISTS]; ?>');
+    </script>
+<?php
+endif;
+?>
+<?php 
+if (isset($this -> register_status) && $this -> register_status == Nerdeez_Errors::EMAIL_INVALID):
+?>
+    <script type="text/javascript">
+        $('#register_email_error').text('<?php echo $cNErrors -> MESSAGES[Nerdeez_Errors::EMAIL_INVALID]; ?>');
+    </script>
+<?php
+endif;
+?>
+<?php 
+if (isset($this -> register_status) && $this -> register_status == Nerdeez_Errors::PASSWORD_LENGTH):
+?>
+    <script type="text/javascript">
+        $('#register_password_error').text('<?php echo $cNErrors -> MESSAGES[Nerdeez_Errors::PASSWORD_LENGTH]; ?>');
+    </script>
+<?php
+endif;
+?>
+<?php 
+if (isset($this -> register_status) && $this -> register_status == Nerdeez_Errors::PASSWORD_MISMATCH):
+?>
+    <script type="text/javascript">
+        $('#register_repassword_error').text('<?php echo $cNErrors -> MESSAGES[Nerdeez_Errors::PASSWORD_MISMATCH]; ?>');
+    </script>
+<?php
+endif;
+?>
+

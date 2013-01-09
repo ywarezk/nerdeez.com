@@ -6,7 +6,10 @@
 
     <!-- start of login/register dialog -->
     <?php
-    echo $this -> render ('partials/loginregister.phtml');
+    echo $this -> partial ('partials/loginregister.phtml', array(
+        'register_status' => $this -> layout() -> register_status, 
+        'login_status' => $this -> layout() -> login_status, 
+        'email' => $this -> layout() -> email));
     ?>
     <!-- end of login/register dialog -->
         
