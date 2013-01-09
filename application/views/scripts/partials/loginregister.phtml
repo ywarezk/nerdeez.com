@@ -304,52 +304,87 @@
 </div>
 
 <!-- Begin forgot password login -->
-<div id="forgotpassworddialog" class="flagdialog dialogbg" style="width: 534px;">
-    <div class="bgblack flagdialog_header" >
-        <h2 style="color: white; margin: 2px auto 0px; position: relative; top: 10px; font-weight: normal; font-size: 18px; width: 210px;">
-            Forget your password?
-        </h2>
-        <a href="javascript:void(0)" onclick="$('#changenamedialog').fadeOut('normal');$('#glassloading').fadeOut('fast');" class="closedialog" style="position: relative; top: -42px; left: 23px;">
-            <span>
-            X
-            </span>
-        </a>
-    </div>
-
-    <div class="flagdialog_body">
-        <p style="text-align: center;">
-            Forgot your password? Don't worry, just write your mail in the text box below and we will send you a link to set your new password.
-        </p>
-    </div>
-    <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
-        <table style="width: 100%;">
-            <tr>
-                <td>
-                    <div class="front-card">
-                        <div class="placeholding-input searchcourse flex-table-form">
-                            <input 
-                                            type="text" 
-                                            autocomplete="on" 
-                                            title="Email" 
-                                            name="email" 
-                                            class="text-input email-input"
-                                            style="width: 100%; position: relative !important;"
-                                            id="forgotpassword_textbox"
-                                            maxlength="100" />
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: right">
-                    <button class="filebrowserbutton" type="button" onclick="$('#loginregistererrordialog').fadeOut('normal');updateNickname();" value="Submit" style="margin-top: 10px; height: 38px; width: 100px; float: right;">
-                        Submit
-                    </button>
-                </td>
-            </tr>
-        </table>
-    </div>
+<div id="forget_password_dialog" class="flagdialog dialogbg" style="width: 534px;height: 242px;">
+    <form action="/" method="post">
+        <div class="bgblack flagdialog_header" >
+            <h2 style="color: white; margin: 2px auto 0px; position: relative; top: 10px; font-weight: normal; font-size: 18px; width: 210px;">
+                Forgot your password?
+            </h2>
+            <a href="javascript:void(0)" onclick="$('#forget_password_dialog').fadeOut('normal');$('#glassloading').fadeOut('fast');" class="closedialog" style="position: relative; top: -42px; left: 23px;">
+                <span>
+                X
+                </span>
+            </a>
+        </div>
+        <div id="forget_password_dialog_error">
+            <table style="width: 100%">
+                <tr>
+                    <td>
+                        <img src="/img/X.png" width="64" />
+                    </td>
+                    <td>
+                        <p></p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="forget_password_dialog_success">
+            <table style="width: 100%;">
+                <tr>
+                    <td>
+                        <img src="/img/Success1.png" width="64" />
+                    </td>
+                    <td>
+                        <p>Email was sent with a link to reset your password</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="forget_password_dialog_body">
+            <div class="flagdialog_body">
+                <p style="text-align: center;">
+                    Write your account email in the text box below.
+                </p>
+            </div>
+            <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <div class="front-card">
+                                <div class="placeholding-input searchcourse flex-table-form">
+                                    <input 
+                                                    type="text" 
+                                                    autocomplete="on" 
+                                                    title="Email" 
+                                                    name="email" 
+                                                    class="text-input email-input"
+                                                    style="width: 100%; position: relative !important;"
+                                                    id="forget_password_dialog_textbox"
+                                                    maxlength="100" />
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="height: 15px;">
+                        <td>
+                            <div class="register-error-placeholder" id="forget_password_email_error"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right">
+                            <button class="filebrowserbutton" type="button" onclick="sendForgetPassword();" value="Submit" style="height: 38px; width: 100px; float: right;">
+                                Submit
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
 </div>      
+<script type="text/javascript">
+    loadForgetPassword();
+</script>
 <!-- End forgot password dialog-->
 
 <?php

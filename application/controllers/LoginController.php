@@ -181,35 +181,32 @@ class LoginController extends Nerdeez_Controller_Action{
         //get params
         $email = $this -> _aData['email']; 
         
-        //find user row with this email
-        $row = NULL;
-        $mUsers = new Application_Model_DbTable_Users();
-        $select = $mUsers -> select() -> where ("email = ?" , $email);
-        $rows = $mUsers -> fetchAll($select);
-        if ($rows -> count() != 1){
-            $userData=array(array('status'=>'failed','msg'=>'Invalid Email'));
-            $dojoData= new Zend_Dojo_Data('status',$userData);
-	    echo $dojoData->toJson();
-	    return;
+        //check email is valid
+        if (!$this->isValidEmail($email)){
+            $this->ajaxReturnFailed(array('msg'=>'Invalid email'));
+            return;
         }
-        $row = $rows -> getRow(0);
+        
+        //find user row with this email
+        $rUser = NULL;
+        $mUsers = new Application_Model_DbTable_Users();
+        $rUser = $mUsers -> fetchRow($mUsers -> select() -> where ("email = ?" , $email));
+        if($rUser == NULL){
+            $this->ajaxReturnFailed(array('msg'=>"Account doesn't exist"));
+            return;
+        }
         
         //insert the new row to the forgot database
         $ksfunctions = new Application_Model_KSFunctions();
         $sToken = $ksfunctions -> createSerial();
-        $aNewForgotRow = array(
-            'users_id'      => $row['id'] ,
-            'token'         => $sToken ,
-            'starttime'     => time()
-        );
         $mForgot = new Application_Model_DbTable_Forgotpassword();
-        $mForgot -> insert($aNewForgotRow);
+        $mForgot ->insertWithoutArray($rUser['id'], $sToken, time());
         
         //send him mail to approve the reset
-        $ksfunctions->sendResetPasswordMail($sToken , $row['id'] , $row['email']);
+        $this->sendResetPasswordMail($sToken , $row['id'] , $row['email']);
         
         //return  success
-        
+        $this->ajaxReturnSuccess();
     }
     
     public function approveresetAction(){
@@ -314,6 +311,27 @@ class LoginController extends Nerdeez_Controller_Action{
             return true;
         }
         return false;
+    }
+    
+    /**
+     * sends reset password mail
+     * @param String $serial the serial number for the activation 
+     * @param int the row of the user
+     * @param String $email the email address to send to
+     */
+    private function sendResetPasswordMail($sSerial , $iUsersId , $sEmail){
+        //create the mail body
+        $body = 'You recently asked to reset your Nerdeez password. To complete your request, please follow this link:
+            <a href="http://www.' . $this->sGetUrl(). '/login/approvereset/id/'. $iUsersId . '/token/'. $sSerial .'" style="color: #E62A59; text-decoration: underline;">
+                THIS LINK
+            </a>
+        ';		
+        
+        //mail title
+        $title = "Nerdeez reset password";
+        
+        //send the mail 
+        $this->reportByMail($sEmail, $body, $title);
     }
     
 }

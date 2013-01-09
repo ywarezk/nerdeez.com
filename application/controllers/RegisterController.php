@@ -131,6 +131,30 @@ class RegisterController extends Nerdeez_Controller_Action{
         return;
     }
     
+    /**
+     * sends registration activation mail
+     * @param String $serial the serial number for the activation 
+     * @param int the row of the user
+     * @param String $email the email address to send to
+     */
+    private function sendActivationMail($serial , $users_id , $email){
+        //create the mail body
+        $sLink = 'http://'. $this ->sGetUrl() .'/register/activateaccount/id/'. $users_id . '/token/'. $serial;
+        $sMessage = 'Please confirm your Nerdeez account registration by clicking <a href="' . $sLink . '" style="color: #E62A59; text-decoration: underline;">THIS LINK</a>';
+        
+        $sBody = NULL;
+        ob_start();
+        echo $this->view->partial('partials/Nerdeez_Mail_Template.phtml', array('sMessage'  =>  $sMessage));
+        $sBody = ob_get_contents();
+        ob_end_clean();
+        
+        //mail title
+        $title = "Nerdeez account activation";
+        
+        //send the mail 
+        $this->reportByMail($email, $sBody, $title);
+    }
+    
 }
 
 ?>

@@ -2648,3 +2648,20 @@ textarea{
     width: 316px;
 }
 
+#forget_password_dialog_success{
+    color: green;
+    display: none;
+    margin: 0 auto;
+    position: relative;
+    top: 45px;
+    width: 410px;
+}
+
+#forget_password_dialog_error{
+    color: red;
+    display: none;
+    height: 22px;
+    margin: 0 auto;
+    width: 300px;
+}
+

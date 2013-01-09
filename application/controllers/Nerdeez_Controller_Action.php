@@ -467,29 +467,6 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
     }
     
     /**
-     * sends registration activation mail
-     * @param String $serial the serial number for the activation 
-     * @param int the row of the user
-     * @param String $email the email address to send to
-     */
-    public function sendActivationMail($serial , $users_id , $email){
-        //create the mail body
-        $sLink = 'http://'. $this ->sGetUrl() .'/register/activateaccount/id/'. $users_id . '/token/'. $serial;
-        
-        $sBody = NULL;
-        ob_start();
-        echo $this->view->partial('partials/Nerdeez_Mail_Template.phtml', array('sLink'  =>  $sLink));
-        $sBody = ob_get_contents();
-        ob_end_clean();
-        
-        //mail title
-        $title = "Nerdeez account activation";
-        
-        //send the mail 
-        $this->reportByMail($email, $sBody, $title);
-    }
-    
-    /**
      * returns the url of the site
      * @return String the url of the site without http://www. 
      */
@@ -574,6 +551,8 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
     public function isValidEmail($email){
         return preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^", $email);
     }
+    
+    
     
 }
 

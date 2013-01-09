@@ -1,7 +1,7 @@
 <?php
 /**
  * the email template for registration
- * $this -> sLink the link for the user to activate his account
+ * $this -> sMessage the mail message to send
  */
 ?>
 <html>
@@ -27,8 +27,7 @@
                                         <td></td>
                                         <td>
                                             <p style="text-align: center">
-                                                Please confirm your Nerdeez account registration by clicking 
-                                                <a href="<?php echo $this -> sLink; ?>" style="color: #E62A59; text-decoration: underline;">THIS LINK</a>
+                                                <?php echo $this -> sMessage; ?>
                                             </p>
                                             <p style="text-align: center">
                                                 Regards, Nerdeez team.

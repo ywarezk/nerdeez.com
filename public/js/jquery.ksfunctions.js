@@ -2956,3 +2956,91 @@ function submitRegistration(){
             }
     });
 }
+
+/**
+ * will make the login register dialog disappear and put the forget password dialog and center the dialog
+ */
+function showForgotPassword(){
+    //position the forget password dialog in the middle
+    var heighthtml = $('html').height()/2;
+    var heightforget = $('#forget_password_dialog').height()/2;
+    var widthhtml = $('html').width()/2;
+    var widthforget = $('#forget_password_dialog').width()/2;
+    $('#forget_password_dialog').css("top", "" + (heighthtml - heightforget) + "px");
+    $('#forget_password_dialog').css("left", "" + (widthhtml - widthforget) + "px");
+    $('#forget_password_dialog_success').css('display', 'none');
+    $('#forget_password_dialog_error').css('display', 'none');
+    $('#forget_password_dialog_body').css('display', 'block');
+    $('#loginregister').fadeOut('normal', function(){
+        $('#forget_password_dialog').fadeIn('normal');
+    });
+}
+
+/**
+ * will init the js validation of the forget password form
+ */
+function loadForgetPassword(){
+    $('#forget_password_dialog form').validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            }
+        },
+        messages: {
+            email: {
+                required: 'Email is required',
+                email: 'Invalid email'
+            }
+        },
+        errorPlacement: function(error, element) {
+             if (element.attr("name") == "email"){
+                 $('#forget_password_email_error').html('');
+                 $('#forget_password_email_error').append(error);
+                 //error.insertAfter("#lastname");
+             } 
+       }
+    });
+}
+
+/**
+ * when the user sends the forget password form
+ */
+function sendForgetPassword(){
+    //check validation
+    if(!$('#forget_password_dialog form').valid()) return;
+    
+    //put loading screen
+    loadingScreen();
+    
+    //prepare the object to send
+    var obj=new Object();
+    obj.email = $.trim($('#forget_password_dialog_textbox').val());
+    
+    //send the reset information via ajax
+    $.ajax({
+            type: "POST",
+            url: "/login/resetpassword/",
+            dataType: "json",
+            data: obj ,
+            async: false,
+            success: function(res) {
+                if (res.items[0].status ==='success'){
+                    $('#forget_password_dialog_error').css('display', 'none');
+                    $('#forget_password_dialog_body').fadeOut('normal', function(){
+                        $('#forget_password_dialog_success').fadeIn('normal');
+                    });
+                }
+                else{
+                    $('#forget_password_dialog_error * p').text(res.items[0].msg);
+                    $('#forget_password_dialog_error').fadeIn('normal');
+                }
+                removeLoadingScreen();
+            },
+            error: function(res){
+                $('#forget_password_dialog_error * p').text('Connection failure: Try again');
+                $('#forget_password_dialog_error').fadeIn('normal');
+                removeLoadingScreen();
+            }
+    });
+}

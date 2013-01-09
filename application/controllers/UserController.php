@@ -29,9 +29,6 @@ class UserController extends Nerdeez_Controller_Action{
     }
     
     private function update(){
-        //disable the view
-        $this->disableView();
-        
         //create the users model
         $mUsers = new Application_Model_DbTable_Users();
         
