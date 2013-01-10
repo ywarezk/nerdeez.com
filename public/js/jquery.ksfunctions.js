@@ -2696,36 +2696,40 @@ function sendFlagReport(){
             async: false,
             success: function(res) {
                 if (res.items[0].status ==='success'){
-                    setSuccessToSuccess();
+                    //setSuccessToSuccess();
                     //loading screen
                     removeLoadingScreen();
 
                     //display success failure screen
-                    displaySuccessFailure();
+                    //displaySuccessFailure();
                     
                     
-                    $('#glassnoloading').fadeOut('normal');
-                    $('#flagdialog').fadeOut('normal');
+                    $('#glassloading').fadeOut('normal');
+                    //$('#flagdialog').fadeOut('normal');
+                    $('#flagdialog .flagdialog_body').fadeOut('normal', function(){
+                        $('#flag_dialog_success').fadeIn('normal');
+                    });
+                    
                 }
                 else{
-                    setSuccessToFailed();
+                    //setSuccessToFailed();
                     //loading screen
                     removeLoadingScreen();
 
                     //display success failure screen
-                    displaySuccessFailure();
+                    //displaySuccessFailure();
                     
                     $('#flagdialog .about_status').text(res.items[0].msg);
 
                 }
             },
             error: function(res){
-                setSuccessToFailed();
+                //setSuccessToFailed();
                 //loading screen
                 removeLoadingScreen();
                  
                 //display success failure screen
-                displaySuccessFailure();
+                //displaySuccessFailure();
                 
                 
                 $('#flagdialog .about_status').ext('Error! Connection failure. Try again');

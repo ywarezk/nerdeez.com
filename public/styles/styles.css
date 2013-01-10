@@ -2665,3 +2665,12 @@ textarea{
     width: 300px;
 }
 
+#flag_dialog_success{
+    color: green;
+    display: none;
+    margin: 0 auto;
+    position: relative;
+    top: 101px;
+    width: 300px;
+}
+
