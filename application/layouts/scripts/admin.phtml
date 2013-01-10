@@ -109,6 +109,9 @@ $bIsDownload = FALSE;
                         if ($sCol === 'id'){
                             echo $rRow[$sCol];
                         }
+                        elseif($sCol === 'starttime'){
+                            echo date("d-m-Y H:i:s",$rRow[$sCol]);
+                        }
                         elseif (in_array ($sCol, $this -> aPapaCol)) {
                         ?>
                         <select name="<?php echo $sCol; ?>" class="admin_parentcombo <?php echo $sCol; ?>">

@@ -3044,3 +3044,55 @@ function sendForgetPassword(){
             }
     });
 }
+
+/**
+ * init the js validation in the new password page
+ */
+function loadNewPassword(){
+    //position the dialog in the center
+    var heighthtml = $('html').height()/2;
+    var heightdialog = $('#new_password_dialog').height()/2;
+    var widthhtml = $('html').width()/2;
+    var widthdialog = $('#new_password_dialog').width()/2;
+    $('#new_password_dialog').css('top', "" + (heighthtml - heightdialog) + "px");
+    $('#new_password_dialog').css('left', "" + (widthhtml - widthdialog) + "px");
+    
+    
+    $('#new_password_dialog form').validate({
+        rules: {
+            password:{
+                required: true,
+                minlength: 5
+            },
+            repassword:{
+                required: true,
+                minlength: 5,
+                equalTo: '#new_password_dialog_password'
+            }
+        },
+        messages: {
+            password: {
+                required: 'Password is required',
+                minlength: 'Must be more than 5 chars'
+            },
+            repassword: {
+                required: 'Retype password is required',
+                minlength: 'Must be more than 5 chars',
+                equalTo: 'Must match the password field'
+            }
+        },
+        errorPlacement: function(error, element) {
+             if (element.attr("name") == "password"){
+                 //error.insertAfter("#lastname");
+                 $('#new_password_password_error').html('');
+                 $('#new_password_password_error').append(error);
+             } 
+             if (element.attr("name") == "repassword"){
+                 //error.insertAfter("#lastname");
+                 $('#new_password_repassword_error').html('');
+                 $('#new_password_repassword_error').append(error);
+             } 
+             
+       }
+    });
+}

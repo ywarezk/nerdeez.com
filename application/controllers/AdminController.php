@@ -82,6 +82,15 @@ class AdminController extends Nerdeez_Controller_Action_FileHandler{
     public function logincookiesAction(){
         $this ->initTablesView("Login Cookies", 'Application_Model_DbTable_Logincookies');
     }
+    
+    /**
+     * manually edit the forgotpassword table
+     */
+    public function forgotpasswordAction(){
+        $this ->initTablesView("Forgot password table", 'Application_Model_DbTable_Forgotpassword');
+    }
+    
+    
 
 
     /**

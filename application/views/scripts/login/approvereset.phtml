@@ -1,0 +1,110 @@
+<?php 
+/**
+ * the reset password dialog
+ * @param String $this -> sToken the token string
+ * @param int $this -> iUserId the id of the user that wants to change his password
+ * @param int $this -> iForgetId the id of the row from the forget password table
+ */
+?>
+<!-- Begin reset password dialog -->
+<div style="width: 534px; height: 313px; top: 306px; left: 693px; display: block;z-index: 0 !important;" class="flagdialog dialogbg" id="new_password_dialog">
+    <form method="post" action="https://<?php $ksfunctions = new Application_Model_KSFunctions(); echo $ksfunctions -> sGetUrl(); ?>/login/sendnewpassword/">
+        <div class="bgblack flagdialog_header">
+            <h2 style="color: white; margin: 2px auto 0px; position: relative; top: 10px; font-weight: normal; font-size: 18px; text-align: center;">
+                New password
+            </h2>
+        </div>
+        <div id="forget_password_dialog_body" style="display: block;">
+            <div class="flagdialog_body">
+                <p style="text-align: center;">
+                    Write your new password in the textbox below and retype the password for confirmation.
+                </p>
+            </div>
+            <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="dialogfontbody">
+                                    Password
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                        <td>
+                            <div class="front-card">
+                                <div class="placeholding-input searchcourse flex-table-form">
+                                    <input 
+                                        type="password" 
+                                        maxlength="20" 
+                                        style="width: 100%; position: relative !important;" 
+                                        class="text-input email-input valid" 
+                                        name="password" 
+                                        title="Password"
+                                        id="new_password_dialog_password"
+                                        >
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="height: 15px;">
+                        <td>
+                            <div id="new_password_password_error" class="register-error-placeholder"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
+                <table style="width: 100%;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="dialogfontbody">
+                                    Retype Password
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                        <td>
+                            <div class="front-card">
+                                <div class="placeholding-input searchcourse flex-table-form">
+                                    <input 
+                                        type="password" 
+                                        maxlength="20" 
+                                        style="width: 100%; position: relative !important;" 
+                                        class="text-input email-input valid" 
+                                        name="repassword" 
+                                        title="Password" 
+                                        >
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="height: 15px;">
+                        <td>
+                            <div id="new_password_repassword_error" class="register-error-placeholder"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="text-align: right">
+                            <button style="height: 38px; width: 100px; float: right;" value="Submit" type="submit" class="filebrowserbutton">
+                                Submit
+                            </button>
+                            <input type="hidden" name="token" value="<?php echo $this -> sToken; ?>" />
+                            <input type="hidden" name="id" value="<?php echo $this -> iUserId; ?>" />
+                            <input type="hidden" name="forget_id" value="<?php echo $this -> iForgetId; ?>" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    loadNewPassword();
+</script>
+<!-- End reset password dialog -->

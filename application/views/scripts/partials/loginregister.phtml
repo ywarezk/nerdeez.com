@@ -39,7 +39,7 @@
                              */
                             $cNErrors = new Nerdeez_Errors();
                             $aMessages = $cNErrors ->MESSAGES;
-                            echo $aMessages[Nerdeez_Errors::LOGIN_ACTIVATED];
+                            echo $aMessages[$this->login_status];
                             ?>
                         </p>
                     </td>
@@ -304,7 +304,7 @@
 </div>
 
 <!-- Begin forgot password login -->
-<div id="forget_password_dialog" class="flagdialog dialogbg" style="width: 534px;height: 242px;">
+<div id="forget_password_dialog" class="flagdialog dialogbg" style="width: 534px;height: 258px;">
     <form action="/" method="post">
         <div class="bgblack flagdialog_header" >
             <h2 style="color: white; margin: 2px auto 0px; position: relative; top: 10px; font-weight: normal; font-size: 18px; width: 210px;">
@@ -348,6 +348,13 @@
             </div>
             <div style="width: 400px; margin: 0px auto; position: relative; top: -18px;">
                 <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <span class="dialogfontbody">
+                                Email
+                            </span>
+                        </td>
+                    </tr>
                     <tr>
                         <td>
                             <div class="front-card">
@@ -401,7 +408,8 @@ if (isset($this -> login_status)):
 <?php endif; ?>
 
 <?php 
-if (isset($this -> login_status) && $this -> login_status == Nerdeez_Errors::LOGIN_ACTIVATED):
+if (isset($this -> login_status) && 
+        ($this -> login_status == Nerdeez_Errors::LOGIN_ACTIVATED || $this -> login_status == Nerdeez_Errors::LOGIN_PASSWORD_CHANGED)):
 ?>
     <script type="text/javascript">
         $('#login_success_activate').css('display', 'block');
@@ -410,7 +418,9 @@ if (isset($this -> login_status) && $this -> login_status == Nerdeez_Errors::LOG
 endif;
 ?>
 <?php 
-if (isset($this -> login_status) && $this -> login_status != Nerdeez_Errors::LOGIN_ACTIVATED):
+if (isset($this -> login_status) && 
+        $this -> login_status != Nerdeez_Errors::LOGIN_ACTIVATED &&
+        $this -> login_status != Nerdeez_Errors::LOGIN_PASSWORD_CHANGED):
 ?>
     <script type="text/javascript">
         $('#login_failed').css('display', 'block');

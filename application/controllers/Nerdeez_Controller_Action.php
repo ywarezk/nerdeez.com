@@ -24,6 +24,7 @@ class Nerdeez_Errors{
     const LOGIN_ACTIVATED= 5;
     const LOGIN_FAILED= 6;
     const LOGIN_FAILED_ACTIVATE= 7;
+    const LOGIN_PASSWORD_CHANGED= 8;
     public $MESSAGES = array(
         Nerdeez_Errors::SUCCESS => 'Success',
         Nerdeez_Errors::PASSWORD_MISMATCH => "Retype password don't match",
@@ -33,6 +34,7 @@ class Nerdeez_Errors{
         Nerdeez_Errors::LOGIN_ACTIVATED => 'Your account was successfully activated, You can now login.',
         Nerdeez_Errors::LOGIN_FAILED => 'Invalid email or password.',
         Nerdeez_Errors::LOGIN_FAILED_ACTIVATE => 'You have to activate your account before login.',
+        Nerdeez_Errors::LOGIN_PASSWORD_CHANGED => "You're password is changed. You can now login with your new password",
     );
 }
 
@@ -76,12 +78,14 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         array('name' => 'hw_number' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 99999) ,
         array('name' => 'papa' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -2 , 'max' => 99999) ,
         array('name' => 'id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
+        array('name' => 'forget_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
         array('name' => 'register_status' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 50) ,
         array('name' => 'login_status' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 50) ,
         array('name' => 'courses_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
         array('name' => 'universities_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
         array('name' => 'folders_id' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => -1 , 'max' => 0) ,
         array('name' => 'folder' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 0) ,
+        array('name' => 'starttime' , 'type' => Nerdeez_ParamTypes::INTEGER , 'min' => 0 , 'max' => 0) ,
         array('name' => 'search' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 300) ,
         array('name' => 'password' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,
         array('name' => 'repassword' , 'type' => Nerdeez_ParamTypes::STRING , 'length' => 20) ,

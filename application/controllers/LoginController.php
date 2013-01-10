@@ -175,8 +175,7 @@ class LoginController extends Nerdeez_Controller_Action{
      */
     public function resetpasswordAction(){
         //disabel layout and view
-        $this->_helper->layout()->disableLayout();
-        Zend_Controller_Front::getInstance()->setParam('noViewRenderer', true);
+        $this->disableView();
         
         //get params
         $email = $this -> _aData['email']; 
@@ -203,7 +202,7 @@ class LoginController extends Nerdeez_Controller_Action{
         $mForgot ->insertWithoutArray($rUser['id'], $sToken, time());
         
         //send him mail to approve the reset
-        $this->sendResetPasswordMail($sToken , $row['id'] , $row['email']);
+        $this->sendResetPasswordMail($sToken , $rUser['id'] , $rUser['email']);
         
         //return  success
         $this->ajaxReturnSuccess();
@@ -217,65 +216,100 @@ class LoginController extends Nerdeez_Controller_Action{
         //get the login row
         $rForgot = NULL;
         $mForgot = new Application_Model_DbTable_Forgotpassword();
-        $rsForgot = $mForgot -> fetchAll ($mForgot -> select() 
+        $rForgot = $mForgot -> fetchRow($mForgot -> select() 
                 -> where ('users_id = ?' , $id)
                 -> where ('token = ?' , $serial)
                 -> order ('starttime DESC'));
-        if ($rsForgot -> count() == 0){
-            $this -> view -> sError = "Bad params";
+        if ($rForgot == NULL){
+            $this->_redirector->gotoSimple('error', 'error', NULL, array('title'=>'Bad params','message'=>'Invalid data parameters were provided'));
             return;
         }
-        $rForgot = $rsForgot -> getRow(0);
         
         //check the time 
         $iNow = time();
         $iThen = $rForgot['starttime'];
         $iDelta = $iNow - $iThen;
         if ($iDelta > 60*60*24){
-            $this -> view -> sError = "Reset password request expired. Try to reset again";
-            //delete all the old rows
             foreach ($rsForgot as $rForgot) {
                 $where = $mForgot->getAdapter()->quoteInto('id = ?', $rForgot['id']);
                 $mForgot->delete($where);
             }
+            $this->_redirector->gotoSimple('error', 'error', NULL, array('title'=>'Reset expired','message'=>'Your reset password request has expired. You can repeat the reset process again'));
             return;
         }
         
-        //create the new password
-        $sPassword = NULL;
-        $ksfunctions = new Application_Model_KSFunctions();
-        $sPassword = $ksfunctions -> createSerial();
         
-        //delete all the rows from the table
-        foreach ($rsForgot as $rForgot) {
-            $where = $mForgot->getAdapter()->quoteInto('id = ?', $rForgot['id']);
-            $mForgot->delete($where);
-        }
+        //pass variables to the view
+        $this->view->sToken = $serial;
+        $this->view->iUserId = $id;
+        $this->view->iForgetId = $rForgot['id'];
+    }
+    
+    /**
+     * when the user submits the form to reset his password
+     */
+    public function sendnewpasswordAction(){
+        //disable the view
+        $this->disableView();
         
-        //find the row
-        $row = NULL;
-        $mUsers = new Application_Model_DbTable_Users();
-        $select = $mUsers -> select() 
-                -> where ("id = ?" , $id);
-        $rows = $mUsers -> fetchAll($select);
-        if ($rows -> count() != 1){
-            $this -> view -> sError = "Bad params";
+        //get the params
+        $sPassword = $this->_aData['password'];
+        $sRepassword = $this->_aData['repassword'];
+        $sToken = $this->_aData['token'];
+        $iUsersId = $this->_aData['id'];
+        $iForgetId = $this->_aData['forget_id'];
+        
+        //check the password match
+        if($sPassword !== $sRepassword){
+            $this->_redirector->gotoSimple('error', 'error', NULL, array('title'=>'Bad Params', 'message'=>'Bad params where given'));
             return;
         }
-        $row = $rows -> getRow(0);
         
-        //update the row with the new password
+        //check the password are not shorter than 5 chars
+        if (strlen($sPassword) < 5){
+            $this->_redirector->gotoSimple('error', 'error', NULL, array('title'=>'Bad Params', 'message'=>'Bad params where given'));
+            return;
+        }
+        
+        //grab the row from the forget password
+        $rForget = NULL;
+        $mForget = new Application_Model_DbTable_Forgotpassword();
+        $rForget = $mForget ->fetchRow($mForget ->select() 
+                -> where('id = ?', $iForgetId)
+                -> where('users_id = ?', $iUsersId)
+                -> where('token = ?', $sToken)
+                );
+        if ($rForget == NULL){
+            $this->_redirector->gotoSimple('error', 'error', NULL, array('title'=>'Bad Params', 'message'=>"You don't have permission to change this password"));
+            return;
+        }
+        
+        //check the time of the row
+        $iNow = time();
+        $iThen = $rForget['starttime'];
+        $iDelta = $iNow - $iThen;
+        if ($iDelta > 60*60*24){
+            $this->_redirector->gotoSimple('error', 'error', NULL, array('title'=>'Reset expired','message'=>'Your reset password request has expired. You can repeat the reset process again'));
+            return;
+        }
+        
+        //grab the users row
+        $rUser = NULL;
         $mUsers = new Application_Model_DbTable_Users();
-        $data = array(
-            'pass' => sha1(constant("Application_Model_KSFunctions::cSTATICSALT") . $sPassword . $row['salt'])
+        $rUser = $mUsers ->getRowWithId($iUsersId);
+        if ($rUser == NULL){
+            $this->_redirector->gotoSimple('error', 'error', NULL, array('title'=>'Bad Params', 'message'=>"You don't have permission to change this password"));
+            return;
+        }
+        
+        //update the users password
+        $aNewData = array(
+            'pass'      => sha1(constant("Application_Model_KSFunctions::cSTATICSALT") . $sPassword . $rUser['salt'])
         );
-        $mUsers -> update($data , 'id = ' . $id);
+        $mUsers ->update($aNewData, 'id = ' . $iUsersId);
         
-        //send the new password by masil to user
-        $ksfunctions ->sendNewPasswordMail($row['email'] , $sPassword);
-        
-        $this -> view -> sStatus = "SUCCESS!";
-        $this->view->sPassword = $sPassword;
+        //redirect to the main page with login success message
+        $this->_redirector ->gotoUrl('/?login_status=' . Nerdeez_Errors::LOGIN_PASSWORD_CHANGED);
         return;
     }
     
@@ -322,16 +356,22 @@ class LoginController extends Nerdeez_Controller_Action{
     private function sendResetPasswordMail($sSerial , $iUsersId , $sEmail){
         //create the mail body
         $body = 'You recently asked to reset your Nerdeez password. To complete your request, please follow this link:
-            <a href="http://www.' . $this->sGetUrl(). '/login/approvereset/id/'. $iUsersId . '/token/'. $sSerial .'" style="color: #E62A59; text-decoration: underline;">
+            <a href="http://' . $this->sGetUrl(). '/login/approvereset/id/'. $iUsersId . '/token/'. $sSerial .'" style="color: #E62A59; text-decoration: underline;">
                 THIS LINK
             </a>
-        ';		
+        ';
+        
+        $sBody = NULL;
+        ob_start();
+        echo $this->view->partial('partials/Nerdeez_Mail_Template.phtml', array('sMessage'  =>  $body));
+        $sBody = ob_get_contents();
+        ob_end_clean();
         
         //mail title
         $title = "Nerdeez reset password";
         
         //send the mail 
-        $this->reportByMail($sEmail, $body, $title);
+        $this->reportByMail($sEmail, $sBody, $title);
     }
     
 }
