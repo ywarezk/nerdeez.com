@@ -259,12 +259,16 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         $s3 = new Nerdeez_Service_Amazon_S3();
         $aFiles = array();
         $aParents = array();
+        $aCurrentParentsAdded = array();
         foreach ($rsFiles as $rFile){
             /* @var $rFile Zend_Db_Table_Row */
             //create the folder dir
             $rParent = $rFile ->findParentRow('Application_Model_DbTable_Folders');
             mkdir($sUploadDir . $rParent['title']);
-            $aParents[]=$rParent;
+            if (!in_array($rParent['id'], $aCurrentParentsAdded)){
+                $aParents[]=$rParent;
+                $aCurrentParentsAdded[]=$rParent['id'];
+            }
             
             //save all the files in the hd
             $sPath = NULL;
@@ -282,11 +286,8 @@ class CourseController extends Nerdeez_Controller_Action_FileHandler{
         
         //delete all the files and folders created
         unlink($zipfile);
-        foreach($aFiles as $sFile){
-            unlink($sFile);
-        }
         foreach ($aParents as $rParent) {
-            rmdir($sUploadDir . $rParent['title']);
+            $this->recursiveDelete($sUploadDir . $rParent['title']);
         }
         
     }
