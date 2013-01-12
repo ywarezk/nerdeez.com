@@ -2769,6 +2769,14 @@ function initCommonActions(){
       };
     var spinner = new Spinner(opts).spin();
     $('.loading').append(spinner.el);
+    
+    //event for esc key
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) { 
+            $('.dialog').fadeOut('normal');
+            $('#glassloading').fadeOut('fast');
+        }   
+      });
 }
 
 function clickedUploadInCourse(){
