@@ -384,6 +384,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $mail ->setFrom('admin@nerdeez.com');
         $mail ->addTo($email);
         $mail ->setSubject($title);
+        $mail ->setReturnPath('yariv@nerdeez.com');
         $mail ->send();
     }
     
