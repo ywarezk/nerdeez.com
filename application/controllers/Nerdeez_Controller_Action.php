@@ -182,7 +182,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $layout -> register_status = $this->_aData['register_status'];
         $layout -> login_status = $this->_aData['login_status'];
         $layout -> email = $this->_aData['email'];
-        //$layout -> menu = $this -> view -> render ('partials/menus/guest_menu.phtml');
+        $layout -> sUrl = $this->getUrl();
     }
     
     /**
@@ -524,6 +524,14 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $auth = Zend_Auth::getInstance();
         $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
         return $auth ->getIdentity();
+    }
+    
+    /**
+     * gets the current action url
+     * @return String the url we are currently visiting
+     */
+    public function getUrl(){
+        return $this->getRequest()->getHttpHost() . $this->view->url();
     }
     
     /**

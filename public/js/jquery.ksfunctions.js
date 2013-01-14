@@ -3108,3 +3108,11 @@ function loadNewPassword(){
        }
     });
 }
+
+/**
+ * will show all the features that i want to add to the site
+ * @returns {null}
+ */
+function production(){
+    $('.menu_facebooklike').css('display', 'block');
+}

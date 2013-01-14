@@ -2,6 +2,7 @@
 /**
  * the base layout - general html elements that are identical in all pages
  * all the pages layout will extend this
+ * @param String $this -> sUrl holds the site url for the facebook plugin
  */
 ?> 
 
@@ -124,6 +125,9 @@
         </div>
         <!-- end loading screen  -->
         
+        
+        
+        
         <!-- will hold all the content -->
         <div id="container" class="wrapper">
             
@@ -237,6 +241,16 @@
                 </div>
             </div>
             <!-- end of menu -->
+            
+            <!-- Begin like button -->
+            <div class="menu_facebooklike">
+                <iframe 
+                    src="http://www.facebook.com/plugins/like.php?href=<?php echo $this -> layout() -> sUrl; ?>"
+                    scrolling="no" frameborder="0"
+                    style="border:none; width:450px; height:80px">
+                </iframe>
+            </div>
+            <!--  End like button -->
             
             <!-- begin hold the main content -->
             <div id="body" class="wrapper"">

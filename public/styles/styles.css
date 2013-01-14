@@ -2674,3 +2674,10 @@ textarea{
     width: 300px;
 }
 
+.menu_facebooklike{
+    display: none;
+    float: left;
+    position: relative;
+    top: 10px;
+    width: 0;
+}
