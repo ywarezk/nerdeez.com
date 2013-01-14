@@ -2675,7 +2675,7 @@ textarea{
 }
 
 .menu_facebooklike{
-    display: none;
+    display: block;
     float: left;
     position: relative;
     top: 10px;
