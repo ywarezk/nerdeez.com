@@ -25,6 +25,7 @@ class Nerdeez_Errors{
     const LOGIN_FAILED= 6;
     const LOGIN_FAILED_ACTIVATE= 7;
     const LOGIN_PASSWORD_CHANGED= 8;
+    const FACEBOOK_REGISTER_FAIL = 9;
     public $MESSAGES = array(
         Nerdeez_Errors::SUCCESS => 'Success',
         Nerdeez_Errors::PASSWORD_MISMATCH => "Retype password don't match",
@@ -35,6 +36,7 @@ class Nerdeez_Errors{
         Nerdeez_Errors::LOGIN_FAILED => 'Invalid email or password.',
         Nerdeez_Errors::LOGIN_FAILED_ACTIVATE => 'You have to activate your account before login.',
         Nerdeez_Errors::LOGIN_PASSWORD_CHANGED => "You're password is changed. You can now login with your new password",
+        Nerdeez_Errors::FACEBOOK_REGISTER_FAIL => "facebook registration failure, make sure you are loggd in to facebook.",
     );
 }
 
@@ -330,23 +332,8 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $rUsers = $mUsers -> fetchRow($mUsers -> select() -> where ('email = ?' , $sEmail));
         if ($rUser == NULL) return;
         
-        //get the columns from the model
-        $aCols = NULL;
-        $aCols = $mModel->info(Zend_Db_Table_Abstract::COLS);
-        
-        //from the user row create the users object
-        $oUser = NULL;
-        $oUser = new stdClass();
-        foreach ($aCols as $sCol) {
-            $oUser -> $sCol = $rUser[$sCol];
-        }
-        
-        //write the object to auth
-        $auth = Zend_Auth::getInstance();
-        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
-        $auth->getStorage()->write($oUser);
-        
-        //the end
+        //write the row to auth
+        $this->writeUserRowToAuthStorage($rUser);
     }
     
     /**
@@ -572,7 +559,42 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         return preg_match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^", $email);
     }
     
+    /**
+     * when you want to update the auth with a user row
+     * @param Zend_Db_Table_Row $rUser the user row to update
+     * @return NULL 
+     */
+    protected function writeUserRowToAuthStorage($rUser){
+        //get the users model
+        $mModel = new Application_Model_DbTable_Users();
+        
+        //get the columns from the model
+        $aCols = NULL;
+        $aCols = $mModel->info(Zend_Db_Table_Abstract::COLS);
+        
+        //from the user row create the users object
+        $oUser = NULL;
+        $oUser = new stdClass();
+        foreach ($aCols as $sCol) {
+            $oUser -> $sCol = $rUser[$sCol];
+        }
+        
+        //write the object to auth
+        $auth = Zend_Auth::getInstance();
+        $auth->setStorage(new Zend_Auth_Storage_Session('Users'));
+        $auth->getStorage()->write($oUser);
+    }
     
+    /**
+     * gets a facebook token and retrieve the facebook object
+     * @param String $sToken
+     * @return Object the object from facebook
+     */
+    public function fromFBTokenToObject($sToken){
+        $graph_url = "https://graph.facebook.com/me?access_token=" . $sToken;
+        $details = json_decode(file_get_contents($graph_url));
+        return $details;
+    }
     
 }
 

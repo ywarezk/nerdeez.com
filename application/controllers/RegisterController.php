@@ -155,6 +155,34 @@ class RegisterController extends Nerdeez_Controller_Action{
         $this->reportByMail($email, $sBody, $title);
     }
     
+    
+    public function facebookAction(){
+        $token = $this->getRequest()->getParam('token',false);
+        if($token == false) {
+             $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('register_status' => Nerdeez_Errors::FACEBOOK_REGISTER_FAIL)));
+             return;
+        }
+        
+        $this -> fromFBTokenToObject($token);
+        
+        $graph_url = "https://graph.facebook.com/me?access_token=" . $this->token;
+        $details = json_decode(file_get_contents($graph_url));
+        $mUsers = new Application_Model_DbTable_Users();
+        $rUser = $mUsers ->fetchRow($mUsers -> select() -> where('email = ?', $details ->email));
+
+        $auth = Zend_Auth::getInstance();
+        $adapter = new Zend_Auth_Adapter_Facebook($token);
+        $result = $auth->authenticate($adapter);
+        if($result->isValid()) {
+            $user = $adapter->getUser();
+            $this->writeUserRowToAuthStorage($user);
+            $this->_redirector->gotoUrl($this->getReferer());
+            return;
+        }
+        $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('login_status' => Nerdeez_Errors::LOGIN_FAILED)));
+        return;
+    }
+    
 }
 
 ?>

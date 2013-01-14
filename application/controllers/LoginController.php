@@ -374,6 +374,29 @@ class LoginController extends Nerdeez_Controller_Action{
         $this->reportByMail($sEmail, $sBody, $title);
     }
     
+    /**
+     * when the user wants to login using facebook
+     */
+    public function facebookAction(){
+        $token = $this->getRequest()->getParam('token',false);
+        if($token == false) {
+             $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('login_status' => Nerdeez_Errors::LOGIN_FAILED)));
+             return;
+        }
+
+        $auth = Zend_Auth::getInstance();
+        $adapter = new Zend_Auth_Adapter_Facebook($token);
+        $result = $auth->authenticate($adapter);
+        if($result->isValid()) {
+            $user = $adapter->getUser();
+            $this->writeUserRowToAuthStorage($user);
+            $this->_redirector->gotoUrl($this->getReferer());
+            return;
+        }
+        $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('login_status' => Nerdeez_Errors::LOGIN_FAILED)));
+        return;
+    }
+    
 }
 
 ?>
