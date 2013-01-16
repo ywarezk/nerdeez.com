@@ -168,7 +168,7 @@ class RegisterController extends Nerdeez_Controller_Action{
         
         //if i got the token from the token get the user object
         $details = $this -> fromFBTokenToObject($token);
-        $this->reportByMail('ywarezk@gmail.com', print_r($details), 'facebook object');
+        //$this->reportByMail('ywarezk@gmail.com', print_r($details), 'facebook object');
         
         //find a user with this email and if i find than the registration fails 
         $mUsers = new Application_Model_DbTable_Users();
@@ -194,7 +194,8 @@ class RegisterController extends Nerdeez_Controller_Action{
                 $details -> email , 
                 $salt,
                 1,
-                1);
+                1,
+                $token);
         
         
         //report success

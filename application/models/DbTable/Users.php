@@ -44,6 +44,7 @@ class Application_Model_DbTable_Users extends Nerdeez_Db_Table{
      */
     protected $_aAlterStatments = array(
         "ALTER TABLE `users` CHANGE `serial` `token` VARCHAR( 20 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL" ,
+        "ALTER TABLE `users` ADD `fb_token` VARCHAR( 300 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL", 
     );
     
     /**
@@ -56,15 +57,16 @@ class Application_Model_DbTable_Users extends Nerdeez_Db_Table{
      * @param int $iRole the role of the user 0 - guest , 1 - user , 2- admin
      * @param int $iIsActive did the user activate his account?
      */
-    public function insertWithoutArray($sTitle , $sPass , $sSerial , $sEmail , $sSalt , $iRole = 0 , $iIsActive = 0){
+    public function insertWithoutArray($sTitle , $sPass , $sSerial , $sEmail , $sSalt , $iRole = 0 , $iIsActive = 0, $sFbToken = NULL){
         $aNewRow = array(
             'title'         => $sTitle , 
             'pass'          => $sPass , 
             'role'          => $iRole ,
-            'token'        => $sSerial ,
+            'token'         => $sSerial ,
             'email'         => $sEmail , 
             'isActive'      => $iIsActive , 
             'salt'          => $sSalt ,
+            'fb_token'      => $sFbToken,
         );
         return parent::insert($aNewRow); 
     } 

@@ -73,7 +73,7 @@
         <!-- End login error-->
         
         <!-- begin of login -->
-        <div style="width: 330px; margin-right: auto; margin-bottom: 0px; margin-left: auto; height: 242px; position: relative; top: 67px;" id="login">
+        <div style="width: 350px; margin-right: auto; margin-bottom: 0px; margin-left: auto; height: 242px; position: relative; top: 67px;" id="login">
             <form 
             method="post" 
             action="https://<?php $ksfunctions = new Application_Model_KSFunctions(); echo $ksfunctions -> sGetUrl(); ?>/login/login">
@@ -145,23 +145,23 @@
                     </tr>
                 </table>
             </div>
-            <div style="margin-top: 54px;">
-                <div style="float: left; position: relative; top: 12px; width: 116px;">
+            <div style="margin-top: 37px;">
+                <div style="">
                     <label class="remember">
                         <input type="checkbox" name="rememberme" value="1" checked="on"/>
                         <span class="dialogfontbody" style="position: relative; top: -2px;">Remember me</span>
                     </label>
                 </div>
-                <div class="fbloginregister" style="float: right;">
-                    <button class="fbc-login-register-button" id="fbc-login-button" type="button" onclick="facebooklogin('<?php echo $this -> layout() -> sUrl; ?>');">Login with Facebook</button>
-                </div>
-                <div style="width: 98px; float: right;height: 44px;">
+                <div style="width: 98px; float: right; height: 44px; position: relative; top: 23px;">
                     <button 
                             class="filebrowserbutton" 
                             type="submit" 
                             style="height: 44px !important;"
                             tabindex="0">SIGN IN
                     </button>
+                </div>
+                <div class="fbloginregister" style="float: right; height: 44px; position: relative; top: 23px;">
+                    <button class="fbc-login-register-button" id="fbc-login-button" type="button" onclick="facebooklogin('<?php echo $this -> layout() -> sUrl; ?>');">Login with Facebook</button>
                 </div>
             </div>
             </form>
@@ -270,9 +270,6 @@
                 </div>
                 <div class="error" id="register_error" style="float: left; max-width: 202px; margin-top: 19px;">
                 </div>
-                <div class="fbloginregister" style="float: right;">
-                    <button class="fbc-login-register-button" id="fbc-register-button" type="button" onclick="facebooklogin('<?php echo $this -> layout() -> sUrl; ?>');">Register with Facebook</button>
-                </div>
                 <div style="width: 98px; height: 44px; float: right; margin-top: 10px;">
                     <button 
                         tabindex="0" 
@@ -280,6 +277,9 @@
                         class="filebrowserbutton" 
                         style="height: 44px;">Register
                     </button>
+                </div>
+                <div class="fbloginregister" style="float: right;margin-top: 10px;">
+                    <button class="fbc-login-register-button" id="fbc-register-button" type="button" onclick="facebooklogin('<?php echo $this -> layout() -> sUrl; ?>');">Register with Facebook</button>
                 </div>
             </form>
         </div>
