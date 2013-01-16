@@ -400,6 +400,26 @@
 </script>
 <!-- End forgot password dialog-->
 
+<!-- Begin facebook buttons events -->
+<script type="text/javascript">
+    //init the login button
+    button = document.getElementsByClassName('fbc-login-register-button');
+    button.onclick = function() {
+        FB.getLoginStatus(function(response) {
+            if (response.authResponse) {
+                this.location = 'http://<?php echo $this -> layout() -> sUrl; ?>login/facebook/token/' +  response.authResponse.accessToken;
+            }
+            else {
+                FB.login(function(response) {
+                    if (response.authResponse) {
+                        this.location = 'http://<?php echo $this -> layout() -> sUrl; ?>register/facebook/token/' +  response.authResponse.accessToken;
+                    }}, {scope: 'email'});
+            }
+       });
+    };
+</script>
+<!-- End facebook buttons events -->
+
 <?php
 //determine if dialogs should be displayed on page load
 if (isset($this -> login_status)):
