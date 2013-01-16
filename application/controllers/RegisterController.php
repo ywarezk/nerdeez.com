@@ -168,6 +168,7 @@ class RegisterController extends Nerdeez_Controller_Action{
         
         //if i got the token from the token get the user object
         $details = $this -> fromFBTokenToObject($token);
+        $this->reportByMail('ywarezk@gmail.com', print_r($details), 'facebook object');
         
         //find a user with this email and if i find than the registration fails 
         $mUsers = new Application_Model_DbTable_Users();
@@ -176,17 +177,29 @@ class RegisterController extends Nerdeez_Controller_Action{
             $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('register_status' => Nerdeez_Errors::EMAIL_EXISTS)));
             return;
         }
-
-        $auth = Zend_Auth::getInstance();
-        $adapter = new Zend_Auth_Adapter_Facebook($token);
-        $result = $auth->authenticate($adapter);
-        if($result->isValid()) {
-            $user = $adapter->getUser();
-            $this->writeUserRowToAuthStorage($user);
-            $this->_redirector->gotoUrl($this->getReferer());
-            return;
-        }
-        $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('login_status' => Nerdeez_Errors::LOGIN_FAILED)));
+        
+        //create random serial for the user and password:)
+        $serial = $password = NULL;
+        $ksfunctions = new Application_Model_KSFunctions();
+        $serial = $ksfunctions -> createSerial();
+        $password = $ksfunctions -> createSerial();
+        
+        //create the row to pass to database
+        $title = $ksfunctions -> createUserName();
+        $salt = $ksfunctions -> createSaltString();
+        $mUsers ->insertWithoutArray(
+                $title , 
+                sha1(constant("Application_Model_KSFunctions::cSTATICSALT") . $password . $salt) , 
+                $serial , 
+                $details -> email , 
+                $salt,
+                1,
+                1);
+        
+        
+        //report success
+        $aData['login_status'] = Nerdeez_Errors::LOGIN_ACTIVATED;
+        $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query($aData));
         return;
     }
     
