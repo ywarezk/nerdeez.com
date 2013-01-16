@@ -3120,15 +3120,15 @@ function production(){
 /**
  * when the user clicks to login or register via facebook
  */
-function facebooklogin(){
+function facebooklogin(sUrl){
     FB.getLoginStatus(function(response) {
             if (response.authResponse) {
-                this.location = 'http://<?php echo $this -> layout() -> sUrl; ?>login/facebook/token/' +  response.authResponse.accessToken;
+                this.location = 'http://' + sUrl + 'login/facebook/token/' +  response.authResponse.accessToken;
             }
             else {
                 FB.login(function(response) {
                     if (response.authResponse) {
-                        this.location = 'http://<?php echo $this -> layout() -> sUrl; ?>register/facebook/token/' +  response.authResponse.accessToken;
+                        this.location = 'http://' + sUrl + 'register/facebook/token/' +  response.authResponse.accessToken;
                     }}, {scope: 'email'});
             }
     });
