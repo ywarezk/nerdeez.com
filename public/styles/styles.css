@@ -2681,3 +2681,7 @@ textarea{
     top: 10px;
     width: 0;
 }
+
+.fbloginregister{
+    display: none;
+}

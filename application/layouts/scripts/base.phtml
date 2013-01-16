@@ -53,8 +53,8 @@
           // Additional JS functions here
           window.fbAsyncInit = function() {
             FB.init({
-              appId      : '410909982317797', // App ID
-              channelUrl : '//www.nerdeez.com/channel.html', // Channel File
+              appId      : '<?php echo $this -> layout() -> sFBID; ?>', // App ID
+              channelUrl : '//<?php echo $this -> layout() -> sUrl; ?>/channel.html', // Channel File
               status     : true, // check login status
               cookie     : true, // enable cookies to allow the server to access the session
               xfbml      : true  // parse XFBML

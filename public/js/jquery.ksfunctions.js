@@ -3114,5 +3114,5 @@ function loadNewPassword(){
  * @returns {null}
  */
 function production(){
-    $('.menu_facebooklike').css('display', 'block');
+    $('.fbloginregister').css('display', 'block');
 }

@@ -185,6 +185,7 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $layout -> login_status = $this->_aData['login_status'];
         $layout -> email = $this->_aData['email'];
         $layout -> sUrl = $this->getUrl();
+        $layout -> sFBID = $this ->getFBAppID();
     }
     
     /**
@@ -594,6 +595,18 @@ abstract class Nerdeez_Controller_Action extends Zend_Controller_Action{
         $graph_url = "https://graph.facebook.com/me?access_token=" . $sToken;
         $details = json_decode(file_get_contents($graph_url));
         return $details;
+    }
+    
+    /**
+     * will return a facebook  id based on this ip
+     */
+    public function getFBAppID(){
+        if ($this ->isProduction()){
+            return $this->getFromConfig('production_facebook_id');
+        }
+        else{
+            return $this->getFromConfig('development_facebook_id');
+        }
     }
     
 }

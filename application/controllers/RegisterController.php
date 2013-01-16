@@ -155,20 +155,27 @@ class RegisterController extends Nerdeez_Controller_Action{
         $this->reportByMail($email, $sBody, $title);
     }
     
-    
+    /**
+     * when the user wants to register using facebook
+     */
     public function facebookAction(){
+        //get the facebook token and if failed send registration error
         $token = $this->getRequest()->getParam('token',false);
         if($token == false) {
              $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('register_status' => Nerdeez_Errors::FACEBOOK_REGISTER_FAIL)));
              return;
         }
         
-        $this -> fromFBTokenToObject($token);
+        //if i got the token from the token get the user object
+        $details = $this -> fromFBTokenToObject($token);
         
-        $graph_url = "https://graph.facebook.com/me?access_token=" . $this->token;
-        $details = json_decode(file_get_contents($graph_url));
+        //find a user with this email and if i find than the registration fails 
         $mUsers = new Application_Model_DbTable_Users();
         $rUser = $mUsers ->fetchRow($mUsers -> select() -> where('email = ?', $details ->email));
+        if ($rUser != NULL){
+            $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('register_status' => Nerdeez_Errors::EMAIL_EXISTS)));
+            return;
+        }
 
         $auth = Zend_Auth::getInstance();
         $adapter = new Zend_Auth_Adapter_Facebook($token);
