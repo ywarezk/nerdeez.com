@@ -7,7 +7,7 @@
  * @copyright (c) 2013, Nerdeez
  * @version V1.2
  */
-class Zend_Auth_Adapter_Facebook implements Zend_Auth_Adapter_Interface{
+class Facebook implements Zend_Auth_Adapter_Interface{
     private $token = null;
     private $user = null;
  

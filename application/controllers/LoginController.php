@@ -385,7 +385,7 @@ class LoginController extends Nerdeez_Controller_Action{
         }
 
         $auth = Zend_Auth::getInstance();
-        $adapter = new Zend_Auth_Adapter_Facebook($token);
+        $adapter = new Facebook($token);
         $result = $auth->authenticate($adapter);
         if($result->isValid()) {
             $user = $adapter->getUser();
