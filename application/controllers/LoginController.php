@@ -380,7 +380,7 @@ class LoginController extends Nerdeez_Controller_Action{
     public function facebookAction(){
         $token = $this->getRequest()->getParam('token',false);
         if($token == false) {
-             $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('login_status' => Nerdeez_Errors::LOGIN_FAILED)));
+             $this->_redirector->gotoUrl('/' . '?' . http_build_query(array('login_status' => Nerdeez_Errors::LOGIN_FAILED)));
              return;
         }
 

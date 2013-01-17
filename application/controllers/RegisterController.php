@@ -174,7 +174,7 @@ class RegisterController extends Nerdeez_Controller_Action{
         $mUsers = new Application_Model_DbTable_Users();
         $rUser = $mUsers ->fetchRow($mUsers -> select() -> where('email = ?', $details ->email));
         if ($rUser != NULL){
-            $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query(array('register_status' => Nerdeez_Errors::EMAIL_EXISTS)));
+            $this->_redirector->gotoUrl('/' . '?' . http_build_query(array('register_status' => Nerdeez_Errors::EMAIL_EXISTS)));
             return;
         }
         
@@ -200,7 +200,7 @@ class RegisterController extends Nerdeez_Controller_Action{
         
         //report success
         $aData['login_status'] = Nerdeez_Errors::LOGIN_ACTIVATED;
-        $this->_redirector->gotoUrl($this->getReferer() . '?' . http_build_query($aData));
+        $this->_redirector->gotoUrl('/' . '?' . http_build_query($aData));
         return;
     }
     
