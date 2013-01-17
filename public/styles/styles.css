@@ -2683,7 +2683,7 @@ textarea{
 }
 
 .fbloginregister{
-    display: none;
+    display: block;
 }
 
 .fbc-login-register-button{
