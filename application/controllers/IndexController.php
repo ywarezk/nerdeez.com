@@ -121,6 +121,11 @@ class IndexController extends Nerdeez_Controller_Action
         echo $dojoData->toJson();
         return;
     }
+    
+    /**
+     * explaining about the open source project
+     */
+    public function opensourceAction(){}
 
 }
 
