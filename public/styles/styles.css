@@ -684,7 +684,7 @@ box-sizing: border-box;
     /*margin-bottom: 50px;
     padding: 10px;
     position: relative; top: 30px;clear: both;*/
-    margin-top: 40px;
+    margin-top: 60px;
 }
 
 .about_status{
@@ -2705,4 +2705,16 @@ textarea{
 
 .fbc-login-register-button:hover{
     color: #CCCCCC;
+}
+
+.opensource{
+    background-image: url("/img/banner.png");
+    background-repeat: no-repeat;
+    color: white;
+    height: 128px;
+    position: absolute;
+    top: 5px;
+    width: 432px;
+    z-index: 2;
+    left: 400px;
 }

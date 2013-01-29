@@ -2777,6 +2777,11 @@ function initCommonActions(){
             $('#glassloading').fadeOut('fast');
         }   
       });
+      
+   //position the opensource banner
+   /*var widthbody = $('#body').width()/2;
+   var widthbanner = $('#dialog_opensource').width()/2;
+   $('#dialog_opensource').css('left', '' + (widthbody - widthbanner) + 'px');*/
 }
 
 function clickedUploadInCourse(){
